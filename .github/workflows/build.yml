@@ -1,0 +1,59 @@
+# on:
+#   pull_request:
+#     types: [closed]
+#   push:
+#     branches:
+#       - get-master
+on:
+  pull_request_target:
+    types:
+      - closed
+
+name: "Build & Release"
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    name: Build & Release
+    runs-on: ubuntu-latest
+    env:
+      JAVA_VERSION: "11.0"
+      FLUTTER_VERSION: "3.0.4"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: ${{env.JAVA_VERSION}}
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{env.FLUTTER_VERSION}}
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter build apk --release
+      - run: flutter build apk --split-per-abi --release
+      - run: flutter build web --release --base-href="/AniList-jsr/"
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/flutter-apk/*.apk"
+          tag: v0.0.${{ github.run_number }}-b1
+          token: ${{ secrets.TOKEN }}
+      - name: Build Web
+        run: |
+          cd build/web
+          git init -b origin
+          git config --global user.email joaovitor.jsr@gmail.com
+          git config --global user.name joaojsrbr
+          git status
+          git remote add origin https://${{secrets.TOKEN}}@github.com/joaojsrbr/AniList-jsr.git
+          git checkout -b gh-pages
+          # git pull origin gh-pages
+          git add .
+          git commit -m "update"
+          git push origin gh-pages -f
+      - name: Telegram<apk>
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          document: build/app/outputs/flutter-apk/*.apk
