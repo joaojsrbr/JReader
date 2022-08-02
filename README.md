@@ -13,7 +13,7 @@
 
 ## Bug
 
-- Novel
+- [x] Novel
 
 ## Instalação
 
