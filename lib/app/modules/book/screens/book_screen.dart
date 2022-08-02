@@ -563,20 +563,14 @@ class _BookScreenState extends State<BookScreen> {
                     // final Chapter chapter = (sort.value == Sort.DESC)
                     //     ? _chapters.reversed.toList()[index]
                     //     : _chapters[index];
+                    debugPrint('build');
+                    final Chapter chapter = (sort.value == Sort.DESC)
+                        ? _chapters[index]
+                        : _chapters.reversed.toList()[index];
 
-                    late Chapter chapter;
-
-                    switch (sort.value) {
-                      case Sort.DESC:
-                        chapter = _chapters[index];
-                        break;
-                      case Sort.ASC:
-                        chapter = _chapters.reversed.toList()[index];
-
-                        break;
-                    }
-
-                    final Download? downloadChapter = _download[chapter.id];
+                    final Download? downloadChapter = (sort.value == Sort.DESC)
+                        ? _download[chapter.id]
+                        : _download[chapter.id];
 
                     return ListTile(
                       title: Text(chapter.name),
@@ -622,7 +616,9 @@ class _BookScreenState extends State<BookScreen> {
                           RoutesName.READER,
                           arguments: ReaderArguments(
                             book: _bookItem,
-                            chapters: _chapters,
+                            chapters: (sort.value == Sort.DESC)
+                                ? _chapters
+                                : _chapters.reversed.toList(),
                             index: index,
                             position: store.historic[_bookItem.id]?[chapter.id],
                           ),

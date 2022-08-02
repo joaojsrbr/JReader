@@ -57,11 +57,13 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes { 
-        release { 
+
+    buildTypes {
+        release {
             signingConfig signingConfigs.debug
             setProperty("archivesBaseName", "v" + flutterVersionName)
-        } 
+        }
+
     }
 }
 

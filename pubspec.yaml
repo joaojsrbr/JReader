@@ -41,12 +41,10 @@ dependencies:
   dynamic_color: ^1.4.0
   graphql_flutter: ^5.1.0
   sliver_tools: ^0.2.7
-  flutter_inappwebview: ^5.4.3+7
   loading_more_list: 4.1.2
   # dart_ping: ^7.0.1
   scrollable_positioned_list: ^0.3.2
   fast_immutable_collections: ^7.4.1
-  rename: ^2.0.1
 
 dev_dependencies:
   flutter_test:
