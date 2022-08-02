@@ -1,7 +1,7 @@
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
-import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
