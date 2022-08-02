@@ -612,7 +612,7 @@ class _BookScreenState extends State<BookScreen> {
                         }),
                       ),
                       onTap: () async {
-                        await Navigator.of(context).pushNamed(
+                        await Get.toNamed(
                           RoutesName.READER,
                           arguments: ReaderArguments(
                             book: _bookItem,
@@ -623,8 +623,18 @@ class _BookScreenState extends State<BookScreen> {
                             position: store.historic[_bookItem.id]?[chapter.id],
                           ),
                         );
-
                         _getDownloadItem();
+                        // await Navigator.of(context).pushNamed(
+                        //   RoutesName.READER,
+                        //   arguments: ReaderArguments(
+                        //     book: _bookItem,
+                        //     chapters: (sort.value == Sort.DESC)
+                        //         ? _chapters
+                        //         : _chapters.reversed.toList(),
+                        //     index: index,
+                        //     position: store.historic[_bookItem.id]?[chapter.id],
+                        //   ),
+                        // );
                       },
                       onLongPress: () async {
                         final downloaded = downloadChapter?.finished == true;
