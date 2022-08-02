@@ -108,7 +108,7 @@ class HomeDestination extends GetView<HomeController> {
             floating: true,
             snap: true,
             stretch: true,
-            title: const Text('com_joaojsrbr_reader'),
+            title: const Text('HomePage'),
             leading: const SizedBox(
               height: 0,
               width: 0,
