@@ -1,5 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
-import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/animated_fade_out_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -23,21 +23,19 @@ com_joaojsrbr_reader é uma aplicação mobile feita com Flutter. Onde você pod
 
 Nenhum dos livros encontrados estão armazenados em servidor próprio. Todos eles são obtidos de diversos sites através de **web scraping**.
 
-## Screenshots
+<!--
+## Screenshots -->
 
-<p>
-  <img width="24.5%" src="./.github/Screenshot_20220617-103218.png" />
-  <img width="24.5%" src="./.github/Screenshot_20220617-103236.png" />
-  <img width="24.5%" src="./.github/Screenshot_20220617-103256.png" />
-  <img width="24.5%" src="./.github/Screenshot_20220617-104201.png" />
-</p>
+<!-- <p>
+  <img width="24.5%" src="./.github/" />
+</p> -->
 
-## Instalação
+<!-- ## Instalação
 
 Clone o projeto
 
 ```bash
-git clone https://github.com/AlexBorgesDev/com_joaojsrbr_reader.git
+git clone https://github.com/joaojsrbr/com_joaojsrbr_reader.git
 ```
 
 Vá para o diretório do projeto
@@ -58,7 +56,7 @@ Apos configurar o firebase, é so rodar o app com o comando
 
 ```bash
 flutter run --multidex
-```
+``` -->
 
 ## Licença
 

@@ -12,7 +12,7 @@ import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
-import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 // import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 
 class SearchController extends GetxController {
