@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/widgets/book_element.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
 import 'package:flutter/material.dart';
 
 class BookElementHorizontalList extends StatelessWidget {

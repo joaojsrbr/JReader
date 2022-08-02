@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/modules/login/controlers/login_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/login/controlers/login_controller.dart';
 import 'package:get/get.dart';
 
 class LoginBinding implements Bindings {

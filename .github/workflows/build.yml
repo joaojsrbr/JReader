@@ -6,8 +6,12 @@
 #       - get-master
 on:
   pull_request_target:
+    branches:
+      - main
     types:
       - closed
+    tags:
+      - v*
 
 name: "Build & Release"
 
@@ -38,22 +42,22 @@ jobs:
           artifacts: "build/app/outputs/flutter-apk/*.apk"
           tag: v0.0.${{ github.run_number }}-b1
           token: ${{ secrets.TOKEN }}
-      - name: Build Web
-        run: |
-          cd build/web
-          git init -b origin
-          git config --global user.email joaovitor.jsr@gmail.com
-          git config --global user.name joaojsrbr
-          git status
-          git remote add origin https://${{secrets.TOKEN}}@github.com/joaojsrbr/AniList-jsr.git
-          git checkout -b gh-pages
-          # git pull origin gh-pages
-          git add .
-          git commit -m "update"
-          git push origin gh-pages -f
-      - name: Telegram<apk>
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          document: build/app/outputs/flutter-apk/*.apk
+      # - name: Build Web
+      #   run: |
+      #     cd build/web
+      #     git init -b origin
+      #     git config --global user.email joaovitor.jsr@gmail.com
+      #     git config --global user.name joaojsrbr
+      #     git status
+      #     git remote add origin https://${{secrets.TOKEN}}@github.com/joaojsrbr/AniList-jsr.git
+      #     git checkout -b gh-pages
+      #     # git pull origin gh-pages
+      #     git add .
+      #     git commit -m "update"
+      #     git push origin gh-pages -f
+      # - name: Telegram<apk>
+      #   uses: appleboy/telegram-action@master
+      #   with:
+      #     to: ${{ secrets.TELEGRAM_TO }}
+      #     token: ${{ secrets.TELEGRAM_TOKEN }}
+      #     document: build/app/outputs/flutter-apk/*.apk

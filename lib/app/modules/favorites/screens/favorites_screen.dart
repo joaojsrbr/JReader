@@ -1,10 +1,10 @@
-import 'package:A.N.R/app/core/utils/grid.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/modules/favorites/controlers/favorites_controller.dart';
-import 'package:A.N.R/app/routes/routes.dart';
-import 'package:A.N.R/app/services/favorites.dart';
-import 'package:A.N.R/app/store/favorites_store.dart';
-import 'package:A.N.R/app/widgets/book_element.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/grid.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/modules/favorites/controlers/favorites_controller.dart';
+import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
+import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
+import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get/get.dart';

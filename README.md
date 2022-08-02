@@ -4,9 +4,9 @@
   <img alt="Package License" src="https://img.shields.io/github/license/AlexBorgesDev/anr.svg" />
 </p>
 
-# A.N.R
+# com_joaojsrbr_reader
 
-A.N.R é uma aplicação mobile feita com Flutter. Onde você pode encontrar e ler mangás, manhwa, manhua, novels e webtoons, tendo seu histórico de leitura e favoritos salvos na nuvem, através do Firebase.
+com_joaojsrbr_reader é uma aplicação mobile feita com Flutter. Onde você pode encontrar e ler mangás, manhwa, manhua, novels e webtoons, tendo seu histórico de leitura e favoritos salvos na nuvem, através do Firebase.
 
 > Aplicativo não testado em sistemas IOS.
 
@@ -37,13 +37,13 @@ Nenhum dos livros encontrados estão armazenados em servidor próprio. Todos ele
 Clone o projeto
 
 ```bash
-git clone https://github.com/AlexBorgesDev/A.N.R.git
+git clone https://github.com/AlexBorgesDev/com_joaojsrbr_reader.git
 ```
 
 Vá para o diretório do projeto
 
 ```bash
-cd A.N.R
+cd com_joaojsrbr_reader
 ```
 
 Instale as dependências

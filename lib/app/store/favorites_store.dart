@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:collection/collection.dart';
 import 'package:mobx/mobx.dart';
 

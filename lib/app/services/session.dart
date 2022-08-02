@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
-import 'package:A.N.R/app/routes/routes.dart';
+import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';

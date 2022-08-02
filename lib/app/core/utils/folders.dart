@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:A.N.R/app/core/utils/books_path.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/books_path.dart';
 
 import 'package:flutter/cupertino.dart';
 

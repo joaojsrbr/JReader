@@ -1,28 +1,28 @@
 // ignore_for_file: prefer_final_fields
 
-import 'package:A.N.R/app/core/utils/start_download.dart';
-import 'package:A.N.R/app/databases/downloads_db.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/repository/argos_repository.dart';
-import 'package:A.N.R/app/repository/cronos_repository.dart';
-import 'package:A.N.R/app/repository/mangahost_repository.dart';
-import 'package:A.N.R/app/repository/mark_repository.dart';
-import 'package:A.N.R/app/repository/neox_repository.dart';
-import 'package:A.N.R/app/repository/prisma_repository.dart';
-import 'package:A.N.R/app/repository/random_repository.dart';
-import 'package:A.N.R/app/repository/reaper_repository.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/start_download.dart';
+import 'package:com_joaojsrbr_reader/app/databases/downloads_db.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/repository/argos_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/cronos_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/mangahost_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/mark_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/neox_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/prisma_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/random_repository.dart';
+import 'package:com_joaojsrbr_reader/app/repository/reaper_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:loading_more_list/loading_more_list.dart';
-// import 'package:A.N.R/app/services/scans/argos_services.dart';
-// import 'package:A.N.R/app/services/scans/cronos_services.dart';
-// import 'package:A.N.R/app/services/scans/manga_host_services.dart';
-// import 'package:A.N.R/app/services/scans/mark_services.dart';
-// import 'package:A.N.R/app/services/scans/neox_services.dart';
-// import 'package:A.N.R/app/services/scans/prisma_services.dart';
-// import 'package:A.N.R/app/services/scans/random_services.dart';
-// import 'package:A.N.R/app/services/scans/reaper_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
 
 // ignore: constant_identifier_names
 enum Scans { NEOX, RANDOM, MARK, CRONOS, PRISMA, REAPER, MANGA_HOST, ARGOS }

@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/modules/favorites/screens/favorites_screen.dart';
-import 'package:A.N.R/app/modules/home/controlers/home_controller.dart';
-import 'package:A.N.R/app/modules/home/widget/delegate_page_header.dart';
-import 'package:A.N.R/app/modules/home/widget/indicator_builder/indicator_builder.dart';
-import 'package:A.N.R/app/modules/home/widget/navbar_scroll_to_hide_widget.dart';
-import 'package:A.N.R/app/routes/routes.dart';
-import 'package:A.N.R/app/services/favorites.dart';
-import 'package:A.N.R/app/services/historic.dart';
-import 'package:A.N.R/app/services/session.dart';
-import 'package:A.N.R/app/widgets/book_element.dart';
-import 'package:A.N.R/app/widgets/section_list_title.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/modules/favorites/screens/favorites_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/widget/delegate_page_header.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/widget/indicator_builder/indicator_builder.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/widget/navbar_scroll_to_hide_widget.dart';
+import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
+import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
+import 'package:com_joaojsrbr_reader/app/services/historic.dart';
+import 'package:com_joaojsrbr_reader/app/services/session.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/section_list_title.dart';
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
@@ -108,7 +108,7 @@ class HomeDestination extends GetView<HomeController> {
             floating: true,
             snap: true,
             stretch: true,
-            title: const Text('A.N.R'),
+            title: const Text('com_joaojsrbr_reader'),
             leading: const SizedBox(
               height: 0,
               width: 0,
@@ -293,7 +293,7 @@ class HomeDestination extends GetView<HomeController> {
     //           floating: true,
     //           snap: true,
     //           stretch: true,
-    //           title: const Text('A.N.R'),
+    //           title: const Text('com_joaojsrbr_reader'),
     //           leading: const SizedBox(
     //             height: 0,
     //             width: 0,

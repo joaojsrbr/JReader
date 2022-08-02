@@ -1,5 +1,5 @@
-import 'package:A.N.R/app/modules/favorites/controlers/favorites_controller.dart';
-import 'package:A.N.R/app/modules/home/widget/navbar_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/favorites/controlers/favorites_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/widget/navbar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

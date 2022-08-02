@@ -1,5 +1,5 @@
-import 'package:A.N.R/app/models/chapter.dart';
-import 'package:A.N.R/app/models/download.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/models/download.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -109,7 +109,8 @@ class DownloadsDB {
   }
 
   Future<void> _onCreate(Database db, int version) async {
-    await db.execute('''
+    await db.execute(
+        '''
     CREATE TABLE IF NOT EXISTS $table (
       id TEXT PRIMARY KEY UNIQUE NOT NULL,
       bookId TEXT NOT NULL,

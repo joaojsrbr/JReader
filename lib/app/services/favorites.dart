@@ -1,7 +1,7 @@
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/services/scans/manga_host_services.dart';
-import 'package:A.N.R/app/store/favorites_store.dart';
-import 'package:A.N.R/app/widgets/animated_fade_out_in.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/animated_fade_out_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
