@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           }
           return GetMaterialApp(
             defaultTransition: Transition.fadeIn,
-            title: 'com_joaojsrbr_reader',
+            title: 'JReader',
             darkTheme: ThemeData(
               fontFamily: 'Poppins',
               useMaterial3: true,

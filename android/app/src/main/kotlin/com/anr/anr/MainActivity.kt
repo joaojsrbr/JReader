@@ -1,4 +1,4 @@
-package com.anr.anr
+package com.jsr.reader
 
 import io.flutter.embedding.android.FlutterActivity
 

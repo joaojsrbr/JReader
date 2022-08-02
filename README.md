@@ -1,6 +1,4 @@
-# com_joaojsrbr_reader
-
-com_joaojsrbr_reader é uma aplicação mobile feita com Flutter. Onde você pode encontrar e ler mangás, manhwa, manhua, novels e webtoons, tendo seu histórico de leitura e favoritos salvos na nuvem, através do Firebase.
+# JReader
 
 > Aplicativo não testado em sistemas IOS.
 
@@ -13,29 +11,18 @@ com_joaojsrbr_reader é uma aplicação mobile feita com Flutter. Onde você pod
 - Capítulos lidos
 - Leitura offline - Download de capítulos
 
-## Livros
-
-Nenhum dos livros encontrados estão armazenados em servidor próprio. Todos eles são obtidos de diversos sites através de **web scraping**.
-
-<!--
-## Screenshots -->
-
-<!-- <p>
-  <img width="24.5%" src="./.github/" />
-</p> -->
-
-<!-- ## Instalação
+## Instalação
 
 Clone o projeto
 
 ```bash
-git clone https://github.com/joaojsrbr/com_joaojsrbr_reader.git
+git clone https://github.com/joaojsrbr/Reader.git
 ```
 
 Vá para o diretório do projeto
 
 ```bash
-cd com_joaojsrbr_reader
+cd Reader
 ```
 
 Instale as dependências
@@ -50,7 +37,7 @@ Apos configurar o firebase, é so rodar o app com o comando
 
 ```bash
 flutter run --multidex
-``` -->
+```
 
 ## Licença
 
