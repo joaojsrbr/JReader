@@ -1,17 +1,17 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:A.N.R/app/modules/favorites/bindings/favorites_binding.dart';
-import 'package:A.N.R/app/modules/home/bindings/home_binding.dart';
-import 'package:A.N.R/app/modules/about/screens/about_screen.dart';
-import 'package:A.N.R/app/modules/book/screens/book_screen.dart';
-import 'package:A.N.R/app/modules/favorites/screens/favorites_screen.dart';
-import 'package:A.N.R/app/modules/home/screens/home_screen.dart';
-import 'package:A.N.R/app/modules/login/bindings/login_binding.dart';
-import 'package:A.N.R/app/modules/login/screens/login_screen.dart';
-import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
-// import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
-import 'package:A.N.R/app/modules/search/bindings/search_binding.dart';
-import 'package:A.N.R/app/modules/search/screens/search_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/favorites/bindings/favorites_binding.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/bindings/home_binding.dart';
+import 'package:com_joaojsrbr_reader/app/modules/about/screens/about_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/book/screens/book_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/favorites/screens/favorites_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/screens/home_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/login/bindings/login_binding.dart';
+import 'package:com_joaojsrbr_reader/app/modules/login/screens/login_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
+// import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
+import 'package:com_joaojsrbr_reader/app/modules/search/bindings/search_binding.dart';
+import 'package:com_joaojsrbr_reader/app/modules/search/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

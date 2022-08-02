@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/modules/reader/controlers/reader_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/controlers/reader_controller.dart';
 import 'package:get/get.dart';
 
 class ReaderBinding implements Bindings {

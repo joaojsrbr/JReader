@@ -1,6 +1,6 @@
-import 'package:A.N.R/app/core/themes/color_schemes.g.dart';
+import 'package:com_joaojsrbr_reader/app/core/themes/color_schemes.g.dart';
 import 'package:flutter/material.dart';
-// import 'package:A.N.R/app/core/themes/colors.dart';
+// import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 
 class CustomTheme {
   static ColorScheme get colorScheme => darkColorScheme;

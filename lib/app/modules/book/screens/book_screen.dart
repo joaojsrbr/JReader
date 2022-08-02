@@ -10,23 +10,23 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import 'package:A.N.R/app/core/constants/ports.dart';
-import 'package:A.N.R/app/core/utils/start_download.dart';
-import 'package:A.N.R/app/databases/downloads_db.dart';
-import 'package:A.N.R/app/models/book.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/models/chapter.dart';
-import 'package:A.N.R/app/models/download.dart';
-import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
-import 'package:A.N.R/app/routes/routes.dart';
-import 'package:A.N.R/app/services/book_info.dart';
-import 'package:A.N.R/app/services/favorites.dart';
-import 'package:A.N.R/app/store/favorites_store.dart';
-import 'package:A.N.R/app/store/historic_store.dart';
-import 'package:A.N.R/app/widgets/accent_subtitle.dart';
-import 'package:A.N.R/app/widgets/animated_fade_out_in.dart';
-import 'package:A.N.R/app/widgets/sinopse.dart';
-import 'package:A.N.R/app/widgets/to_info_button.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/ports.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/start_download.dart';
+import 'package:com_joaojsrbr_reader/app/databases/downloads_db.dart';
+import 'package:com_joaojsrbr_reader/app/models/book.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/models/download.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
+import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
+import 'package:com_joaojsrbr_reader/app/services/book_info.dart';
+import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
+import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/accent_subtitle.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/animated_fade_out_in.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/sinopse.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/to_info_button.dart';
 
 // ignore: constant_identifier_names
 enum Sort { DESC, ASC }

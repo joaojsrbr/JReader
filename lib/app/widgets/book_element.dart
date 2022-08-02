@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/core/themes/colors.dart';
+import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -56,7 +56,7 @@ class BookElement extends StatelessWidget {
                   fit: BoxFit.cover,
                   imageUrl: imageURL2 ?? imageURL,
                   httpHeaders: headers,
-                  memCacheHeight: memCacheHeight, 
+                  memCacheHeight: memCacheHeight,
                   memCacheWidth: memCacheWidth,
                   // errorWidget: imageURL2 != null
                   //     ? (context, url, error) {

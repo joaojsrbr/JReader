@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import 'package:A.N.R/app/core/themes/theme.dart';
-import 'package:A.N.R/app/routes/routes.dart';
-import 'package:A.N.R/app/store/favorites_store.dart';
-import 'package:A.N.R/app/store/historic_store.dart';
+import 'package:com_joaojsrbr_reader/app/core/themes/theme.dart';
+import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
+import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           }
           return GetMaterialApp(
             defaultTransition: Transition.fadeIn,
-            title: 'A.N.R',
+            title: 'com_joaojsrbr_reader',
             darkTheme: ThemeData(
               fontFamily: 'Poppins',
               useMaterial3: true,

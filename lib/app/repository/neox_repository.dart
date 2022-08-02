@@ -1,5 +1,5 @@
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/services/scans/neox_services.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';

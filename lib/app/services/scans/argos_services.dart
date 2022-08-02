@@ -2,13 +2,13 @@
 
 import 'dart:ffi';
 
-import 'package:A.N.R/app/core/values/api_graphql_query.dart';
-import 'package:A.N.R/app/core/values/api_graphql_variables.dart';
-import 'package:A.N.R/app/models/book.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/models/chapter.dart';
-import 'package:A.N.R/app/models/from_json.dart';
-import 'package:A.N.R/app/services/session.dart';
+import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_query.dart';
+import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_variables.dart';
+import 'package:com_joaojsrbr_reader/app/models/book.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/models/from_json.dart';
+import 'package:com_joaojsrbr_reader/app/services/session.dart';
 import 'package:dio/dio.dart' as dior;
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart';

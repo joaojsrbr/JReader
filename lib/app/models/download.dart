@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/core/utils/to_id.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 
 class Download {
   final String bookId;

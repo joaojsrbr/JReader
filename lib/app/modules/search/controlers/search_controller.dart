@@ -1,19 +1,19 @@
 // ignore_for_file: prefer_final_fields
 
-import 'package:A.N.R/app/core/constants/providers.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/services/scans/random_services.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/providers.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:A.N.R/app/services/scans/argos_services.dart';
-import 'package:A.N.R/app/services/scans/cronos_services.dart';
-import 'package:A.N.R/app/services/scans/mark_services.dart';
-import 'package:A.N.R/app/services/scans/neox_services.dart';
-import 'package:A.N.R/app/services/scans/prisma_services.dart';
-import 'package:A.N.R/app/services/scans/reaper_services.dart';
-import 'package:A.N.R/app/services/scans/manga_host_services.dart';
-// import 'package:A.N.R/app/services/scans/random_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+// import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 
 class SearchController extends GetxController {
   RxBool isLoading = false.obs;

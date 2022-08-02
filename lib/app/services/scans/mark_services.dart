@@ -1,7 +1,7 @@
-import 'package:A.N.R/app/models/book.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/models/chapter.dart';
-import 'package:A.N.R/app/core/utils/to_id.dart';
+import 'package:com_joaojsrbr_reader/app/models/book.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:html/dom.dart';

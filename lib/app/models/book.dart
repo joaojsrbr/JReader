@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
 
 class Book {
   final String name;

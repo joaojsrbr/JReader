@@ -1,11 +1,11 @@
-import 'package:A.N.R/app/services/scans/argos_services.dart';
-import 'package:A.N.R/app/services/scans/cronos_services.dart';
-import 'package:A.N.R/app/services/scans/manga_host_services.dart';
-import 'package:A.N.R/app/services/scans/mark_services.dart';
-import 'package:A.N.R/app/services/scans/neox_services.dart';
-import 'package:A.N.R/app/services/scans/prisma_services.dart';
-import 'package:A.N.R/app/services/scans/random_services.dart';
-import 'package:A.N.R/app/services/scans/reaper_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
 
 Future<List<String>> bookContent(String url) async {
   if (url.contains('neoxscans')) {

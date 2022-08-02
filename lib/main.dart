@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:workmanager/workmanager.dart';
 
-import 'package:A.N.R/app/core/constants/ports.dart';
-import 'package:A.N.R/app/core/utils/file_mime_by_url.dart';
-import 'package:A.N.R/app/core/utils/folders.dart';
-import 'package:A.N.R/app/databases/downloads_db.dart';
-import 'package:A.N.R/app/models/download.dart';
-import 'package:A.N.R/app/my_app.dart';
-import 'package:A.N.R/app/services/book_content.dart';
-import 'package:A.N.R/firebase_options.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/ports.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/file_mime_by_url.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/folders.dart';
+import 'package:com_joaojsrbr_reader/app/databases/downloads_db.dart';
+import 'package:com_joaojsrbr_reader/app/models/download.dart';
+import 'package:com_joaojsrbr_reader/app/my_app.dart';
+import 'package:com_joaojsrbr_reader/app/services/book_content.dart';
+import 'package:com_joaojsrbr_reader/firebase_options.dart';
 
 import 'firebase_options.dart';
 

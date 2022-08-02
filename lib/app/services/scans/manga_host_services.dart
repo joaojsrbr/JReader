@@ -1,8 +1,8 @@
-import 'package:A.N.R/app/models/book.dart';
-import 'package:A.N.R/app/models/book_item.dart';
-import 'package:A.N.R/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/models/book.dart';
+import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
 import 'package:dio/dio.dart';
-import 'package:A.N.R/app/core/utils/to_id.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:html/dom.dart';
@@ -47,11 +47,14 @@ class MangaHostServices {
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
-        final String imageURL = (source?.attributes['srcset'] ?? '').trim().replaceAll(r'xmedium', 'full');
-        final String imageURL2 = (img?.attributes['src'] ?? '').trim().replaceAll(r'xmedium', 'full');
+        final String imageURL = (source?.attributes['srcset'] ?? '')
+            .trim()
+            .replaceAll(r'xmedium', 'full');
+        final String imageURL2 = (img?.attributes['src'] ?? '')
+            .trim()
+            .replaceAll(r'xmedium', 'full');
         // var temp2 = imageURL.replaceAll(r'xmedium', 'full');
         // var temp  = imageURL2.replaceAll(r'xmedium', 'full');
-        
 
         final bool is18 = element.querySelector('.age-18') != null;
 
@@ -65,7 +68,6 @@ class MangaHostServices {
             is18: is18,
             headers: headers,
             imageURL: imageURL.isEmpty ? imageURL2 : imageURL,
-           
             imageURL2: imageURL2,
           ));
         }
@@ -130,7 +132,6 @@ class MangaHostServices {
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36',
     };
   }
- 
 
   static Future<Book> bookInfo(String url, String name) async {
     final Dio dio = Dio();

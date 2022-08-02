@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/modules/home/controlers/home_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
 import 'package:get/get.dart';
 
 class HomeBinding implements Bindings {

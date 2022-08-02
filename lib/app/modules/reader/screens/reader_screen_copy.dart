@@ -3,16 +3,16 @@
 // import 'dart:convert';
 // import 'dart:io';
 
-// import 'package:A.N.R/app/core/themes/colors.dart';
-// import 'package:A.N.R/app/core/utils/html_template.dart';
-// import 'package:A.N.R/app/core/utils/reader_js.dart';
-// import 'package:A.N.R/app/models/book_item.dart';
-// import 'package:A.N.R/app/models/chapter.dart';
-// import 'package:A.N.R/app/modules/reader/controlers/reader_controller.dart';
-// import 'package:A.N.R/app/services/book_content.dart';
-// import 'package:A.N.R/app/services/historic.dart';
-// import 'package:A.N.R/app/store/historic_store.dart';
-// import 'package:A.N.R/app/core/utils/books_path.dart';
+// import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
+// import 'package:com_joaojsrbr_reader/app/core/utils/html_template.dart';
+// import 'package:com_joaojsrbr_reader/app/core/utils/reader_js.dart';
+// import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+// import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+// import 'package:com_joaojsrbr_reader/app/modules/reader/controlers/reader_controller.dart';
+// import 'package:com_joaojsrbr_reader/app/services/book_content.dart';
+// import 'package:com_joaojsrbr_reader/app/services/historic.dart';
+// import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
+// import 'package:com_joaojsrbr_reader/app/core/utils/books_path.dart';
 // import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';

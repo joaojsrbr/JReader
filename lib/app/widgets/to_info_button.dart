@@ -1,4 +1,4 @@
-import 'package:A.N.R/app/core/themes/colors.dart';
+import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:flutter/material.dart';
 
 class ToInfoButton extends StatelessWidget {

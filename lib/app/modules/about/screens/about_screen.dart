@@ -1,6 +1,6 @@
-import 'package:A.N.R/app/models/book.dart';
-import 'package:A.N.R/app/widgets/about_tile.dart';
-import 'package:A.N.R/app/widgets/sinopse.dart';
+import 'package:com_joaojsrbr_reader/app/models/book.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/about_tile.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/sinopse.dart';
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {

@@ -5,19 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "A.N.R-main",
+            "name": "com_joaojsrbr_reader-main",
             "request": "launch",
             // "args": ["--multidex"],
             "type": "dart"
         },
         {
-            "name": "A.N.R-main (profile mode)",
+            "name": "com_joaojsrbr_reader-main (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "A.N.R-main (release mode)",
+            "name": "com_joaojsrbr_reader-main (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
