@@ -16,13 +16,13 @@
 Clone o projeto
 
 ```bash
-git clone https://github.com/joaojsrbr/Reader.git
+git clone https://github.com/joaojsrbr/JReader.git
 ```
 
 Vá para o diretório do projeto
 
 ```bash
-cd Reader
+cd JReader
 ```
 
 Instale as dependências
