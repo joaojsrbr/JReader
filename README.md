@@ -11,10 +11,6 @@
 - Capítulos lidos
 - Leitura offline - Download de capítulos
 
-## Bug
-
-- Novel
-
 ## Instalação
 
 Clone o projeto
