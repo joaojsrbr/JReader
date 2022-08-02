@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_final_fields
 
-import 'package:A.N.R/app/constants/providers.dart';
+import 'package:A.N.R/app/core/constants/providers.dart';
 import 'package:A.N.R/app/models/book_item.dart';
+import 'package:A.N.R/app/services/scans/random_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -77,7 +78,7 @@ class SearchController extends GetxController {
 
       results.addAll(await _search(NeoxServices.search(value)));
 
-      // results.addAll(await _search(RandomServices.search(value)));
+      results.addAll(await _search(RandomServices.search(value)));
 
       results.addAll(await _search(MarkServices.search(value)));
 

@@ -1,17 +1,19 @@
-import 'package:A.N.R/app/core/themes/colors.dart';
-import 'package:A.N.R/app/routes/routes.dart';
-import 'package:A.N.R/app/store/favorites_store.dart';
-import 'package:A.N.R/app/store/historic_store.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:A.N.R/app/initialBinding/Initial_binding.dart';
+
+import 'package:A.N.R/app/core/themes/theme.dart';
+import 'package:A.N.R/app/routes/routes.dart';
+import 'package:A.N.R/app/store/favorites_store.dart';
+import 'package:A.N.R/app/store/historic_store.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +36,13 @@ class MyApp extends StatelessWidget {
             // lightColorScheme = lightDynamic.harmonized();
 
             darkColorScheme = darkDynamic.harmonized();
+            // darkColorScheme = CustomTheme.colorScheme;
           } else {
             // lightColorScheme = RootCor().lightColorScheme;
-            darkColorScheme = ColorScheme.fromSeed(
-              brightness: Brightness.dark,
-              seedColor: CustomColors.primary,
-              background: CustomColors.background,
-            );
+            darkColorScheme = CustomTheme.colorScheme;
           }
           return GetMaterialApp(
+            defaultTransition: Transition.fadeIn,
             title: 'A.N.R',
             darkTheme: ThemeData(
               fontFamily: 'Poppins',
@@ -55,11 +55,9 @@ class MyApp extends StatelessWidget {
               colorScheme: darkColorScheme,
             ),
             themeMode: ThemeMode.dark,
-            // darkTheme: CustomTheme.dark,
             debugShowCheckedModeBanner: false,
             initialRoute: isAuthenticated ? RoutesName.HOME : RoutesName.LOGIN,
             getPages: AppPages.pages,
-            initialBinding: InitialBinding(),
           );
         },
       ),

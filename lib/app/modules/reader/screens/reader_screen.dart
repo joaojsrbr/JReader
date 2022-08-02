@@ -153,12 +153,22 @@ class _ReaderScreenState extends State<ReaderScreen>
               },
               onPageFinished: (_) => _getContent(),
               javascriptChannels: {
-                JavascriptChannel(name: 'onLoad', onMessageReceived: _onLoad),
-                JavascriptChannel(name: 'onNext', onMessageReceived: _onNext),
                 JavascriptChannel(
-                    name: 'onFinished', onMessageReceived: _onFinished),
+                  name: 'onLoad',
+                  onMessageReceived: _onLoad,
+                ),
                 JavascriptChannel(
-                    name: 'onPosition', onMessageReceived: _onPosition),
+                  name: 'onNext',
+                  onMessageReceived: _onNext,
+                ),
+                JavascriptChannel(
+                  name: 'onFinished',
+                  onMessageReceived: _onFinished,
+                ),
+                JavascriptChannel(
+                  name: 'onPosition',
+                  onMessageReceived: _onPosition,
+                ),
               },
             ),
             const SizedBox(

@@ -1,28 +1,35 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:A.N.R/app/constants/ports.dart';
-import 'package:A.N.R/app/core/themes/colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+
+import 'package:A.N.R/app/core/constants/ports.dart';
 import 'package:A.N.R/app/core/utils/start_download.dart';
 import 'package:A.N.R/app/databases/downloads_db.dart';
 import 'package:A.N.R/app/models/book.dart';
 import 'package:A.N.R/app/models/book_item.dart';
 import 'package:A.N.R/app/models/chapter.dart';
 import 'package:A.N.R/app/models/download.dart';
-import 'package:A.N.R/app/routes/routes.dart';
 import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
+import 'package:A.N.R/app/routes/routes.dart';
 import 'package:A.N.R/app/services/book_info.dart';
 import 'package:A.N.R/app/services/favorites.dart';
 import 'package:A.N.R/app/store/favorites_store.dart';
 import 'package:A.N.R/app/store/historic_store.dart';
 import 'package:A.N.R/app/widgets/accent_subtitle.dart';
+import 'package:A.N.R/app/widgets/animated_fade_out_in.dart';
 import 'package:A.N.R/app/widgets/sinopse.dart';
 import 'package:A.N.R/app/widgets/to_info_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+
+// ignore: constant_identifier_names
+enum Sort { DESC, ASC }
 
 class BookScreen extends StatefulWidget {
   const BookScreen({Key? key}) : super(key: key);
@@ -43,15 +50,15 @@ class _BookScreenState extends State<BookScreen> {
   Map<String, Download> _download = {};
 
   bool _isLoading = true;
-  bool _pinnedTitle = false;
+  RxBool _pinnedTitle = false.obs;
 
   void _scrollListener() {
     final double imageHeight = (70 * MediaQuery.of(context).size.height) / 100;
 
-    if (!_pinnedTitle && _scroll.offset >= imageHeight) {
-      setState(() => _pinnedTitle = true);
-    } else if (_pinnedTitle && _scroll.offset < imageHeight) {
-      setState(() => _pinnedTitle = false);
+    if (!_pinnedTitle.value && _scroll.offset >= imageHeight) {
+      _pinnedTitle.value = true;
+    } else if (_pinnedTitle.value && _scroll.offset < imageHeight) {
+      _pinnedTitle.value = false;
     }
   }
 
@@ -179,18 +186,73 @@ class _BookScreenState extends State<BookScreen> {
 
   @override
   void initState() {
+    sort = Sort.ASC.obs;
     _scroll.addListener(_scrollListener);
     super.initState();
   }
 
   @override
   void dispose() {
-    _scroll.removeListener(_scrollListener);
-    _scroll.dispose();
+    _scroll
+      ..removeListener(_scrollListener)
+      ..dispose();
+
     IsolateNameServer.removePortNameMapping(Ports.DOWNLOAD);
 
     super.dispose();
   }
+
+  bool onpress = true;
+
+  late Rx<Sort> sort;
+
+  void onPressed() {
+    // sort.value = value;
+    onpress = !onpress;
+
+    if (onpress) {
+      sort.value = Sort.ASC;
+    } else {
+      sort.value = Sort.DESC;
+    }
+  }
+
+  // Widget _buildSheet(BuildContext context) {
+  //   return Container(
+  //     height: 150,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Obx(
+  //           () => PopupMenuButton<Sort>(
+  //             shape: const ContinuousRectangleBorder(
+  //               borderRadius: BorderRadius.all(
+  //                 Radius.circular(20.0),
+  //               ),
+  //             ),
+  //             color: Theme.of(context).colorScheme.background,
+  //             // enabled: !controller.itemBookRepository.isLoading,
+
+  //             icon: const Icon(Icons.sort),
+  //             initialValue: sort.value,
+  //             onSelected: onSelected,
+  //             padding: const EdgeInsets.only(right: 12),
+  //             itemBuilder: (context) => <PopupMenuEntry<Sort>>[
+  //               const PopupMenuItem(
+  //                 value: Sort.ASC,
+  //                 child: Text('ASC'),
+  //               ),
+  //               const PopupMenuItem(
+  //                 value: Sort.DESC,
+  //                 child: Text('DESC'),
+  //               ),
+  //             ],
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -208,12 +270,139 @@ class _BookScreenState extends State<BookScreen> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverAppBar(
-            title: _pinnedTitle ? Text(_bookItem.name) : null,
+            title: Obx(
+              () => _pinnedTitle.value
+                  ? AnimatedFadeOutIn<String>(
+                      data: _bookItem.name,
+                      initialData: '',
+                      duration: const Duration(milliseconds: 250),
+                      builder: (value) => Text(
+                        value,
+                        key: ValueKey(value),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ),
             pinned: true,
+            elevation: 0,
             centerTitle: false,
-            expandedHeight: (74 * MediaQuery.of(context).size.height) / 100,
-            backgroundColor: CustomColors.background,
-            actions: [_favorites.button],
+            expandedHeight: (71 * MediaQuery.of(context).size.height) / 100,
+            actions: [
+              // IconButton(
+              //   onPressed: () => showModalBottomSheet(
+              //     context: context,
+              //     builder: (context) => _buildSheet(context),
+              //   ),
+              //   icon: const Icon(
+              //     Icons.filter_list,
+              //   ),
+              // ),
+              IconButton(
+                onPressed: onPressed,
+                padding: const EdgeInsets.only(right: 12),
+                icon: ObxValue<Rx<Sort>>(
+                  (sort) => AnimatedFadeOutIn<Sort>(
+                    data: sort.value,
+                    // data: (sort.value == Sort.ASC)
+                    //     ? const Icon(Icons.arrow_drop_down_rounded)
+                    //     : const Icon(Icons.arrow_drop_up_rounded),
+                    builder: (data) {
+                      late Widget widget;
+                      switch (data) {
+                        case Sort.DESC:
+                          widget = const Icon(
+                            Icons.arrow_drop_up_rounded,
+                            size: 50,
+                          );
+                          break;
+                        case Sort.ASC:
+                          widget = const Icon(
+                            Icons.arrow_drop_down_rounded,
+                            size: 50,
+                          );
+                          break;
+                      }
+                      return widget;
+                    },
+                  ),
+                  sort,
+                  key: ObjectKey('#icon${sort.value}'),
+                ),
+              ),
+              // Obx(
+              //   () => PopupMenuButton<Sort>(
+              //     shape: const ContinuousRectangleBorder(
+              //       borderRadius: BorderRadius.all(
+              //         Radius.circular(20.0),
+              //       ),
+              //     ),
+              //     color: Theme.of(context).colorScheme.background,
+              //     // enabled: !controller.itemBookRepository.isLoading,
+
+              //     // icon: const Icon(Icons.menu),
+              //     icon: ObxValue<Rx<Sort>>(
+              //       (sort) => AnimatedFadeOutIn<Sort>(
+              //         data: sort.value,
+              //         // data: (sort.value == Sort.ASC)
+              //         //     ? const Icon(Icons.arrow_drop_down_rounded)
+              //         //     : const Icon(Icons.arrow_drop_up_rounded),
+              //         builder: (data) {
+              //           late Widget widget;
+              //           switch (data) {
+              //             case Sort.DESC:
+              //               widget = const Icon(
+              //                 Icons.arrow_drop_up_rounded,
+              //                 size: 50,
+              //               );
+              //               break;
+              //             case Sort.ASC:
+              //               widget = const Icon(
+              //                 Icons.arrow_drop_down_rounded,
+              //                 size: 50,
+              //               );
+
+              //               break;
+              //           }
+              //           return widget;
+              //         },
+              //       ),
+              //       sort,
+              //       key: ObjectKey('#icon${sort.value}'),
+              //     ),
+              //     key: ObjectKey('#PopupMenuButton${sort.value}'),
+              //     initialValue: sort.value,
+              //     onSelected: onSelected,
+              //     padding: const EdgeInsets.only(right: 12),
+              //     itemBuilder: (context) => <PopupMenuEntry<Sort>>[
+              //       PopupMenuItem(
+              //         value: Sort.ASC,
+              //         child: Row(
+              //           children: const [
+              //             Icon(
+              //               Icons.arrow_drop_down_rounded,
+              //               size: 50,
+              //             ),
+              //             Text('ASC'),
+              //           ],
+              //         ),
+              //       ),
+              //       PopupMenuItem(
+              //         value: Sort.DESC,
+              //         child: Row(
+              //           children: const [
+              //             Icon(
+              //               Icons.arrow_drop_up_rounded,
+              //               size: 50,
+              //             ),
+              //             Text('DESC'),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              _favorites.button,
+            ],
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.pin,
               background: Stack(
@@ -265,13 +454,42 @@ class _BookScreenState extends State<BookScreen> {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Text(
-                            _bookItem.name,
-                            style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w600,
+                          child: SelectableText.rich(
+                            onSelectionChanged: (selection, cause) {
+                              if (cause.reactive.value ==
+                                  SelectionChangedCause.toolbar) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Copiado para a área de transferência"),
+                                    backgroundColor: Colors.white,
+                                  ),
+                                );
+                              }
+                            },
+                            toolbarOptions: const ToolbarOptions(
+                              copy: true,
+                              selectAll: true,
+                            ),
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: _bookItem.name,
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
+                          // child: Text(
+                          //   _bookItem.name,
+                          //   style: const TextStyle(
+                          //     fontSize: 22,
+                          //     fontWeight: FontWeight.w600,
+                          //   ),
+                          // ),
                         ),
                         AccentSubtitleWithDots(
                           [
@@ -340,68 +558,105 @@ class _BookScreenState extends State<BookScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final Chapter chapter = _chapters[index];
-                final Download? downloadChapter = _download[chapter.id];
+                return Obx(
+                  () {
+                    // final Chapter chapter = (sort.value == Sort.DESC)
+                    //     ? _chapters.reversed.toList()[index]
+                    //     : _chapters[index];
 
-                return ListTile(
-                  title: Text(chapter.name),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 32),
-                  trailing: Observer(builder: ((context) {
-                    final book = store.historic[_bookItem.id];
-                    final bool read = book?.containsKey(chapter.id) ?? false;
+                    late Chapter chapter;
 
-                    final List<Widget> children = [];
+                    switch (sort.value) {
+                      case Sort.DESC:
+                        chapter = _chapters[index];
+                        break;
+                      case Sort.ASC:
+                        chapter = _chapters.reversed.toList()[index];
 
-                    if (read) children.add(const Icon(Icons.visibility));
-                    if (downloadChapter?.finished == true) {
-                      children.add(const SizedBox(width: 16));
-                      children.add(const Icon(Icons.download_done_rounded));
-                    } else if (downloadChapter != null) {
-                      children.add(const SizedBox(width: 16));
-                      children.add(const Icon(Icons.downloading_rounded));
+                        break;
                     }
 
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: children,
-                    );
-                  })),
-                  onTap: () async {
-                    await Navigator.of(context).pushNamed(
-                      RoutesName.READER,
-                      arguments: ReaderArguments(
-                        book: _bookItem,
-                        chapters: _chapters,
-                        index: index,
-                        position: store.historic[_bookItem.id]?[chapter.id],
+                    final Download? downloadChapter = _download[chapter.id];
+
+                    return ListTile(
+                      title: Text(chapter.name),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 32),
+                      trailing: Observer(
+                        builder: ((context) {
+                          final book = store.historic[_bookItem.id];
+                          final bool read =
+                              book?.containsKey(chapter.id) ?? false;
+
+                          final List<Widget> children = [];
+
+                          if (read) {
+                            children.add(
+                              const Icon(Icons.visibility),
+                            );
+                          }
+                          if (downloadChapter?.finished == true) {
+                            children.add(
+                              const SizedBox(width: 16),
+                            );
+                            children.add(
+                              const Icon(Icons.download_done_rounded),
+                            );
+                          } else if (downloadChapter != null) {
+                            children.add(
+                              const SizedBox(width: 16),
+                            );
+                            children.add(
+                              const Icon(Icons.downloading_rounded),
+                            );
+                          }
+
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: children,
+                          );
+                        }),
                       ),
-                    );
-
-                    _getDownloadItem();
-                  },
-                  onLongPress: () async {
-                    final downloaded = downloadChapter?.finished == true;
-                    final downloading = downloadChapter != null;
-
-                    if (downloaded || downloading) return;
-
-                    final String? action = await showModalBottomSheet<String>(
-                      context: context,
-                      builder: (context) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: const Text('Baixar capítulo'),
-                              leading: const Icon(Icons.download),
-                              onTap: () => Navigator.of(context).pop('down'),
-                            ),
-                          ],
+                      onTap: () async {
+                        await Navigator.of(context).pushNamed(
+                          RoutesName.READER,
+                          arguments: ReaderArguments(
+                            book: _bookItem,
+                            chapters: _chapters,
+                            index: index,
+                            position: store.historic[_bookItem.id]?[chapter.id],
+                          ),
                         );
+
+                        _getDownloadItem();
+                      },
+                      onLongPress: () async {
+                        final downloaded = downloadChapter?.finished == true;
+                        final downloading = downloadChapter != null;
+
+                        if (downloaded || downloading) return;
+
+                        final String? action =
+                            await showModalBottomSheet<String>(
+                          context: context,
+                          builder: (context) {
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  title: const Text('Baixar capítulo'),
+                                  leading: const Icon(Icons.download),
+                                  onTap: () =>
+                                      Navigator.of(context).pop('down'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (action == 'down') _downloadOne(chapter);
                       },
                     );
-
-                    if (action == 'down') _downloadOne(chapter);
                   },
                 );
               },

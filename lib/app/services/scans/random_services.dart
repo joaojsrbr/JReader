@@ -8,7 +8,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class RandomServices {
-  static String get baseURL => 'https://randomscan.online';
+  static String get baseURL => 'https://randomscans.com/';
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -44,7 +44,7 @@ class RandomServices {
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
-        final String imageURL = (img.attributes['src'] ?? '').trim();
+        final String imageURL = (img.attributes['data-src'] ?? '').trim();
 
         final String? srcset = img.attributes['srcset'];
         final List<String>? sources = srcset == null
@@ -96,7 +96,7 @@ class RandomServices {
 
       final String url = (a.attributes['href'] ?? '').trim();
       final String name = a.text.trim();
-      final String imageURL = (img.attributes['src'] ?? '').trim();
+      final String imageURL = (img.attributes['data-src'] ?? '').trim();
 
       final String? srcset = img.attributes['srcset'];
       final String? imageURL2 = srcset == null
@@ -205,7 +205,7 @@ class RandomServices {
         document.querySelectorAll('.reading-content img');
 
     for (Element element in elements) {
-      final String url = (element.attributes['src'] ?? '').trim();
+      final String url = (element.attributes['data-src'] ?? '').trim();
       if (url.isNotEmpty) content.add(url);
     }
 

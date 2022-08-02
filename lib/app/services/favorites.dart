@@ -1,6 +1,7 @@
 import 'package:A.N.R/app/models/book_item.dart';
 import 'package:A.N.R/app/services/scans/manga_host_services.dart';
 import 'package:A.N.R/app/store/favorites_store.dart';
+import 'package:A.N.R/app/widgets/animated_fade_out_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -87,15 +88,33 @@ class Favorites {
   }
 
   Widget get button {
-    return Observer(builder: (_) {
-      return IconButton(
-        onPressed: toggleFavorite,
-        icon: Icon(
-          isFavorite ? Icons.favorite : Icons.favorite_outline,
-          color: isFavorite ? Colors.red : null,
-        ),
-      );
-    });
+    return Observer(
+      builder: (_) {
+        return AnimatedFadeOutIn<IconData>(
+          data: isFavorite
+              ? Icons.favorite_rounded
+              : Icons.favorite_outline_rounded,
+          builder: (data) {
+            return IconButton(
+              onPressed: toggleFavorite,
+              icon: Icon(
+                data,
+                color: isFavorite ? Colors.red : null,
+              ),
+            );
+          },
+        );
+        // return IconButton(
+        //   onPressed: toggleFavorite,
+        //   icon: Icon(
+        //     isFavorite
+        //         ? Icons.favorite_rounded
+        //         : Icons.favorite_outline_rounded,
+        //     color: isFavorite ? Colors.red : null,
+        //   ),
+        // );
+      },
+    );
   }
 
   static void _snackError(BuildContext context) {

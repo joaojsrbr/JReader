@@ -9,10 +9,41 @@ import 'package:A.N.R/app/modules/home/screens/home_screen.dart';
 import 'package:A.N.R/app/modules/login/bindings/login_binding.dart';
 import 'package:A.N.R/app/modules/login/screens/login_screen.dart';
 import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
+// import 'package:A.N.R/app/modules/reader/screens/reader_screen.dart';
 import 'package:A.N.R/app/modules/search/bindings/search_binding.dart';
 import 'package:A.N.R/app/modules/search/screens/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+class CustomPageRoute<T> extends PageRoute<T> {
+  final Widget child;
+
+  CustomPageRoute(this.child);
+
+  @override
+  Color get barrierColor => Colors.black;
+
+  @override
+  String get barrierLabel => '';
+
+  @override
+  bool get maintainState => true;
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 600);
+
+  @override
+  Widget buildPage(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
+    );
+  }
+}
 
 class RoutesName {
   static const LOGIN = '/login';
@@ -29,54 +60,43 @@ abstract class AppPages {
   static final pages = [
     GetPage(
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
       name: RoutesName.LOGIN,
       binding: LoginBinding(),
       page: () => const LoginScreen(),
     ),
     GetPage(
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
       name: RoutesName.HOME,
       binding: HomeBinding(),
-      page: () => HomeScreen(),
+      page: () => const HomeScreen(),
     ),
     GetPage(
       name: RoutesName.SEARCH,
       page: () => const SearchScreen(),
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
       curve: Curves.linear,
       binding: SearchBinding(),
     ),
     GetPage(
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
       name: RoutesName.BOOK,
       page: () => const BookScreen(),
     ),
     GetPage(
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
+
       name: RoutesName.READER,
+      // page: () => const ReaderScreen(),
       page: () => const ReaderScreen(),
+      // binding: ReaderBinding(),
     ),
     GetPage(
       name: RoutesName.FAVORITES,
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
       page: () => const FavoritesScreen(),
       binding: FavoritesBinding(),
-      transition: Transition.native,
     ),
     GetPage(
       curve: Curves.linear,
-      transitionDuration: const Duration(milliseconds: 600),
-      transition: Transition.native,
       name: RoutesName.ABOUT,
       page: () => const AboutScreen(),
     ),

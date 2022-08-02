@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Chapter {
   final String id;
   final String url;
@@ -20,5 +21,25 @@ class Chapter {
       'name': name,
       'position': position,
     };
+  }
+
+  @override
+  bool operator ==(covariant Chapter other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.url == url &&
+        other.name == name &&
+        other.bookId == bookId &&
+        other.position == position;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+        url.hashCode ^
+        name.hashCode ^
+        bookId.hashCode ^
+        position.hashCode;
   }
 }

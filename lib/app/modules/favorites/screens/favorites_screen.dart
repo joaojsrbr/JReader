@@ -20,7 +20,7 @@ class FavoritesScreen extends GetView<FavoritesController> {
     return GetBuilder<FavoritesController>(
       id: #fav,
       didChangeDependencies: (state) {
-        Favorites.getAll(context);
+        // Favorites.getAll(context);
         // Historic.getAll(context);
       },
       builder: (controller) => Scaffold(

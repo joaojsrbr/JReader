@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:workmanager/workmanager.dart';
 
-import 'package:A.N.R/app/constants/ports.dart';
+import 'package:A.N.R/app/core/constants/ports.dart';
 import 'package:A.N.R/app/core/utils/file_mime_by_url.dart';
 import 'package:A.N.R/app/core/utils/folders.dart';
 import 'package:A.N.R/app/databases/downloads_db.dart';
-import 'package:A.N.R/firebase_options.dart';
 import 'package:A.N.R/app/models/download.dart';
 import 'package:A.N.R/app/my_app.dart';
 import 'package:A.N.R/app/services/book_content.dart';
+import 'package:A.N.R/firebase_options.dart';
 
 import 'firebase_options.dart';
 
@@ -113,5 +113,8 @@ void main() async {
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseDatabase.instance.setPersistenceEnabled(true);
-  runApp(const MyApp());
+  runApp(
+    // GetPlatform.isWeb ? const MyWeb() : const MyApp(),
+    const MyApp(),
+  );
 }

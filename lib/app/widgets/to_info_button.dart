@@ -16,12 +16,15 @@ class ToInfoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: onPressed,
+      onPressed: isLoading ? null : onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(text, style: const TextStyle(color: CustomColors.primary)),
+          Text(
+            text,
+            style: const TextStyle(color: CustomColors.primary),
+          ),
           const SizedBox(width: 8),
           SizedBox(
             child: isLoading

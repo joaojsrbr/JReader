@@ -20,6 +20,19 @@ class NeoxServices {
       subKey: subKey,
       forceRefresh: forceRefresh ?? true,
     );
+    // options: Options(headers: headers));
+  }
+
+  static Map<String, String> get headers {
+    return {
+      'Origin': 'https://neoxscans.net/',
+      'Referer': 'https://neoxscans.net/',
+      'accept':
+          'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+      'upgrade-insecure-requests': '1',
+      'user-agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36',
+    };
   }
 
   static Future<List<BookItem>> get lastAdded async {
