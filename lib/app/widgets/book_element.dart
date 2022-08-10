@@ -1,7 +1,8 @@
 import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class BookElement extends StatelessWidget {
@@ -32,12 +33,7 @@ class BookElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final customCacheManager = CacheManager(
-      Config(
-        'Image-Manga-Anime',
-        stalePeriod: const Duration(minutes: 30),
-      ),
-    );
+    final customCacheManager = Get.find<HomeController>().customCacheManager;
     return Container(
       margin: margin,
       child: ClipRRect(

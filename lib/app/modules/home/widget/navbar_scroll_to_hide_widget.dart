@@ -1,4 +1,3 @@
-import 'package:com_joaojsrbr_reader/app/modules/favorites/controlers/favorites_controller.dart';
 import 'package:com_joaojsrbr_reader/app/modules/home/widget/navbar_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,24 +7,21 @@ class ScrollToHideWidgetState
   final Widget child;
   final Duration duration;
   final double height;
-  final ScrollController scrollController;
+  final List<ScrollController> listcrollControllers;
 
   const ScrollToHideWidgetState(
-      {Key? key,
+      {super.key,
       required this.child,
-      required this.scrollController,
+      required this.listcrollControllers,
       this.duration = const Duration(milliseconds: 150),
-      this.height = kBottomNavigationBarHeight})
-      : super(key: key);
+      this.height = kBottomNavigationBarHeight});
 
   @override
   Widget build(BuildContext context) {
-    final favoritecontroller =
-        Get.put<FavoritesController>(FavoritesController()).scrollController;
-    Get.put(ScrollToHideWidgetStateController(
-        scrollController: scrollController,
-        favoritecontroller: favoritecontroller));
-
+    Get.put(
+      ScrollToHideWidgetStateController(
+          listcrollControllers: listcrollControllers),
+    );
     return Obx(
       () => AnimatedContainer(
         duration: duration,

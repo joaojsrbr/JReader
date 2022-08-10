@@ -1,5 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
+import 'package:com_joaojsrbr_reader/app/modules/favorites/controlers/favorites_controller.dart';
+import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_more_list/loading_more_list.dart';
@@ -11,7 +13,6 @@ import 'package:com_joaojsrbr_reader/app/modules/home/widget/delegate_page_heade
 import 'package:com_joaojsrbr_reader/app/modules/home/widget/indicator_builder/indicator_builder.dart';
 import 'package:com_joaojsrbr_reader/app/modules/home/widget/navbar_scroll_to_hide_widget.dart';
 import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
-import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
 import 'package:com_joaojsrbr_reader/app/services/historic.dart';
 import 'package:com_joaojsrbr_reader/app/services/session.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
@@ -51,7 +52,10 @@ class HomeScreen extends GetView<HomeController> {
         ),
       ),
       bottomNavigationBar: ScrollToHideWidgetState(
-        scrollController: controller.scrollController,
+        listcrollControllers: [
+          controller.scrollController,
+          Get.find<FavoritesController>().scrollController
+        ],
         child: NavigationBarTheme(
           data: NavigationBarThemeData(
             labelTextStyle: MaterialStateProperty.all(

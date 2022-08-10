@@ -12,6 +12,7 @@ import 'package:com_joaojsrbr_reader/app/repository/prisma_repository.dart';
 import 'package:com_joaojsrbr_reader/app/repository/random_repository.dart';
 import 'package:com_joaojsrbr_reader/app/repository/reaper_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:loading_more_list/loading_more_list.dart';
@@ -49,6 +50,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   Rx<Scans> scans = Scans.NEOX.obs;
 
   RxString title = 'Neox - Últimos adicionados'.obs;
+
+  late CacheManager customCacheManager;
 
   RxBool _isLoading = true.obs;
 
@@ -145,6 +148,12 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   @override
   void onInit() {
+    customCacheManager = CacheManager(
+      Config(
+        'Manga-Anime',
+        stalePeriod: const Duration(minutes: 30),
+      ),
+    );
     _handleStartDownload();
     itemBookRepository = Rx(NeoxRepository());
     FlutterNativeSplash.remove();
@@ -189,6 +198,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     itemBookRepository.value.dispose();
     scrollController.dispose();
     tabController.dispose();
+    // customCacheManager.dispose();
     super.onClose();
   }
 }

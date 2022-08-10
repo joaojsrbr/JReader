@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -8,7 +9,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class ReaperServices {
-  static String get baseURL => 'https://reaperscans.com.br';
+  static String get baseURL => reaperURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),

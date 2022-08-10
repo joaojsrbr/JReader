@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
@@ -8,7 +9,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class CronosServices {
-  static String get baseURL => 'https://cronosscan.net';
+  static String get baseURL => cronosURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
