@@ -2,7 +2,7 @@ import 'package:com_joaojsrbr_reader/app/modules/login/controlers/login_controll
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends GetView<LoginController> {
@@ -20,7 +20,7 @@ class LoginScreen extends GetView<LoginController> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset('assets/images/logo.svg', width: 112),
+              // Image.asset('assets/images/logo3.png', width: 112),
               const SizedBox(height: 20),
               Text(
                 'Bem-vindo!',

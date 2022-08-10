@@ -3,24 +3,31 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 
 class ScrollToHideWidgetStateController extends GetxController {
-  final ScrollController scrollController;
-  final ScrollController favoritecontroller;
-  ScrollToHideWidgetStateController(
-      {required this.scrollController, required this.favoritecontroller});
-  // ScrollToHideWidgetStateController({required this.controller});
+  // final ScrollController scrollController;
+  // final ScrollController favoritecontroller;
+  ScrollToHideWidgetStateController({required this.listcrollControllers});
+
+  final List<ScrollController> listcrollControllers;
 
   RxBool isVisible = true.obs;
+
   @override
   void onInit() {
-    scrollController.addListener(listen);
-    favoritecontroller.addListener(listen2);
+    for (var scroll in listcrollControllers) {
+      scroll.addListener(() => listen(scroll));
+    }
+    // scrollController.addListener(listen);
+    // favoritecontroller.addListener(listen2);
     super.onInit();
   }
 
   @override
   void dispose() {
-    scrollController.removeListener(listen);
-    favoritecontroller.removeListener(listen2);
+    for (var scroll in listcrollControllers) {
+      scroll.removeListener(() => listen(scroll));
+    }
+    // scrollController.removeListener(listen);
+    // favoritecontroller.removeListener(listen2);
     super.dispose();
   }
 
@@ -32,17 +39,8 @@ class ScrollToHideWidgetStateController extends GetxController {
   //   }
   // }
 
-  void listen() {
+  void listen(ScrollController scrollController) {
     final direction = scrollController.position.userScrollDirection;
-    if (direction == ScrollDirection.forward) {
-      show();
-    } else if (direction == ScrollDirection.reverse) {
-      hide();
-    }
-  }
-
-  void listen2() {
-    final direction = favoritecontroller.position.userScrollDirection;
     if (direction == ScrollDirection.forward) {
       show();
     } else if (direction == ScrollDirection.reverse) {

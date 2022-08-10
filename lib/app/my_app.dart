@@ -24,8 +24,12 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        Provider(create: (_) => FavoritesStore()),
-        Provider(create: (_) => HistoricStore()),
+        Provider(
+          create: (_) => FavoritesStore(),
+        ),
+        Provider(
+          create: (_) => HistoricStore(),
+        ),
       ],
       child: DynamicColorBuilder(
         builder: (lightDynamic, darkDynamic) {

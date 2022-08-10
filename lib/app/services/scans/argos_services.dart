@@ -2,6 +2,7 @@
 
 import 'dart:ffi';
 
+import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_query.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_variables.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
@@ -19,7 +20,7 @@ import 'package:graphql/client.dart';
 import 'package:http/http.dart' as http;
 
 class ArgosService {
-  static HttpLink get baseURL => HttpLink('https://argosscan.com/graphql');
+  static HttpLink get baseApi => HttpLink(argosAPI);
 
   static Future<List<BookItem>> get lastAdded async {
     final List<BookItem> tempList = [];
@@ -29,7 +30,7 @@ class ArgosService {
         variables: variablesPopular(),
       );
 
-      final QueryResult result = await _client(baseURL).query(options);
+      final QueryResult result = await _client(baseApi).query(options);
 
       for (var e in Data.fromJson(result.data!).getProjects!.projects!) {
         // String img = 'https://argosscan.com/img/${e.id}/${e.cover}';
@@ -93,7 +94,7 @@ class ArgosService {
         variables: variablesSearch(value),
       );
 
-      final QueryResult result = await _client(baseURL).query(options);
+      final QueryResult result = await _client(baseApi).query(options);
 
       for (var e in Data.fromJson(result.data!).getProjects!.projects!) {
         items.add(
@@ -126,7 +127,7 @@ class ArgosService {
       variables: variablespage(url.split('/').last),
     );
 
-    final QueryResult result = await _client(baseURL).query(options);
+    final QueryResult result = await _client(baseApi).query(options);
     final image =
         result.data!['getChapters']['chapters'][0]['images'] as List<Object?>;
     final id =
@@ -152,7 +153,7 @@ class ArgosService {
         variables: variablesDbyId(int.parse(url.split('/').last)),
       );
 
-      final QueryResult result = await _client(baseURL).query(options);
+      final QueryResult result = await _client(baseApi).query(options);
 
       final Data repositories = Data.fromJson(result.data!);
 

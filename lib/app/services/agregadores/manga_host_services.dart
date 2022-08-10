@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -9,7 +10,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class MangaHostServices {
-  static String get baseURL => 'https://mangahosted.com/';
+  static String get baseURL => mangaHostURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -123,8 +124,8 @@ class MangaHostServices {
 
   static Map<String, String> get headers {
     return {
-      'Origin': 'https://mangahosted.com/',
-      'Referer': 'https://mangahosted.com/',
+      'Origin': 'https://mangahost4.com',
+      'Referer': 'https://mangahost4.com',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'upgrade-insecure-requests': '1',

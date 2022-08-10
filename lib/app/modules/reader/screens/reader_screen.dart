@@ -1,21 +1,26 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:com_joaojsrbr_reader/app/core/constants/sort.dart';
 import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/html_template.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/reader_js.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
+import 'package:com_joaojsrbr_reader/app/modules/book/controlers/book_screen_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/controlers/reader_controller.dart';
 import 'package:com_joaojsrbr_reader/app/services/book_content.dart';
 import 'package:com_joaojsrbr_reader/app/services/historic.dart';
 import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/books_path.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ReaderScreen extends StatefulWidget {
-  const ReaderScreen({Key? key}) : super(key: key);
+  const ReaderScreen({super.key});
 
   @override
   State<ReaderScreen> createState() => _ReaderScreenState();
@@ -33,6 +38,7 @@ class _ReaderScreenState extends State<ReaderScreen>
   late BookItem _book;
   late List<Chapter> _chapters;
   late Historic _historic;
+  late int _totalChapters;
   @override
   void initState() {
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
@@ -67,7 +73,19 @@ class _ReaderScreenState extends State<ReaderScreen>
 
     await _js!.insertContent(content, _index, chapter.name);
 
-    _finished = _index == 0;
+    if (kDebugMode) {
+      print(_index);
+    }
+    switch (_sort) {
+      case Sort.DESC:
+        _finished = _index == 0;
+        break;
+      case Sort.ASC:
+        _finished = _index == _totalChapters - 1;
+        break;
+    }
+
+    // _finished = _index == _totalChapters;
     if (_finished) await _js!.finishedChapters();
 
     _getNextCap = false;
@@ -85,11 +103,21 @@ class _ReaderScreenState extends State<ReaderScreen>
     await _js!.removeLoading();
   }
 
+  late Sort _sort;
+
   void _onNext(JavascriptMessage message) {
     if (_finished || _getNextCap) return;
     _toggleHistoric(_position);
 
-    _index = _index - 1;
+    switch (_sort) {
+      case Sort.DESC:
+        _index = _index - 1;
+        break;
+      case Sort.ASC:
+        _index = _index + 1;
+        break;
+    }
+    // _index = _index - 1;
     _getContent();
   }
 
@@ -109,6 +137,8 @@ class _ReaderScreenState extends State<ReaderScreen>
     _chapters = args.chapters;
     _historic = Historic(bookID: _book.id, context: context, store: store);
     _initPosition = args.position;
+    _sort = Get.find<BookScreenController>().sort.value;
+    _totalChapters = args.totalChapters;
 
     super.didChangeDependencies();
   }
@@ -211,18 +241,4 @@ class _ReaderScreenState extends State<ReaderScreen>
 
     return continueByHistoric ?? false;
   }
-}
-
-class ReaderArguments {
-  final int index;
-  final BookItem book;
-  final List<Chapter> chapters;
-  final double? position;
-
-  const ReaderArguments({
-    required this.index,
-    required this.book,
-    required this.chapters,
-    this.position,
-  });
 }
