@@ -1,6 +1,5 @@
 # JReader
 
-> Aplicativo não testado em sistemas IOS.
 
 ## Funcionalidades
 

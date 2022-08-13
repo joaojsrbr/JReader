@@ -40,7 +40,7 @@ class BookScreenController extends GetxController {
     _isLoading.value = value;
   }
 
-  set setbook(Book value) {
+  set setbook(Book? value) {
     _book = value;
   }
 

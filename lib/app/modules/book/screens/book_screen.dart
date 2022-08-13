@@ -7,6 +7,7 @@ import 'package:com_joaojsrbr_reader/app/core/constants/sort.dart';
 import 'package:com_joaojsrbr_reader/app/modules/book/controlers/book_screen_controller.dart';
 import 'package:com_joaojsrbr_reader/app/modules/reader/controlers/reader_controller.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/historic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get/get.dart';
@@ -36,6 +37,7 @@ class BookScreen extends GetView<BookScreenController> {
     return GetBuilder<BookScreenController>(
       autoRemove: false,
       didChangeDependencies: (state) {
+        Historic.getAll(context);
         final FavoritesStore store = Provider.of<FavoritesStore>(context);
         // state.controller?.bookItem =
         //     ModalRoute.of(context)!.settings.arguments as BookItem;
@@ -55,7 +57,7 @@ class BookScreen extends GetView<BookScreenController> {
             .then(
           (value) {
             if (!state.mounted) return;
-            state.controller?.setbook = value!;
+            state.controller?.setbook = value;
             state.controller?.setchapters = value?.chapters ?? [];
             state.controller?.setisLoading = false;
           },
@@ -144,7 +146,8 @@ class BookScreen extends GetView<BookScreenController> {
                       child: CachedNetworkImage(
                         cacheManager: controller.customCacheManager,
                         filterQuality: FilterQuality.high,
-                        httpHeaders: controller.bookItem.imageURL2!
+                        httpHeaders: (controller.bookItem.imageURL2 ??
+                                        controller.bookItem.imageURL)
                                     .contains('img-host.filestatic3.xyz') ||
                                 controller.bookItem.imageURL
                                     .contains('img-host.filestatic3.xyz')

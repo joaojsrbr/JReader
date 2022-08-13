@@ -30,28 +30,17 @@ enum Scans { NEOX, RANDOM, MARK, CRONOS, PRISMA, REAPER, MANGA_HOST, ARGOS }
 
 class HomeController extends GetxController with GetTickerProviderStateMixin {
   late ScrollController scrollController;
-  // RxList<BookItem> _neox = <BookItem>[].obs;
-  // RxList<BookItem> _mark = <BookItem>[].obs;
-  // RxList<BookItem> _random = <BookItem>[].obs;
-  // RxList<BookItem> _cronos = <BookItem>[].obs;
-  // RxList<BookItem> _prisma = <BookItem>[].obs;
-  // RxList<BookItem> _reaper = <BookItem>[].obs;
-  // RxList<BookItem> _mangaHost = <BookItem>[].obs;
-  // RxList<BookItem> _argos = <BookItem>[].obs;
-  // RxList<BookItem> get neox => _neox;
-  // RxList<BookItem> get mark => _mark;
-  // RxList<BookItem> get random => _random;
-  // RxList<BookItem> get cronos => _cronos;
-  // RxList<BookItem> get prisma => _prisma;
-  // RxList<BookItem> get reaper => _reaper;
-  // RxList<BookItem> get mangaHost => _mangaHost;
-  // RxList<BookItem> get argos => _argos;
 
   Rx<Scans> scans = Scans.NEOX.obs;
 
   RxString title = 'Neox - Últimos adicionados'.obs;
 
-  late CacheManager customCacheManager;
+  final CacheManager customCacheManager = CacheManager(
+    Config(
+      'Manga-Anime',
+      stalePeriod: const Duration(minutes: 30),
+    ),
+  );
 
   RxBool _isLoading = true.obs;
 
@@ -61,29 +50,31 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
 
   late Rx<LoadingMoreBase<BookItem>> itemBookRepository;
 
-  late TabController tabController;
+  late List<LoadingMoreBase<BookItem>> repositories;
 
-  // Future<void> _handleGetDatas() async {
-  //   final items = await Future.wait([
-  //     NeoxServices.lastAdded,
-  //     MarkServices.lastAdded,
-  //     RandomServices.lastAdded,
-  //     CronosServices.lastAdded,
-  //     PrismaServices.lastAdded,
-  //     ReaperServices.lastAdded,
-  //     MangaHostServices.lastAdded,
-  //     ArgosService.lastAdded,
-  //   ]);
-  //   _neox.value = items[0];
-  //   _mark.value = items[1];
-  //   _random.value = items[2];
-  //   _cronos.value = items[3];
-  //   _prisma.value = items[4];
-  //   _reaper.value = items[5];
-  //   _mangaHost.value = items[6];
-  //   _argos.value = items[7];
-  //   _isLoading.value = false;
-  // }
+  // late NeoxRepository neoxRepository;
+  // late MarkRepository markRepository;
+  // late RandomRepository randomRepository;
+  // late CronosRepository cronosRepository;
+  // late PrimaRepository primaRepository;
+  // late ReaperRepository reaperRepository;
+  // late MangaHostRepository mangaHostRepository;
+  // late ArgosRepository argosRepository;
+
+  void repositoriesInit() {
+    repositories = [
+      NeoxRepository(),
+      MarkRepository(),
+      RandomRepository(),
+      CronosRepository(),
+      PrimaRepository(),
+      ReaperRepository(),
+      MangaHostRepository(),
+      ArgosRepository(),
+    ];
+  }
+
+  late TabController tabController;
 
   Future<void> _handleStartDownload() async {
     final items = await DownloadsDB.db.notFinished;
@@ -105,56 +96,51 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     switch (scans.value) {
       case Scans.NEOX:
         title.value = 'Neox - Últimos adicionados';
-        itemBookRepository.value = NeoxRepository();
+        itemBookRepository.value = repositories[0];
 
         break;
       case Scans.MARK:
         title.value = 'Mark Scans - Últimos adicionados';
-        itemBookRepository.value = MarkRepository();
+        itemBookRepository.value = repositories[1];
 
         break;
       case Scans.RANDOM:
         title.value = 'Random Scan - Últimos adicionados';
-        itemBookRepository.value = RandomRepository();
+        itemBookRepository.value = repositories[2];
 
         break;
       case Scans.CRONOS:
         title.value = 'Cronos Scans - Últimos adicionados';
 
-        itemBookRepository.value = CronosRepository();
+        itemBookRepository.value = repositories[3];
         break;
       case Scans.PRISMA:
         title.value = 'Prisma Scans - Últimos adicionados';
 
-        itemBookRepository.value = PrimaRepository();
+        itemBookRepository.value = repositories[4];
         break;
       case Scans.REAPER:
         title.value = 'Reaper Scans - Últimos adicionados';
 
-        itemBookRepository.value = ReaperRepository();
+        itemBookRepository.value = repositories[5];
         break;
       case Scans.MANGA_HOST:
         title.value = 'Mangá Host - Últimos adicionados';
 
-        itemBookRepository.value = MangaHostRepository();
+        itemBookRepository.value = repositories[6];
         break;
       case Scans.ARGOS:
         title.value = 'Argos - Popular';
 
-        itemBookRepository.value = ArgosRepository();
+        itemBookRepository.value = repositories[7];
         break;
     }
   }
 
   @override
   void onInit() {
-    customCacheManager = CacheManager(
-      Config(
-        'Manga-Anime',
-        stalePeriod: const Duration(minutes: 30),
-      ),
-    );
     _handleStartDownload();
+    repositoriesInit();
     itemBookRepository = Rx(NeoxRepository());
     FlutterNativeSplash.remove();
     // _handleGetDatas();
