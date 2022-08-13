@@ -21,6 +21,7 @@ dependencies:
   firebase_auth: ^3.3.19
   google_sign_in: ^5.3.2
   flutter_signin_button: ^2.0.0
+  boxy: ^2.0.6+2
   shimmer: ^2.0.0
   cached_network_image: ^3.2.1
   provider: ^6.0.3
@@ -42,10 +43,9 @@ dependencies:
   graphql_flutter: ^5.1.0
   sliver_tools: ^0.2.7
   loading_more_list: 4.1.2
+  gesture_zoom_box: ^0.0.4
   select_button:
     path: lib/app/core/packages/select_button
-  webtoon_reader:
-    path: lib/app/core/packages/webtoon_reader
 
 dev_dependencies:
   flutter_test:

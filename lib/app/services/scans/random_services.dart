@@ -155,7 +155,7 @@ class RandomServices {
 
     // Sinopse
     final String sinopse =
-        document.querySelector('.summary__content')?.text.trim() ?? '';
+        document.querySelector('.manga-excerpt')?.text.trim() ?? '';
 
     // Chapters
     try {

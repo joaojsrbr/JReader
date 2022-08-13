@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -36,9 +38,9 @@ class _ReaderScreenState extends State<ReaderScreen>
 
   late int _index;
   late BookItem _book;
-  late List<Chapter> _chapters;
   late Historic _historic;
   late int _totalChapters;
+
   @override
   void initState() {
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
@@ -48,6 +50,8 @@ class _ReaderScreenState extends State<ReaderScreen>
 
   ReaderJS? _js;
 
+  RxList<Chapter> _chapters = RxList();
+  RxBool showappbar = RxBool(false);
   bool _finished = false;
   bool _isLoading = true;
   bool _getNextCap = true;
@@ -133,11 +137,11 @@ class _ReaderScreenState extends State<ReaderScreen>
     final args = ModalRoute.of(context)!.settings.arguments as ReaderArguments;
 
     _book = args.book;
-    _index = args.index;
-    _chapters = args.chapters;
+    _chapters.value = args.chapters;
     _historic = Historic(bookID: _book.id, context: context, store: store);
     _initPosition = args.position;
     _sort = Get.find<BookScreenController>().sort.value;
+    _index = args.index;
     _totalChapters = args.totalChapters;
 
     super.didChangeDependencies();
@@ -173,34 +177,81 @@ class _ReaderScreenState extends State<ReaderScreen>
       body: SafeArea(
         child: Stack(
           children: [
-            WebView(
-              initialUrl: _html,
-              javascriptMode: JavascriptMode.unrestricted,
-              backgroundColor: CustomColors.background,
-              gestureNavigationEnabled: true,
-              onWebViewCreated: (controller) {
-                _js = ReaderJS(controller);
-              },
-              onPageFinished: (_) => _getContent(),
-              javascriptChannels: {
-                JavascriptChannel(
-                  name: 'onLoad',
-                  onMessageReceived: _onLoad,
-                ),
-                JavascriptChannel(
-                  name: 'onNext',
-                  onMessageReceived: _onNext,
-                ),
-                JavascriptChannel(
-                  name: 'onFinished',
-                  onMessageReceived: _onFinished,
-                ),
-                JavascriptChannel(
-                  name: 'onPosition',
-                  onMessageReceived: _onPosition,
-                ),
-              },
+            Obx(
+              () => WebView(
+                key: ObjectKey(_chapters[_index].url),
+                initialUrl: _html,
+                javascriptMode: JavascriptMode.unrestricted,
+                backgroundColor: CustomColors.background,
+                gestureNavigationEnabled: true,
+                onWebViewCreated: (controller) {
+                  _js = ReaderJS(controller);
+                },
+                onPageFinished: (_) => _getContent(),
+                javascriptChannels: {
+                  JavascriptChannel(
+                    name: 'onLoad',
+                    onMessageReceived: _onLoad,
+                  ),
+                  JavascriptChannel(
+                    name: 'onNext',
+                    onMessageReceived: _onNext,
+                  ),
+                  JavascriptChannel(
+                    name: 'onFinished',
+                    onMessageReceived: _onFinished,
+                  ),
+                  JavascriptChannel(
+                    name: 'onPosition',
+                    onMessageReceived: _onPosition,
+                  ),
+                },
+              ),
             ),
+
+            // ClipRRect(
+            //   borderRadius: const BorderRadius.only(
+            //     bottomLeft: Radius.circular(25),
+            //     bottomRight: Radius.circular(25),
+            //   ),
+            //   child: Obx(
+            //     () => AnimatedContainer(
+            //       height: showappbar.value ? kToolbarHeight * 1.05 : 0,
+            //       width: double.infinity,
+            //       duration: const Duration(milliseconds: 450),
+            //       decoration: BoxDecoration(
+            //         color: Theme.of(context)
+            //             .colorScheme
+            //             .background
+            //             .withOpacity(0.55),
+            //       ),
+            //       curve: Curves.linear,
+            //       padding: const EdgeInsets.only(left: 5),
+            //       child: Row(
+            //         mainAxisSize: MainAxisSize.max,
+            //         children: [
+            //           Flexible(
+            //             flex: 1,
+            //             child: Container(
+            //               alignment: Alignment.centerLeft,
+            //               child: const BackButton(),
+            //             ),
+            //           ),
+            //           Flexible(
+            //             flex: 6,
+            //             child: Container(
+            //               alignment: Alignment.centerLeft,
+            //               height: 65,
+            //               child: Obx(
+            //                 () => Text(_chapters[_index].name),
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
             const SizedBox(
               height: 50,
               width: 50,
