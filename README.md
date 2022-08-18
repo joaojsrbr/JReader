@@ -39,7 +39,7 @@ Este aplicativo utiliza o **Firebase**. Para configura-lo, é so seguir os passo
 Apos configurar o firebase, é so rodar o app com o comando
 
 ```bash
-flutter run --multidex
+flutter run 
 ```
 
 ## Licença
