@@ -6,23 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Session {
-  // final GlobalKey<FormState> formKey;
-  // Session({required this.formKey, required this.senha, required this.email});
-  // // late TextEditingController email;
-  // // late TextEditingController senha;
-  // final TextEditingController email;
-  // final TextEditingController senha;
-  // var formKey = GlobalKey<FormState>();
-  // GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  // late GlobalKey<FormState> formKey;
-
   signInWithGoogle(BuildContext context) {
     _signIn((error) {
       if (error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error),
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: Colors.white,
           ),
         );
       } else {
@@ -42,7 +32,7 @@ class Session {
     });
   }
 
-  signOut() async {
+  static Future<void> signOut() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     await googleSignIn.signOut();

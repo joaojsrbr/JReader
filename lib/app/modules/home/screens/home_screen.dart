@@ -1,10 +1,11 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
-
+import 'package:com_joaojsrbr_reader/app/core/constants/providers.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/grid.dart';
 import 'package:com_joaojsrbr_reader/app/modules/favorites/controlers/favorites_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/home/widget/pop_menu_b.dart';
 import 'package:com_joaojsrbr_reader/app/services/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:loading_more_list/loading_more_list.dart';
+// import 'package:loading_more_list/loading_more_list.dart';
 
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/modules/favorites/screens/favorites_screen.dart';
@@ -17,6 +18,7 @@ import 'package:com_joaojsrbr_reader/app/services/historic.dart';
 import 'package:com_joaojsrbr_reader/app/services/session.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/section_list_title.dart';
+import 'package:loading_more_list/loading_more_list.dart';
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
@@ -28,19 +30,20 @@ class HomeScreen extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     // List<Widget> _screen = const [
     //   HomeDestination(),
     //   FavoritesScreen(),
     // ];
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
-      key: _scaffoldKey,
+      key: scaffoldKey,
       body: GetBuilder<HomeController>(
         id: #home,
+        autoRemove: false,
         didChangeDependencies: (state) {
-          if (state.mounted) {
-            _oninit(context);
-          }
+          _oninit(context);
+          controller.itens.value = controller.itemBookRepository.value;
         },
         builder: (controller) => TabBarView(
           physics: const NeverScrollableScrollPhysics(),
@@ -105,7 +108,7 @@ class HomeDestination extends GetView<HomeController> {
     return RefreshIndicator(
       onRefresh: controller.onRefresh,
       child: LoadingMoreCustomScrollView(
-        rebuildCustomScrollView: true,
+        // rebuildCustomScrollView: true,
         controller: controller.scrollController,
         slivers: [
           SliverAppBar(
@@ -121,133 +124,77 @@ class HomeDestination extends GetView<HomeController> {
             actions: [
               IconButton(
                 onPressed: () async {
-                  Session().signOut();
+                  await Session.signOut();
                   await Future.delayed(const Duration(milliseconds: 250));
+
                   Get.toNamed(RoutesName.LOGIN);
                 },
-                icon: const Icon(Icons.logout),
+                icon: const Icon(Icons.logout_rounded),
               ),
               IconButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed(RoutesName.SEARCH);
+                  Get.toNamed(RoutesName.SEARCH);
                 },
-                icon: const Icon(Icons.search),
+                icon: const Icon(Icons.search_rounded),
               ),
-              // IconButton(
-              //   onPressed: () {
-              //     Navigator.of(context).pushNamed(RoutesName.FAVORITES);
-              //   },
-              //   icon: const Icon(Icons.favorite),
-              // ),
             ],
           ),
+          // const SliverToBoxAdapter(
+          //   child: Padding(
+          //     padding: EdgeInsets.only(
+          //       top: 4.0,
+          //       bottom: 4.0,
+          //       left: 15,
+          //       right: 15,
+          //     ),
+          //     child: Carousel(),
+          //   ),
+          // ),
           SliverPadding(
             padding: const EdgeInsets.only(left: 0, top: 0),
             sliver: SliverPersistentHeader(
+              // floating: true,
               delegate: DelegatePageHeader(
                 maxExtent: 50,
                 minExtent: 50,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      flex: 10,
-                      child: Obx(
-                        () => SectionListTitle(
-                          controller.title.value,
-                          style:
-                              Theme.of(context).textTheme.headline6!.copyWith(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                        ),
-
-                        // SelectableText.rich(
-                        //   TextSpan(
-                        //     children: [
-                        //       TextSpan(
-                        //         text: controller.title.value,
-                        //         style: Theme.of(context)
-                        //             .textTheme
-                        //             .headline6!
-                        //             .copyWith(
-                        //               fontSize: 14,
-                        //               fontWeight: FontWeight.w700,
-                        //             ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Obx(
-                        () => PopupMenuButton<Scans>(
-                          shape: const ContinuousRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20.0),
-                            ),
+                builder: (shrinkOffset, overlapsContent) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 10,
+                        child: Obx(
+                          () => SectionListTitle(
+                            controller.title.value,
+                            key: ObjectKey(controller.title.value),
+                            style:
+                                Theme.of(context).textTheme.headline6!.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                           ),
-                          color: Theme.of(context).colorScheme.background,
-                          // enabled: !controller.itemBookRepository.isLoading,
-                          icon: const Icon(Icons.menu_rounded),
-                          initialValue: controller.scans.value,
-                          onSelected: controller.onSelected,
-                          padding: const EdgeInsets.only(right: 12),
-                          itemBuilder: (ctx) => <PopupMenuEntry<Scans>>[
-                            const PopupMenuItem(
-                              value: Scans.NEOX,
-                              child: Text('Neox'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.RANDOM,
-                              child: Text('Random'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.MARK,
-                              child: Text('Mark'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.CRONOS,
-                              child: Text('Cronos'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.PRISMA,
-                              child: Text('Prisma'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.REAPER,
-                              child: Text('Reaper'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.MANGA_HOST,
-                              child: Text('Manga Host'),
-                            ),
-                            const PopupMenuItem(
-                              value: Scans.ARGOS,
-                              child: Text('Argos'),
-                            ),
-                          ],
                         ),
                       ),
-                    )
-                  ],
-                ),
+                      Flexible(
+                        child: PopMenuB(
+                          controller: controller,
+                        ),
+                      )
+                    ],
+                  );
+                },
               ),
             ),
           ),
-          ObxValue<Rx<LoadingMoreBase<BookItem>>>(
-            (itemBookRepository) => LoadingMoreSliverList(
-              key: controller.pageStorageKey(
-                  Key(itemBookRepository.value.toString()),
-                  controller.scans.value.toString()),
+          Obx(
+            () => LoadingMoreSliverList(
               SliverListConfig<BookItem>(
-                gridDelegate: controller.gridDelegate,
+                gridDelegate: Grid.sliverlist,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 indicatorBuilder: (ctx, indicatorStatus) => indicatorBuilder(
                     ctx, indicatorStatus, controller.inrefresh.value),
-                sourceList: itemBookRepository.value,
+                sourceList: controller.itemBookRepository.value,
                 itemBuilder: (context, book, index) {
                   return BookElement(
                     key: ObjectKey(book.name),
@@ -258,7 +205,7 @@ class HomeDestination extends GetView<HomeController> {
                     imageURL: book.imageURL,
                     imageURL2: book.imageURL2,
                     onTap: () {
-                      Navigator.of(context).pushNamed(
+                      Get.toNamed(
                         RoutesName.BOOK,
                         arguments: book,
                       );
@@ -266,8 +213,11 @@ class HomeDestination extends GetView<HomeController> {
                   );
                 },
               ),
+              key: controller.pageStorageKey(
+                ObjectKey(controller.itemBookRepository.string),
+                controller.scans.value.string,
+              ),
             ),
-            controller.itemBookRepository,
           ),
         ],
       ),
@@ -275,262 +225,85 @@ class HomeDestination extends GetView<HomeController> {
   }
 }
 
+// class Carousel extends StatelessWidget {
+//   const Carousel({
+//     Key? key,
+//   }) : super(key: key);
 
-
-// return Scaffold(
-    //   key: _scaffoldKey,
-    //   body: GetBuilder<HomeController>(
-    //     id: #homepage,
-    //     didChangeDependencies: (state) {
-    //       Favorites.getAll(context);
-    //       Historic.getAll(context);
-    //     },
-    //     builder: (controller) => NestedScrollView(
-    //       controller: controller.scrollController,
-    //       clipBehavior: Clip.hardEdge,
-    //       floatHeaderSlivers: true,
-    //       physics: const BouncingScrollPhysics(
-    //           parent: AlwaysScrollableScrollPhysics()),
-    //       // padding: const EdgeInsets.only(bottom: 16),
-    //       headerSliverBuilder: (context, innerBoxIsScrolled) => [
-    //         SliverAppBar(
-    //           floating: true,
-    //           snap: true,
-    //           stretch: true,
-    //           title: const Text('com_joaojsrbr_reader'),
-    //           leading: const SizedBox(
-    //             height: 0,
-    //             width: 0,
-    //           ),
-    //           leadingWidth: 0,
-    //           actions: [
-    //             IconButton(
-    //               onPressed: () async {
-    //                 Get.find<Session>().signOut();
-    //                 await Future.delayed(const Duration(milliseconds: 250));
-    //                 Get.toNamed(RoutesName.LOGIN);
-    //               },
-    //               icon: const Icon(Icons.logout),
-    //             ),
-    //             IconButton(
-    //               onPressed: () {
-    //                 Navigator.of(context).pushNamed(RoutesName.SEARCH);
-    //               },
-    //               icon: const Icon(Icons.search),
-    //             ),
-    //             IconButton(
-    //               onPressed: () {
-    //                 Navigator.of(context).pushNamed(RoutesName.FAVORITES);
-    //               },
-    //               icon: const Icon(Icons.favorite),
-    //             )
-    //           ],
-    //         ),
-    //       ],
-
-    //       body: RefreshIndicator(
-    //         onRefresh: controller.handleGetDatas,
-    //         child: ListView(
-    //           padding: const EdgeInsets.only(bottom: 20.0, top: 0),
-    //           children: [
-    //             // const SectionListTitle('Argos - Últimos adicionados'),
-    //             const SectionListTitle('Argos - Popular'),
-    //             Obx(
-    // () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.argos.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.argos[index];
-    //                     return BookElementData(
-    //                     tag: book.tag,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Neox - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.neox.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.neox[index];
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Random Scan - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.random.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.random[index];
-
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     imageURL: book.imageURL2 ?? book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Mark Scans - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.mark.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.mark[index];
-
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Cronos Scans - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.cronos.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.cronos[index];
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     headers: book.headers,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Prisma Scans - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.prisma.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.prisma[index];
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     headers: book.headers,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Reaper Scans - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.reaper.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.reaper[index];
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     headers: book.headers,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //             const SectionListTitle('Mangá Host - Últimos adicionados'),
-    //             Obx(
-    //               () => BookElementHorizontalList(
-    //                 isLoading: controller.isLoading.value,
-    //                 itemCount: controller.mangaHost.length,
-    //                 itemData: (index) {
-    //                   final BookItem book = controller.mangaHost[index];
-    //                   return BookElementData(
-    //                     tag: book.tag,
-    //                     is18: book.is18,
-    //                     headers: book.headers,
-    //                     imageURL: book.imageURL,
-    //                     imageURL2: book.imageURL2,
-    //                     onTap: () {
-    //                       Navigator.of(context).pushNamed(
-    //                         RoutesName.BOOK,
-    //                         arguments: book,
-    //                       );
-    //                     },
-    //                   );
-    //                 },
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-
-
-
-     // AnimatedFadeOutIn<String>(
-                            //   initialData: '',
-                            //   key: controller.stringkey(
-                            //       ObjectKey(controller.title.value), 'title'),
-                            //   data: controller.title.value,
-                            //   duration: const Duration(milliseconds: 650),
-                            //   builder: (data) => SectionListTitle(
-                            //     controller.title.value,
-                            //     style:
-                            //         Theme.of(context).textTheme.headline6!.copyWith(
-                            //               fontSize: 14,
-                            //               fontWeight: FontWeight.w700,
-                            //             ),
-                            //   ),
-                            // ),
+//   @override
+//   Widget build(BuildContext context) {
+//     // if (kDebugMode) {
+//     //   print(controller.itemBookRepository.value);
+//     // }
+//     return GetBuilder<HomeController>(
+//       assignId: true,
+//       autoRemove: false,
+//       initState: (state) {
+//         if (state.controller != null) {
+//           state.controller!.itens.value =
+//               state.controller!.itemBookRepository.value;
+//         }
+//       },
+//       didChangeDependencies: (state) {
+//         state.controller!.itens.value =
+//             state.controller!.itemBookRepository.value;
+//       },
+//       id: 'Carousel',
+//       builder: (controller) => Obx(
+//         () => CarouselSlider.builder(
+//           itemCount: controller.itens.length,
+//           itemBuilder: (context, index, realIndex) {
+//             if (controller.itens.isEmpty) {
+//               return const Center(
+//                 child: CircularProgressIndicator(),
+//               );
+//             }
+//             return GestureDetector(
+//               onTap: () {
+//                 Get.toNamed(
+//                   RoutesName.BOOK,
+//                   arguments: controller.itens[index],
+//                 );
+//               },
+//               child: Container(
+//                 padding: const EdgeInsets.symmetric(horizontal: 5),
+//                 width: context.width / .8,
+//                 child: ClipRRect(
+//                   borderRadius: BorderRadius.circular(8),
+//                   child: CachedNetworkImage(
+//                     cacheKey: controller.itens[index].imageURL2 ??
+//                         controller.itens[index].imageURL,
+//                     cacheManager: controller.customCacheManager,
+//                     fit: BoxFit.cover,
+//                     imageUrl: controller.itens[index].imageURL2 ??
+//                         controller.itens[index].imageURL,
+//                     httpHeaders: controller.itens[index].headers,
+//                     memCacheHeight: 498,
+//                     memCacheWidth: 997,
+//                     errorWidget: (context, url, error) => SizedBox(
+//                       height: context.height,
+//                       child: const Center(
+//                         child: EmoticonsView(
+//                           text: "Error",
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             );
+//           },
+//           options: CarouselOptions(
+//             aspectRatio: 1.3,
+//             enlargeCenterPage: false,
+//             autoPlayInterval: const Duration(seconds: 10),
+//             autoPlayAnimationDuration: const Duration(milliseconds: 800),
+//             autoPlayCurve: Curves.fastOutSlowIn,
+//             viewportFraction: 1,
+//             autoPlay: true,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

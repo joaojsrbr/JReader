@@ -2,11 +2,16 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:com_joaojsrbr_reader/app/services/notification/notifications_service.dart';
+import 'package:com_joaojsrbr_reader/app/services/version/version_service.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'package:com_joaojsrbr_reader/app/core/constants/ports.dart';
@@ -106,15 +111,43 @@ void callbackDispatcher() {
 
 void main() async {
   // GestureBinding.instance.resamplingEnabled = true;
+  WidgetsFlutterBinding.ensureInitialized();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  AwesomeNotifications().initialize(
+    'resource://drawable/res_app_icon',
+    [
+      NotificationChannel(
+        channelGroupKey: 'manga_channel_group',
+        channelKey: 'manga_notifications',
+        channelName: 'MangaNew',
+        enableVibration: true,
+        importance: NotificationImportance.Default,
+        playSound: true,
+        channelDescription: 'notificação de manga novo',
+      )
+    ],
+    channelGroups: [
+      NotificationChannelGroup(
+        channelGroupkey: 'manga_channel_group',
+        channelGroupName: 'Grupo de notificação',
+      )
+    ],
+    debug: true,
+  );
 
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
-
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseDatabase.instance.setPersistenceEnabled(true);
+  initServices();
+  await FirebaseAppCheck.instance.activate();
+
   runApp(
-    // GetPlatform.isWeb ? const MyWeb() : const MyApp(),
     const MyApp(),
   );
+}
+
+void initServices() async {
+  Get.put(NotificationsService(), permanent: true);
+  Get.put(VersionService(), permanent: true);
 }

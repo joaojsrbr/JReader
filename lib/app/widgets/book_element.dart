@@ -1,6 +1,7 @@
 import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/widgets/emoticons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,14 +13,16 @@ class BookElement extends StatelessWidget {
   final String? imageURL2;
   final EdgeInsetsGeometry? margin;
   final Map<String, String>? headers;
-  final Function() onTap;
+  final void Function() onTap;
   final Function()? onLongPress;
   final int memCacheHeight;
+  // final List<Chapter>? lastChapter;
   final int memCacheWidth;
 
   const BookElement({
     required this.imageURL,
     required this.onTap,
+    // this.lastChapter,
     this.memCacheHeight = 770,
     this.memCacheWidth = 507,
     this.onLongPress,
@@ -54,15 +57,14 @@ class BookElement extends StatelessWidget {
                   httpHeaders: headers,
                   memCacheHeight: memCacheHeight,
                   memCacheWidth: memCacheWidth,
-                  // errorWidget: imageURL2 != null
-                  //     ? (context, url, error) {
-                  //         return CachedNetworkImage(
-                  //           fit: BoxFit.cover,
-                  //           imageUrl: imageURL2!,
-                  //           httpHeaders: headers,
-                  //         );
-                  //       }
-                  //     : null,
+                  errorWidget: (context, url, error) => SizedBox(
+                    height: context.height,
+                    child: const Center(
+                      child: EmoticonsView(
+                        text: "Error",
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Positioned(
@@ -90,7 +92,7 @@ class BookElement extends StatelessWidget {
                           ),
                         ),
                       )
-                    : const SizedBox(),
+                    : const SizedBox.shrink(),
               ),
               Positioned.fill(
                 child: Material(
@@ -109,7 +111,7 @@ class BookElement extends StatelessWidget {
 class BookElementShimmer extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
-  const BookElementShimmer({this.margin, Key? key}) : super(key: key);
+  const BookElementShimmer({this.margin, super.key});
 
   @override
   Widget build(BuildContext context) {

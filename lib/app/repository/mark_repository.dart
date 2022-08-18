@@ -15,34 +15,17 @@ class MarkRepository extends LoadingMoreBase<BookItem> {
 
   RxBool isSuccess = false.obs;
 
-  @override
-  bool get hasMore => length < lista.length;
+  bool forceRefresh = false;
 
   @override
-  void dispose() {
-    lista.close();
-    isSuccess.close();
-    super.dispose();
-  }
+  bool get hasMore => (length < lista.length) || forceRefresh;
 
   @override
   Future<bool> refresh([bool notifyStateChanged = false]) async {
-    try {
-      lista.value = await MarkServices.lastAdded;
-      for (var item in lista) {
-        if (!contains(item)) {
-          add(item);
-        }
-      }
-      isSuccess.value = true;
-      return super.refresh(isSuccess.value);
-    } catch (e) {
-      isSuccess.value = false;
-      if (kDebugMode) {
-        print(e);
-      }
-      return super.refresh(isSuccess.value);
-    }
+    forceRefresh = !notifyStateChanged;
+    var result = await super.refresh(notifyStateChanged);
+    forceRefresh = false;
+    return result;
   }
 
   @override
@@ -50,6 +33,7 @@ class MarkRepository extends LoadingMoreBase<BookItem> {
     try {
       lista.value = await MarkServices.lastAdded;
 
+      await Future.delayed(const Duration(milliseconds: 350));
       for (var item in lista) {
         if (!contains(item)) {
           add(item);

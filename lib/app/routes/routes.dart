@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,43 +12,13 @@ import 'package:com_joaojsrbr_reader/app/modules/home/screens/home_screen.dart';
 import 'package:com_joaojsrbr_reader/app/modules/login/bindings/login_binding.dart';
 import 'package:com_joaojsrbr_reader/app/modules/login/screens/login_screen.dart';
 import 'package:com_joaojsrbr_reader/app/modules/reader/bindings/reader_binding.dart';
+import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
 import 'package:com_joaojsrbr_reader/app/modules/search/bindings/search_binding.dart';
 import 'package:com_joaojsrbr_reader/app/modules/search/screens/search_screen.dart';
-
-class CustomPageRoute<T> extends PageRoute<T> {
-  final Widget child;
-
-  CustomPageRoute(this.child);
-
-  @override
-  Color get barrierColor => Colors.black;
-
-  @override
-  String get barrierLabel => '';
-
-  @override
-  bool get maintainState => true;
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 600);
-
-  @override
-  Widget buildPage(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-  ) {
-    return FadeTransition(
-      opacity: animation,
-      child: child,
-    );
-  }
-}
 
 class RoutesName {
   static const LOGIN = '/login';
   static const HOME = '/home';
-
   static const BOOK = '/book';
   static const ABOUT = '/about';
   static const READER = '/reader';

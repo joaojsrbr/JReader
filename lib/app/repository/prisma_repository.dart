@@ -5,44 +5,21 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 class PrimaRepository extends LoadingMoreBase<BookItem> {
-  // NeoxRepository({
-  //   required this.lastAdded,
-  // });
-
-  // final Future<List<BookItem>> lastAdded;
-
   RxList<BookItem> lista = <BookItem>[].obs;
 
   RxBool isSuccess = false.obs;
 
-  @override
-  bool get hasMore => length < lista.length;
+  bool forceRefresh = false;
 
   @override
-  void dispose() {
-    lista.close();
-    isSuccess.close();
-    super.dispose();
-  }
+  bool get hasMore => (length < lista.length) || forceRefresh;
 
   @override
   Future<bool> refresh([bool notifyStateChanged = false]) async {
-    try {
-      lista.value = await PrismaServices.lastAdded;
-      for (var item in lista) {
-        if (!contains(item)) {
-          add(item);
-        }
-      }
-      isSuccess.value = true;
-      return super.refresh(isSuccess.value);
-    } catch (e) {
-      isSuccess.value = false;
-      if (kDebugMode) {
-        print(e);
-      }
-      return super.refresh(isSuccess.value);
-    }
+    forceRefresh = !notifyStateChanged;
+    var result = await super.refresh(notifyStateChanged);
+    forceRefresh = false;
+    return result;
   }
 
   @override
@@ -50,6 +27,7 @@ class PrimaRepository extends LoadingMoreBase<BookItem> {
     try {
       lista.value = await PrismaServices.lastAdded;
 
+      await Future.delayed(const Duration(milliseconds: 350));
       for (var item in lista) {
         if (!contains(item)) {
           add(item);

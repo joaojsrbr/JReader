@@ -4,6 +4,7 @@ import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/olympus_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
@@ -25,6 +26,8 @@ Future<Book?> bookInfo(String url, String name) async {
     return await MangaHostServices.bookInfo(url, name);
   } else if (url.contains('argosscan')) {
     return await ArgosService.bookInfo(url, name);
+  } else if (url.contains('olympusscanlation')) {
+    return await OlympusServices.bookInfo(url, name);
   }
 
   return null;

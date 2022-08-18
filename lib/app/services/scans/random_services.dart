@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -41,13 +41,16 @@ class RandomServices {
       for (Element element in elements) {
         final Element? a = element.querySelector('h3 a');
         final Element? img = element.querySelector('img');
-        if (a == null || img == null) continue;
+        final Element? lastChapter =
+            element.querySelector('span.chapter.font-meta');
+        if (a == null || img == null || lastChapter == null) continue;
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
         final String imageURL = (img.attributes['data-src'] ?? '').trim();
-
-        final String? srcset = img.attributes['srcset'];
+        final String lastc =
+            lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
+        final String? srcset = img.attributes['data-srcset'];
         final List<String>? sources = srcset == null
             ? null
             : '$srcset,'
@@ -62,6 +65,7 @@ class RandomServices {
             id: toId(name),
             url: url,
             name: name,
+            lastChapter: lastc,
             imageURL: imageURL,
             imageURL2: imageURL2,
           ));
@@ -93,10 +97,14 @@ class RandomServices {
     for (Element element in elements) {
       final Element? a = element.querySelector('h3 a');
       final Element? img = element.querySelector('img');
-      if (a == null || img == null) continue;
+      final Element? lastChapter =
+          element.querySelector('span.chapter.font-meta');
+      if (a == null || img == null || lastChapter == null) continue;
 
       final String url = (a.attributes['href'] ?? '').trim();
       final String name = a.text.trim();
+      final String lastc =
+          lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
       final String imageURL = (img.attributes['data-src'] ?? '').trim();
 
       final String? srcset = img.attributes['srcset'];
@@ -115,6 +123,7 @@ class RandomServices {
           id: toId(name),
           url: url,
           name: name,
+          lastChapter: lastc,
           imageURL: imageURL,
           imageURL2: imageURL2,
         ));

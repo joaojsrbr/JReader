@@ -43,31 +43,29 @@ Widget indicatorBuilder(
       }
       break;
     case IndicatorStatus.loadingMoreBusying:
-      widget = load
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(right: 0.0),
-                  height: 30.0,
-                  width: 30.0,
-                  child: getIndicator(context),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("Carregando..."),
-                ),
-              ],
-            )
-          : Container();
+      widget = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 0.0),
+            height: 30.0,
+            width: 30.0,
+            child: getIndicator(context),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text("Carregando..."),
+          ),
+        ],
+      );
       widget = Container();
       widget = _setbackground(false, widget, 50.0, context);
-      if (isSliver) {
-        widget = SliverFillRemaining(
-          child: widget,
-        );
-      }
+      // if (isSliver) {
+      //   widget = SliverToBoxAdapter(
+      //     child: widget,
+      //   );
+      // }
       break;
     case IndicatorStatus.fullScreenBusying:
       widget = load

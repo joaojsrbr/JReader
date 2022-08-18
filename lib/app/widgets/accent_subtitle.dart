@@ -39,7 +39,11 @@ class AccentSubtitleWithDots extends StatelessWidget {
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: isLoading ? const [AccentSubtitleShimmer()] : _handleData(),
+        children: isLoading
+            ? [
+                const AccentSubtitleShimmer(),
+              ]
+            : _handleData(),
       ),
     );
   }

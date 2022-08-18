@@ -1,7 +1,6 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
-import 'package:com_joaojsrbr_reader/app/widgets/animated_fade_out_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +51,7 @@ class Favorites {
         final item = element.value as Map<dynamic, dynamic>;
         final String url = item['url'].toString();
 
-        final bool isMH = url.contains('mangahosted.com');
-        final bool isMHHeader = isMH || url.contains('mangahost4.com');
+        final bool isMH = MangaHostServices.isMH(url);
 
         favorites[element.key!] = BookItem(
           id: item['id'],
@@ -62,7 +60,8 @@ class Favorites {
           name: item['name'],
           imageURL: item['imageURL'],
           imageURL2: item['imageURL2'],
-          headers: isMHHeader ? MangaHostServices.headers : null,
+          lastChapter: item['lastChapter'],
+          headers: isMH ? MangaHostServices.headers(url) : null,
         );
       }
 
@@ -88,33 +87,15 @@ class Favorites {
   }
 
   Widget get button {
-    return Observer(
-      builder: (_) {
-        return AnimatedFadeOutIn<IconData>(
-          data: isFavorite
-              ? Icons.favorite_rounded
-              : Icons.favorite_outline_rounded,
-          builder: (data) {
-            return IconButton(
-              onPressed: toggleFavorite,
-              icon: Icon(
-                data,
-                color: isFavorite ? Colors.red : null,
-              ),
-            );
-          },
-        );
-        // return IconButton(
-        //   onPressed: toggleFavorite,
-        //   icon: Icon(
-        //     isFavorite
-        //         ? Icons.favorite_rounded
-        //         : Icons.favorite_outline_rounded,
-        //     color: isFavorite ? Colors.red : null,
-        //   ),
-        // );
-      },
-    );
+    return Observer(builder: (_) {
+      return IconButton(
+        onPressed: toggleFavorite,
+        icon: Icon(
+          isFavorite ? Icons.favorite : Icons.favorite_outline,
+          color: isFavorite ? Colors.red : null,
+        ),
+      );
+    });
   }
 
   static void _snackError(BuildContext context) {

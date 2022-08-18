@@ -168,6 +168,8 @@ class _ReaderScreenState extends State<ReaderScreen>
   @override
   void dispose() {
     _toggleHistoric(_position);
+    showappbar.close();
+    _chapters.close();
     super.dispose();
   }
 

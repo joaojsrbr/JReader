@@ -4,10 +4,10 @@ class DelegatePageHeader extends SliverPersistentHeaderDelegate {
   DelegatePageHeader({
     required this.maxExtent,
     required this.minExtent,
-    required this.child,
+    required this.builder,
     // required this.vsync,
   }) : super();
-  final Widget child;
+  final Widget Function(double shrinkOffset, bool overlapsContent) builder;
   @override
   final double minExtent;
   @override
@@ -16,7 +16,7 @@ class DelegatePageHeader extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return child;
+    return builder(shrinkOffset, overlapsContent);
   }
 
   @override

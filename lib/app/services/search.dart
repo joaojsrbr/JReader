@@ -4,6 +4,7 @@ import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/mark_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/olympus_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
@@ -23,9 +24,11 @@ Future<List<BookItem>> search(String value) async {
 
   results.addAll(await _search(ReaperServices.search(value)));
 
-  results.addAll(await _search(MangaHostServices.search(value)));
+  results.addAll(await _search(OlympusServices.search(value)));
 
   results.addAll(await _search(ArgosService.search(value)));
+
+  results.addAll(await _search(MangaHostServices.search(value)));
 
   // if (provider == Providers.NEOX) {
   //   results = await NeoxServices.search(value);

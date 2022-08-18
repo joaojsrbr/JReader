@@ -1,16 +1,10 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
-import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
+import 'package:com_joaojsrbr_reader/app/services/scans/olympus_services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
-class CronosRepository extends LoadingMoreBase<BookItem> {
-  // NeoxRepository({
-  //   required this.lastAdded,
-  // });
-
-  // final Future<List<BookItem>> lastAdded;
-
+class OlympusRepository extends LoadingMoreBase<BookItem> {
   RxList<BookItem> lista = <BookItem>[].obs;
 
   RxBool isSuccess = false.obs;
@@ -31,7 +25,7 @@ class CronosRepository extends LoadingMoreBase<BookItem> {
   @override
   Future<bool> loadData([bool isloadMoreAction = false]) async {
     try {
-      lista.value = await CronosServices.lastAdded;
+      lista.value = await OlympusServices.lastAdded;
 
       await Future.delayed(const Duration(milliseconds: 350));
       for (var item in lista) {
