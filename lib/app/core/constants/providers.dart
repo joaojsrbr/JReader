@@ -1,8 +1,19 @@
-// ignore: constant_identifier_names
-enum Providers { NEOX, RANDOM, MARK, CRONOS, PRISMA, REAPER, MANGA_HOST, ARGOS }
+// ignore_for_file: constant_identifier_names
+
+enum Providers {
+  NEOX,
+  RANDOM,
+  MARK,
+  CRONOS,
+  PRISMA,
+  REAPER,
+  MANGA_HOST,
+  ARGOS,
+  OLYMPUS
+}
 
 extension ProvidersExtension on Providers {
-  String get value {
+  String get string {
     switch (this) {
       case Providers.NEOX:
         return 'Neox';
@@ -27,6 +38,9 @@ extension ProvidersExtension on Providers {
 
       case Providers.ARGOS:
         return 'Argos';
+
+      case Providers.OLYMPUS:
+        return 'Olympus';
     }
   }
 }

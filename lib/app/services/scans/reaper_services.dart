@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -41,10 +41,16 @@ class ReaperServices {
         final Element? a = element.querySelector('a');
         final Element? h5 = element.querySelector('h5');
         final Element? img = element.querySelector('img');
-        if (a == null || h5 == null || img == null) continue;
+        final Element? lastChapter = element.querySelector('.series-badge');
+
+        if (a == null || h5 == null || img == null || lastChapter == null) {
+          continue;
+        }
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = h5.text.trim();
+        final String lastc =
+            lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
         final String imageURL = (img.attributes['data-src'] ?? '').trim();
         final String? tag = element.querySelector('a span')?.text.trim();
 
@@ -52,6 +58,7 @@ class ReaperServices {
           items.add(BookItem(
             id: toId(name),
             url: url,
+            lastChapter: lastc,
             tag: tag,
             name: name,
             imageURL: imageURL,
@@ -84,9 +91,13 @@ class ReaperServices {
     for (Element element in elements) {
       final Element? a = element.querySelector('h3 a');
       final Element? img = element.querySelector('img');
-      if (a == null || img == null) continue;
+      final Element? lastChapter =
+          element.querySelector('span.chapter.font-meta');
+      if (a == null || img == null || lastChapter == null) continue;
 
       final String url = (a.attributes['href'] ?? '').trim();
+      final String lastc =
+          lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
       final String name = a.text.trim();
       final String imageURL = (img.attributes['src'] ?? '').trim();
 
@@ -106,6 +117,7 @@ class ReaperServices {
           id: toId(name),
           url: url,
           name: name,
+          lastChapter: lastc,
           imageURL: imageURL,
           imageURL2: imageURL2,
         ));

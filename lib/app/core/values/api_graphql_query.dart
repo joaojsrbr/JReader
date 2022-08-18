@@ -17,7 +17,7 @@ const String query = r''' query getProjects(
                      type
             
                      updateAt
-                     getChapters(order: { id: DESC }, skip: 0, take: 1) {
+                     getChapters(order: { number: DESC }, skip: 0, take: 1) {
                          id
                     		images
                          title

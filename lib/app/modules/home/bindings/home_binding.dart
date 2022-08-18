@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 class HomeBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<HomeController>(() => HomeController());
+    Get.put<HomeController>(HomeController());
     Get.put<FavoritesController>(FavoritesController());
+    // Get.put(NotificationService(), permanent: true);
   }
 }

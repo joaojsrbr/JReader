@@ -2,7 +2,7 @@
 
 import 'dart:ffi';
 
-import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_query.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_variables.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
@@ -22,12 +22,13 @@ import 'package:http/http.dart' as http;
 class ArgosService {
   static HttpLink get baseApi => HttpLink(argosAPI);
 
-  static Future<List<BookItem>> get lastAdded async {
+  static Future<List<BookItem>> get popular async {
     final List<BookItem> tempList = [];
     try {
       final QueryOptions options = QueryOptions(
         document: gql(query),
         variables: variablesPopular(),
+        // variables: variablesLatest(),
       );
 
       final QueryResult result = await _client(baseApi).query(options);
@@ -35,11 +36,64 @@ class ArgosService {
       for (var e in Data.fromJson(result.data!).getProjects!.projects!) {
         // String img = 'https://argosscan.com/img/${e.id}/${e.cover}';
         // String imageURL = 'https://argosscan.com/images/${e.id}/${e.cover}';
+        // print(e.getChapters!.map((e) => (e.number ?? 0).toString()).single);
+        final number =
+            e.getChapters!.map((e) => (e.number ?? 0).toString()).singleWhere(
+                  (element) => element.isNotEmpty,
+                  orElse: () => '0',
+                );
 
         tempList.add(
           BookItem(
             id: e.id.toString(),
+            lastChapter: number,
             tag: e.type,
+            name: e.name ?? '',
+            url: 'https://argosscan.com/obras/${e.id}',
+            imageURL: (e.cover == 'default.jpg')
+                ? 'https://argosscan.com/img/default.jpg'
+                : 'https://argosscan.com/images/${e.id}/${e.cover}',
+            imageURL2: (e.cover == 'default.jpg')
+                ? 'https://argosscan.com/img/default.jpg'
+                : 'https://argosscan.com/images/${e.id}/${e.cover}',
+          ),
+        );
+      }
+
+      return tempList;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return [];
+    }
+  }
+
+  static Future<List<BookItem>> get lastAdded async {
+    final List<BookItem> tempList = [];
+    try {
+      final QueryOptions options = QueryOptions(
+        document: gql(query),
+        // variables: variablesPopular(),
+        variables: variablesLatest(),
+      );
+
+      final QueryResult result = await _client(baseApi).query(options);
+
+      for (var e in Data.fromJson(result.data!).getProjects!.projects!) {
+        // String img = 'https://argosscan.com/img/${e.id}/${e.cover}';
+        // String imageURL = 'https://argosscan.com/images/${e.id}/${e.cover}';
+        // print(e.getChapters!.last.title);
+        final number =
+            e.getChapters!.map((e) => (e.number ?? 0).toString()).singleWhere(
+                  (element) => element.isNotEmpty,
+                  orElse: () => '0',
+                );
+        tempList.add(
+          BookItem(
+            id: e.id.toString(),
+            tag: e.type,
+            lastChapter: number,
             name: e.name ?? '',
             url: 'https://argosscan.com/obras/${e.id}',
             imageURL: (e.cover == 'default.jpg')
@@ -97,10 +151,16 @@ class ArgosService {
       final QueryResult result = await _client(baseApi).query(options);
 
       for (var e in Data.fromJson(result.data!).getProjects!.projects!) {
+        final number =
+            e.getChapters!.map((e) => (e.number ?? 0).toString()).singleWhere(
+                  (element) => element.isNotEmpty,
+                  orElse: () => '0',
+                );
         items.add(
           BookItem(
             id: e.id.toString(),
             tag: e.type,
+            lastChapter: number,
             name: e.name ?? '',
             url: 'https://argosscan.com/obras/${e.id}',
             imageURL: (e.cover == 'default.jpg')

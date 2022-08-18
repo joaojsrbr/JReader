@@ -1,16 +1,15 @@
 import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
-import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:dio/dio.dart';
-import 'dart:async';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
-class NeoxServices {
-  static String get baseURL => neoxURL;
+class OlympusServices {
+  static String get baseURL => olympusURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -22,19 +21,6 @@ class NeoxServices {
       subKey: subKey,
       forceRefresh: forceRefresh ?? true,
     );
-    // options: Options(headers: headers));
-  }
-
-  static Map<String, String> get headers {
-    return {
-      'Origin': 'https://neoxscans.net/',
-      'Referer': 'https://neoxscans.net/',
-      'accept':
-          'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-      'upgrade-insecure-requests': '1',
-      'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36',
-    };
   }
 
   static Future<List<BookItem>> get lastAdded async {
@@ -46,30 +32,33 @@ class NeoxServices {
       dio.interceptors.add(_cacheManager.interceptor);
 
       final Response response = await dio.get(baseURL, options: options);
-
       final Document document = parse(response.data);
 
+      // final List<Element> elements =
+      //     document.querySelectorAll('#loop-content .row a');
       final List<Element> elements =
-          document.querySelectorAll('#loop-content .row div.page-item-detail');
+          document.querySelectorAll('#loop-content > div > div >  div');
 
       for (Element element in elements) {
-        final Element? a = element.querySelector('h3 a');
-        final Element? img = element.querySelector('img');
+        final Element? row = element.querySelector('.row a');
+        if (row == null) continue;
+
+        final String? url = row.attributes['href'];
+        final String? name = row.attributes['title'];
+        final Element? img = row.querySelector('img');
         final Element? lastChapter =
             element.querySelector('span.chapter.font-meta');
-        if (a == null || img == null || lastChapter == null) continue;
+        if (url == null || name == null || img == null || lastChapter == null) {
+          continue;
+        }
 
-        final String url = (a.attributes['href'] ?? '').trim();
-        final String name = a.text.trim();
+        final String imageURL = (img.attributes['src'] ?? '').trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String imageURL = (img.attributes['data-src'] ?? '').trim();
-        final String? tag = element.querySelector('span')?.text.trim();
-
-        final String? srcset = img.attributes['data-srcset'];
-        final String? imageURL2 = srcset == null
+        final String? srcSet = img.attributes['srcset'];
+        final String? imageURL2 = srcSet == null
             ? null
-            : '$srcset,'
+            : '$srcSet,'
                 .replaceAll(RegExp(r'([1-9])\w+,'), '')
                 .trim()
                 .split(' ')
@@ -78,17 +67,14 @@ class NeoxServices {
                 .trim();
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
-          items.add(
-            BookItem(
-              id: toId(name),
-              url: url,
-              tag: tag,
-              lastChapter: lastc,
-              name: name,
-              imageURL: imageURL,
-              imageURL2: imageURL2,
-            ),
-          );
+          items.add(BookItem(
+            id: toId(name),
+            url: url,
+            lastChapter: lastc,
+            name: name,
+            imageURL: imageURL,
+            imageURL2: imageURL2,
+          ));
         }
       }
 
@@ -111,26 +97,30 @@ class NeoxServices {
     final Response response = await dio.get(url, options: options);
     final Document document = parse(response.data);
 
+    // final List<Element> elements = document.querySelectorAll('.tab-thumb a');
     final List<Element> elements =
-        document.querySelectorAll('.c-tabs-item div.row');
+        document.querySelectorAll('div.tab-content-wrap > div > div');
 
     for (Element element in elements) {
-      final Element? a = element.querySelector('h3 a');
-      final Element? img = element.querySelector('img');
+      final Element? row = element.querySelector('.row a');
+      if (row == null) continue;
+
+      final String? url = row.attributes['href'];
+      final String? name = row.attributes['title'];
+      final Element? img = row.querySelector('img');
       final Element? lastChapter =
           element.querySelector('span.chapter.font-meta');
-      if (a == null || img == null || lastChapter == null) continue;
+      if (url == null || name == null || img == null || lastChapter == null) {
+        continue;
+      }
 
-      final String url = (a.attributes['href'] ?? '').trim();
-      final String name = a.text.trim();
+      final String imageURL = (img.attributes['src'] ?? '').trim();
       final String lastc =
           lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-      final String imageURL = (img.attributes['data-src'] ?? '').trim();
-
-      final String? srcset = img.attributes['data-srcset'];
-      final String? imageURL2 = srcset == null
+      final String? srcSet = img.attributes['srcset'];
+      final String? imageURL2 = srcSet == null
           ? null
-          : '$srcset,'
+          : '$srcSet,'
               .replaceAll(RegExp(r'([1-9])\w+,'), '')
               .trim()
               .split(' ')
@@ -155,11 +145,11 @@ class NeoxServices {
 
   static Future<Book> bookInfo(String url, String name) async {
     final Dio dio = Dio();
-    Options options = _cacheOptions(subKey: url);
+    final Options options = _cacheOptions(subKey: url);
     dio.interceptors.add(_cacheManager.interceptor);
 
-    Response response = await dio.get(url, options: options);
-    Document document = parse(response.data);
+    final Response response = await dio.get(url, options: options);
+    final Document document = parse(response.data);
 
     final List<Chapter> chapters = [];
     final List<String> categories = [];
@@ -175,7 +165,7 @@ class NeoxServices {
     String? type;
     elements = document.querySelectorAll('.post-content_item');
     elements.removeWhere((element) {
-      return element.querySelector('h5')?.text.trim().toLowerCase() != 'tipo';
+      return element.querySelector('h5')?.text.trim().toLowerCase() != 'type';
     });
 
     if (elements.isNotEmpty) {
@@ -225,16 +215,9 @@ class NeoxServices {
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
 
-    final List<Element> elementstext =
-        document.querySelectorAll('.reading-content p');
-
-    if (elementstext.isNotEmpty) {
-      // elements.forEach((element) {print(element.text); });
-    } else {
-      for (Element element in elements) {
-        final String url = (element.attributes['data-src'] ?? '').trim();
-        if (url.isNotEmpty) content.add(url);
-      }
+    for (Element element in elements) {
+      final String url = (element.attributes['src'] ?? '').trim();
+      if (url.isNotEmpty) content.add(url);
     }
 
     return content;

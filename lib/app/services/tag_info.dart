@@ -16,7 +16,8 @@ String? taginfo(String url) {
     return 'MANGAHOST';
   } else if (url.contains('argosscan')) {
     return 'ARGOS';
-  } else {
-    return null;
+  } else if (url.contains('olympusscanlation')) {
+    return 'Olympusscanlation'.toUpperCase();
   }
+  return '';
 }

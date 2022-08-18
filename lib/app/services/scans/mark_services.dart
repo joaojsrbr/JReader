@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/url.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -41,8 +41,12 @@ class MarkServices {
       for (Element element in elements) {
         final Element? a = element.querySelector('h3 a');
         final Element? img = element.querySelector('img');
-        if (a == null || img == null) continue;
+        final Element? lastChapter =
+            element.querySelector('span.chapter.font-meta');
+        if (a == null || img == null || lastChapter == null) continue;
 
+        final String lastc =
+            lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
         final String imageURL = (img.attributes['src'] ?? '').trim();
@@ -65,6 +69,7 @@ class MarkServices {
             id: toId(name),
             url: url,
             tag: tag,
+            lastChapter: lastc,
             name: name,
             imageURL: imageURL,
             imageURL2: imageURL2,
@@ -97,10 +102,14 @@ class MarkServices {
     for (Element element in elements) {
       final Element? a = element.querySelector('h3 a');
       final Element? img = element.querySelector('img');
-      if (a == null || img == null) continue;
+      final Element? lastChapter =
+          element.querySelector('span.chapter.font-meta');
+      if (a == null || img == null || lastChapter == null) continue;
 
       final String url = (a.attributes['href'] ?? '').trim();
       final String name = a.text.trim();
+      final String lastc =
+          lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
       final String imageURL = (img.attributes['src'] ?? '').trim();
 
       final String? srcset = img.attributes['srcset'];
@@ -119,6 +128,7 @@ class MarkServices {
           id: toId(name),
           url: url,
           name: name,
+          lastChapter: lastc,
           imageURL: imageURL,
           imageURL2: imageURL2,
         ));

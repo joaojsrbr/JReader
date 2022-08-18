@@ -10,7 +10,27 @@ Map<String, dynamic> variablesPopular() {
     "orders": {
       "orders": {"field": "Project.views", "or": "DESC"}
     },
-    "pagination": {"limit": 16}
+    "pagination": {"limit": 19}
+  };
+}
+
+Map<String, dynamic> variablesLatest() {
+  return <String, dynamic>{
+    "filters": {
+      "childExpressions": {
+        "filters": {
+          "field": "Project.id",
+          "op": "GE",
+          "values": ["1"]
+        },
+        "operator": "AND"
+      },
+      "operator": "AND"
+    },
+    "orders": {
+      "orders": {"field": "Project.createAt", "or": "DESC"}
+    },
+    "pagination": {"limit": 16, "page": 1}
   };
 }
 

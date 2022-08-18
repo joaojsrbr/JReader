@@ -188,7 +188,7 @@ class SearchScreen extends GetView<SearchController> {
                       vertical: 8,
                     ),
                     sliver: SliverGrid(
-                      gridDelegate: Grid.sliverDelegate,
+                      gridDelegate: Grid.slivergrid,
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final BookItem book = controller.results[index];

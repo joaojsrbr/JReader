@@ -3,6 +3,7 @@ import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
 class Book {
   final String name;
   final String? type;
+
   final String sinopse;
   final List<String> categories;
   final List<Chapter> chapters;

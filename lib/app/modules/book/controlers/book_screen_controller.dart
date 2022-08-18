@@ -18,18 +18,35 @@ import 'package:get/get.dart';
 
 class BookScreenController extends GetxController {
   final ReceivePort _port = ReceivePort();
-  late ScrollController _scrollController;
+  final CacheManager customCacheManager = CacheManager(
+    Config(
+      'cache-bookscreen',
+      stalePeriod: const Duration(minutes: 10),
+    ),
+  );
 
+  // late ScrollController _scrollController;
+  late Rx<Sort> _sort;
+  late Favorites _favorites;
   late BookItem _bookItem;
 
-  ScrollController get scrollController => _scrollController;
+  Book? _book;
+  RxList<Chapter> _chapters = RxList();
+  RxMap<String, Download> _download = RxMap();
+  RxBool _isLoading = RxBool(true);
+  RxBool onpress = true.obs;
+  // RxBool _pinnedTitle = false.obs;
+
+  // ScrollController get scrollController => _scrollController;
+  // RxBool get pinnedTitle => _pinnedTitle;
+  void Function(dynamic data) get sendListening => _sendListening;
+  Future<void> Function() get getDownloadItem => _getDownloadItem;
   BookItem get bookItem => _bookItem;
   ReceivePort get port => _port;
   Book? get book => _book;
   Favorites get favorites => _favorites;
   RxList<Chapter> get chapters => _chapters;
   RxBool get isLoading => _isLoading;
-  RxBool get pinnedTitle => _pinnedTitle;
   Rx<Sort> get sort => _sort;
   Widget Function() get downloadAllButton => _downloadAllButton;
   RxMap<String, Download> get download => _download;
@@ -56,37 +73,18 @@ class BookScreenController extends GetxController {
     _chapters.value = value;
   }
 
-  void Function(dynamic data) get sendListening => _sendListening;
-  Future<void> Function() get getDownloadItem => _getDownloadItem;
-
-  late Rx<Sort> _sort;
-  late Favorites _favorites;
-  late CacheManager customCacheManager;
-  Book? _book;
-  RxList<Chapter> _chapters = RxList();
-  RxMap<String, Download> _download = RxMap();
-  RxBool _isLoading = RxBool(true);
-  RxBool _pinnedTitle = false.obs;
-  RxBool onpress = true.obs;
-
   @override
   void onInit() {
-    customCacheManager = CacheManager(
-      Config(
-        'cache-bookscreen',
-        stalePeriod: const Duration(minutes: 10),
-      ),
-    );
     _sort = Sort.ASC.obs;
-    _scrollController = ScrollController()..addListener(_scrollListener);
+    // _scrollController = ScrollController()..addListener(_scrollListener);
     super.onInit();
   }
 
   @override
   void onClose() {
-    _scrollController
-      ..removeListener(_scrollListener)
-      ..dispose();
+    // _scrollController
+    //   ..removeListener(_scrollListener)
+    //   ..dispose();
 
     IsolateNameServer.removePortNameMapping(Ports.DOWNLOAD);
     super.onClose();
@@ -103,15 +101,15 @@ class BookScreenController extends GetxController {
     }
   }
 
-  void _scrollListener() {
-    final double imageHeight = (70 * Get.height) / 100;
+  // void _scrollListener() {
+  //   final double imageHeight = (70 * Get.height) / 100;
 
-    if (!_pinnedTitle.value && _scrollController.offset >= imageHeight) {
-      _pinnedTitle.value = true;
-    } else if (_pinnedTitle.value && _scrollController.offset < imageHeight) {
-      _pinnedTitle.value = false;
-    }
-  }
+  //   if (!_pinnedTitle.value && _scrollController.offset >= imageHeight) {
+  //     _pinnedTitle.value = true;
+  //   } else if (_pinnedTitle.value && _scrollController.offset < imageHeight) {
+  //     _pinnedTitle.value = false;
+  //   }
+  // }
 
   bool _downloadedAll() {
     if (_download.length != _chapters.length) return false;
@@ -181,19 +179,21 @@ class BookScreenController extends GetxController {
       );
     }
 
-    bool downloading = false;
+    RxBool downloading = false.obs;
     for (Download item in _download.values) {
       if (!item.finished) {
-        downloading = true;
+        downloading.value = true;
         break;
       }
     }
 
-    return IconButton(
-      icon: downloading
-          ? const Icon(Icons.downloading_rounded)
-          : const Icon(Icons.download_rounded),
-      onPressed: _isLoading.value ? null : _downloadMany,
+    return Obx(
+      () => IconButton(
+        icon: downloading.value
+            ? const Icon(Icons.downloading_rounded)
+            : const Icon(Icons.download_rounded),
+        onPressed: _isLoading.value ? null : _downloadMany,
+      ),
     );
   }
 }

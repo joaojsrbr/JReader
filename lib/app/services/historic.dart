@@ -54,6 +54,7 @@ class Historic {
       store.historic.removeWhere((key, value) => !historic.containsKey(key));
       store.set(historic);
     } catch (e) {
+      // print(e);
       _snackError(context);
     }
   }
