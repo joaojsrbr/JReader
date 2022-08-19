@@ -43,7 +43,6 @@ class HomeScreen extends GetView<HomeController> {
         autoRemove: false,
         didChangeDependencies: (state) {
           _oninit(context);
-          controller.itens.value = controller.itemBookRepository.value;
         },
         builder: (controller) => TabBarView(
           physics: const NeverScrollableScrollPhysics(),
@@ -187,14 +186,17 @@ class HomeDestination extends GetView<HomeController> {
               ),
             ),
           ),
-          Obx(
-            () => LoadingMoreSliverList(
+          controller.obx(
+            onError: (error) => Text(error ?? ''),
+            onLoading: const Center(
+              child: CircularProgressIndicator(),
+            ),
+            (state) => LoadingMoreSliverList(
               SliverListConfig<BookItem>(
                 gridDelegate: Grid.sliverlist,
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                indicatorBuilder: (ctx, indicatorStatus) => indicatorBuilder(
-                    ctx, indicatorStatus, controller.inrefresh.value),
-                sourceList: controller.itemBookRepository.value,
+                indicatorBuilder: indicatorBuilder,
+                sourceList: state!,
                 itemBuilder: (context, book, index) {
                   return BookElement(
                     key: ObjectKey(book.name),
@@ -204,21 +206,48 @@ class HomeDestination extends GetView<HomeController> {
                     headers: book.headers,
                     imageURL: book.imageURL,
                     imageURL2: book.imageURL2,
-                    onTap: () {
-                      Get.toNamed(
-                        RoutesName.BOOK,
-                        arguments: book,
-                      );
-                    },
+                    onTap: () => Get.toNamed(RoutesName.BOOK, arguments: book),
                   );
                 },
               ),
               key: controller.pageStorageKey(
-                ObjectKey(controller.itemBookRepository.string),
+                ObjectKey(state),
                 controller.scans.value.string,
               ),
             ),
           ),
+          // Obx(
+          //   () => LoadingMoreSliverList(
+          //     SliverListConfig<BookItem>(
+          //       gridDelegate: Grid.sliverlist,
+          //       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          //       indicatorBuilder: (ctx, indicatorStatus) => indicatorBuilder(
+          //           ctx, indicatorStatus, controller.inrefresh.value),
+          //       sourceList: controller.itemBookRepository.value,
+          //       itemBuilder: (context, book, index) {
+          //         return BookElement(
+          //           key: ObjectKey(book.name),
+          //           margin: const EdgeInsets.symmetric(horizontal: 4),
+          //           tag: book.tag,
+          //           is18: book.is18,
+          //           headers: book.headers,
+          //           imageURL: book.imageURL,
+          //           imageURL2: book.imageURL2,
+          //           onTap: () {
+          //             Get.toNamed(
+          //               RoutesName.BOOK,
+          //               arguments: book,
+          //             );
+          //           },
+          //         );
+          //       },
+          //     ),
+          //     key: controller.pageStorageKey(
+          //       ObjectKey(controller.itemBookRepository.string),
+          //       controller.scans.value.string,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
