@@ -1,6 +1,14 @@
 # JReader
 
 
+## Screenshots
+
+<p>
+  <img width="24.5%" src="./.github/Screenshot_01.png" />
+  <img width="24.5%" src="./.github/Screenshot_02.png" />
+  <img width="24.5%" src="./.github/Screenshot_03.png" />
+</p>
+
 ## Funcionalidades
 
 - Contas Individuais - Google
