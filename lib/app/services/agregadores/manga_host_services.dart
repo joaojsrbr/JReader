@@ -26,17 +26,17 @@ class MangaHostServices {
     return url.contains(baseURL1) || url.contains(baseURL2);
   }
 
-  static Map<String, String> headers(String url) {
+  static Map<String, String> headers(String url, {String? referer}) {
     String baseURL = baseUrlByUrl(url);
 
     return {
       'Origin': baseURL,
-      'Referer': '$baseURL/',
+      'Referer': '${referer ?? baseURL}/',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'upgrade-insecure-requests': '1',
       'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
     };
   }
 
@@ -123,12 +123,12 @@ class MangaHostServices {
     do {
       try {
         final String subKey = 'find/$value';
-        final String url = '$baseURL/$subKey';
+        final String urlr = '$baseURL/$subKey';
 
         final Dio dio = Dio();
         final Options options = Options(headers: headers(baseURL));
 
-        final Response response = await dio.get(url, options: options);
+        final Response response = await dio.get(urlr, options: options);
         final Document document = parse(response.data);
 
         final List<Element> elements = document.querySelectorAll('main tr');
@@ -144,11 +144,10 @@ class MangaHostServices {
           final String imageURL = (source?.attributes['srcset'] ?? '').trim();
           final String imageURL2 = (img?.attributes['src'] ?? '').trim();
 
-          final bool hasImage = imageURL.isNotEmpty || imageURL2.isNotEmpty;
-
           // final Response response = await dio.get(url, options: options);
 
           final Book number = await bookInfo(url, name);
+
           // final Document document = parse(response.data);
 
           // final Element? lastChapter =
@@ -157,7 +156,10 @@ class MangaHostServices {
           // final String lastc =
           //     lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
 
-          if (url.isNotEmpty && name.isNotEmpty && hasImage) {
+          if (url.isNotEmpty &&
+              name.isNotEmpty &&
+              (imageURL.isNotEmpty || imageURL2.isNotEmpty) &&
+              number.chapters.isNotEmpty) {
             items.add(BookItem(
               id: toId(name),
               url: url,
@@ -173,20 +175,22 @@ class MangaHostServices {
         if (baseURL == baseURL2) break;
 
         baseURL = baseURL2;
-        items = [];
+        return items;
+        // items = [];
       }
     } while (items.isEmpty);
 
     return items;
   }
 
-  static Future<Book> bookInfo(String url, String name) async {
+  static Future<Book> bookInfo(String url, String name,
+      {String? referer}) async {
     String bookURL = url;
     Book? book;
 
     int numberOfAttempts = 0;
 
-    while (numberOfAttempts < 2) {
+    while (numberOfAttempts < 3) {
       numberOfAttempts++;
 
       try {

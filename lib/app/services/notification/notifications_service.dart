@@ -16,7 +16,7 @@ import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
   void _setupNotificaitons2() async {
-    AwesomeNotifications().isNotificationAllowed().then(
+    await AwesomeNotifications().isNotificationAllowed().then(
       (isAllowed) {
         // if (kDebugMode) {
         //   print(isAllowed);
@@ -25,13 +25,40 @@ class NotificationsService extends GetxService {
           Get.dialog(
             AlertDialog(
               backgroundColor: Get.theme.colorScheme.background,
-              title: const Text('Permitir notificações'),
-              content: const Text(
-                  'Nosso aplicativo gostaria de enviar notificações.'),
+              title: const Text(
+                'Nosso aplicativo gostaria de enviar notificações',
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/animated-bell.gif',
+                    colorBlendMode: BlendMode.color,
+                    color: Colors.transparent,
+                    fit: BoxFit.fitWidth,
+                    height: Get.height * 0.3,
+                  )
+                ],
+              ),
+              // actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
               actionsAlignment: MainAxisAlignment.spaceEvenly,
               actions: [
-                TextButton(
-                  autofocus: true,
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Negar',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
                   onPressed: () => AwesomeNotifications()
                       .requestPermissionToSendNotifications()
                       .then(
@@ -41,21 +68,9 @@ class NotificationsService extends GetxService {
                     'Permitir',
                     style: TextStyle(
                       // color: Colors.teal,
+                      color: Colors.deepPurple,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Navigator.pop(context);
-                    Get.back();
-                  },
-                  child: const Text(
-                    'Mais tarde',
-                    style: TextStyle(
-                      // color: Colors.grey,
-                      fontSize: 18,
                     ),
                   ),
                 ),
@@ -103,8 +118,10 @@ class NotificationsService extends GetxService {
       content: NotificationContent(
         // id: int.parse(lastAdded.totalChapters),
         id: lastAdded.hashCode,
+
         notificationLayout: NotificationLayout.BigPicture,
         channelKey: 'manga_notifications',
+        roundedBigPicture: true,
         payload: {
           "id": toId(lastAdded.name),
           "url": item['url'],
@@ -126,14 +143,20 @@ class NotificationsService extends GetxService {
   @override
   void onReady() async {
     _setupNotificaitons2();
-    Timer.periodic(
-      const Duration(minutes: 5),
-      (timer) async {
-        if (isSucess) {
-          await checkChapter();
-        }
-      },
-    );
+    if (isSucess) {
+      Timer.periodic(
+        const Duration(minutes: 5),
+        (timer) async {
+          await AwesomeNotifications().isNotificationAllowed().then(
+            (value) async {
+              if (value) {
+                await checkChapter();
+              }
+            },
+          );
+        },
+      );
+    }
 
     super.onReady();
   }
@@ -177,8 +200,8 @@ class NotificationsService extends GetxService {
 
       for (DataSnapshot element in snapshot.children) {
         final item = element.value as Map<dynamic, dynamic>;
-        Book? lastAdded = await bookInfo(item['url'], item['name']);
         final String name = item['name'];
+        Book? lastAdded = await bookInfo(item['url'], name);
         if (lastAdded == null) continue;
 
         totalChapters = int.tryParse(lastAdded.totalChapters) ??
@@ -189,12 +212,14 @@ class NotificationsService extends GetxService {
 
         if (totalChapters == null || lastChapter == null) continue;
 
-        if (lastAdded.name.contains(name)) {
+        if (lastAdded.name == name) {
           if (item.containsKey('lastChapter')) {
             if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
-                    'igual - name: ${lastAdded.name} - $totalChapters - $lastChapter - ${item['url']}');
+                    'totalChapters: $totalChapters - lastChapter: $lastChapter');
+                // print(
+                //     'igual - name: ${lastAdded.name} - $totalChapters - $lastChapter - ${item['url']}');
               }
             } else if (totalChapters > lastChapter) {
               final DatabaseReference bookRef =
@@ -220,9 +245,9 @@ class NotificationsService extends GetxService {
         }
       }
       isSucess = true;
-    } catch (e) {
+    } catch (e, stacktrace) {
       if (kDebugMode) {
-        print(e);
+        print(stacktrace);
       }
     }
   }

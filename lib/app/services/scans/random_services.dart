@@ -107,7 +107,7 @@ class RandomServices {
           lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
       final String imageURL = (img.attributes['data-src'] ?? '').trim();
 
-      final String? srcset = img.attributes['srcset'];
+      final String? srcset = img.attributes['data-srcset'];
       final String? imageURL2 = srcset == null
           ? null
           : '$srcset,'

@@ -63,7 +63,7 @@ class HomeController extends GetxController
     destinationSelected.value = value;
     tabController.animateTo(
       value,
-      curve: Curves.linear,
+      curve: Curves.fastOutSlowIn,
       // curve: Curves.ease,
     );
   }
@@ -153,7 +153,6 @@ class HomeController extends GetxController
   }
 
   Future<void> onRefresh() async {
-    // inrefresh.value = false;
     RxStatus.loading();
     await itemBookRepository.refresh(true);
     RxStatus.success();
@@ -163,9 +162,7 @@ class HomeController extends GetxController
   void onClose() {
     itemBookRepository.dispose();
     scrollController.dispose();
-
     tabController.dispose();
-
     super.onClose();
   }
 }

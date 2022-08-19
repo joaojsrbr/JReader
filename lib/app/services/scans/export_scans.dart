@@ -1,3 +1,6 @@
+export '../agregadores/manga_host_services.dart';
+export '../agregadores/manga_livre_services.dart';
+
 export 'argos_services.dart';
 export 'cronos_services.dart';
 export 'mark_services.dart';
