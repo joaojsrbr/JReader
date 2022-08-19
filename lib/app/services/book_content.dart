@@ -21,7 +21,7 @@ Future<List<String>> bookContent(String url) async {
     return await PrismaServices.getContent(url);
   } else if (url.contains('reaperscans')) {
     return await ReaperServices.getContent(url);
-  } else if (url.contains('mangahosted') || url.contains('mangahost4')) {
+  } else if (url.contains('mangahosted') || url.contains('mangahostz')) {
     return MangaHostServices.getContent(url);
   } else if (url.contains('argosscan')) {
     return ArgosService.getContent(url);

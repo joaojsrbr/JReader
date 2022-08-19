@@ -15,6 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
+  // @override
+  // void onInit() async {
+  //   await checkChapter();
+  //   super.onInit();
+  // }
+
   void _setupNotificaitons2() async {
     await AwesomeNotifications().isNotificationAllowed().then(
       (isAllowed) {
@@ -203,12 +209,14 @@ class NotificationsService extends GetxService {
         Book? lastAdded = await bookInfo(item['url'], name);
         if (lastAdded == null) continue;
 
-        totalChapters = lastAdded.chapters.length;
+        // totalChapters = lastAdded.chapters.length;
+        totalChapters = int.tryParse(lastAdded.totalChapters) ??
+            double.tryParse(lastAdded.totalChapters);
 
         lastChapter = int.tryParse(item['lastChapter']) ??
             double.tryParse(item['lastChapter']);
 
-        if (lastChapter == null) continue;
+        if (lastChapter == null || totalChapters == null) continue;
 
         if (lastAdded.name == name) {
           if (item.containsKey('lastChapter')) {
