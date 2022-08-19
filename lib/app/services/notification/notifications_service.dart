@@ -15,12 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
-  @override
-  void onInit() async {
-    await checkChapter();
-    super.onInit();
-  }
-
   void _setupNotificaitons2() async {
     await AwesomeNotifications().isNotificationAllowed().then(
       (isAllowed) {
