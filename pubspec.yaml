@@ -83,6 +83,7 @@ flutter:
     - assets/
     - assets/images/logo.svg
     - assets/images/logo3.png
+    - assets/images/animated-bell.gif
   fonts:
     - family: iconsax
       fonts:

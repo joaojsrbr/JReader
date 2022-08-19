@@ -104,10 +104,10 @@ class PrismaServices {
 
       final String url = (a.attributes['href'] ?? '').trim();
       final String name = a.text.trim();
-      final String imageURL = (img.attributes['src'] ?? '').trim();
+      final String imageURL = (img.attributes['data-src'] ?? '').trim();
       final String lastc =
           lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-      final String? srcset = img.attributes['srcset'];
+      final String? srcset = img.attributes['data-srcset'];
       final String? imageURL2 = srcset == null
           ? null
           : '$srcset,'
@@ -119,14 +119,16 @@ class PrismaServices {
               .trim();
 
       if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
-        items.add(BookItem(
-          id: toId(name),
-          lastChapter: lastc,
-          url: url,
-          name: name,
-          imageURL: imageURL,
-          imageURL2: imageURL2,
-        ));
+        items.add(
+          BookItem(
+            id: toId(name),
+            lastChapter: lastc,
+            url: url,
+            name: name,
+            imageURL: imageURL,
+            imageURL2: imageURL2,
+          ),
+        );
       }
     }
 
