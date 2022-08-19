@@ -14,7 +14,8 @@ import 'package:com_joaojsrbr_reader/app/repository/repository_export.dart';
 import 'package:com_joaojsrbr_reader/app/services/version/version_service.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/app_update_dialog.dart';
 
-class HomeController extends GetxController with GetTickerProviderStateMixin {
+class HomeController extends GetxController
+    with GetTickerProviderStateMixin, StateMixin<LoadingMoreBase<BookItem>> {
   final CacheManager customCacheManager = CacheManager(
     Config(
       'Manga-Image-c',
@@ -28,11 +29,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   RxString title = 'Neox - Últimos adicionados'.obs;
   Rx<Providers> scans = Providers.NEOX.obs;
   RxBool inrefresh = true.obs;
-  RxList<BookItem> itens = RxList();
+
   RxInt destinationSelected = 0.obs;
 
   late ScrollController scrollController;
-  late Rx<LoadingMoreBase<BookItem>> itemBookRepository;
+  late LoadingMoreBase<BookItem> itemBookRepository;
   late List<LoadingMoreBase<BookItem>> repositories;
   late TabController tabController;
 
@@ -49,7 +50,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       OlympusRepository(),
     ];
 
-    itemBookRepository = Rx(repositories[0]);
+    itemBookRepository = repositories[0];
+    change(itemBookRepository, status: RxStatus.success());
   }
 
   Future<void> _handleStartDownload() async {
@@ -71,46 +73,48 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     switch (scans.value) {
       case Providers.NEOX:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookRepository.value = repositories[0];
-
+        itemBookRepository = repositories[0];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.MARK:
         title.value = '${scans.value.string}  - Últimos adicionados';
-        itemBookRepository.value = repositories[1];
+        itemBookRepository = repositories[1];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.RANDOM:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookRepository.value = repositories[2];
-
+        itemBookRepository = repositories[2];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.CRONOS:
         title.value = '${scans.value.string} - Últimos adicionados';
-
-        itemBookRepository.value = repositories[3];
+        change(itemBookRepository, status: RxStatus.success());
+        itemBookRepository = repositories[3];
         break;
       case Providers.PRISMA:
         title.value = '${scans.value.string} - Últimos adicionados';
-
-        itemBookRepository.value = repositories[4];
+        itemBookRepository = repositories[4];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.REAPER:
         title.value = '${scans.value.string} - Últimos adicionados';
-
-        itemBookRepository.value = repositories[5];
+        itemBookRepository = repositories[5];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.MANGA_HOST:
         title.value = '${scans.value.string} - Últimos adicionados';
-
-        itemBookRepository.value = repositories[6];
+        itemBookRepository = repositories[6];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.ARGOS:
         title.value = '${scans.value.string} - Popular';
-
-        itemBookRepository.value = repositories[7];
+        itemBookRepository = repositories[7];
+        change(itemBookRepository, status: RxStatus.success());
         break;
       case Providers.OLYMPUS:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookRepository.value = repositories[8];
+        itemBookRepository = repositories[8];
+        change(itemBookRepository, status: RxStatus.success());
         break;
     }
   }
@@ -149,14 +153,15 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   Future<void> onRefresh() async {
-    inrefresh.value = false;
-    await itemBookRepository.value.refresh(true);
-    inrefresh.value = true;
+    // inrefresh.value = false;
+    RxStatus.loading();
+    await itemBookRepository.refresh(true);
+    RxStatus.success();
   }
 
   @override
   void onClose() {
-    itemBookRepository.value.dispose();
+    itemBookRepository.dispose();
     scrollController.dispose();
 
     tabController.dispose();

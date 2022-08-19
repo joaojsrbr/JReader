@@ -29,6 +29,7 @@ class NeoxRepository extends LoadingMoreBase<BookItem> {
       lista.value = await NeoxServices.lastAdded;
       await Future.delayed(const Duration(milliseconds: 350));
       for (var item in lista) {
+        print(item.name);
         if (!contains(item)) {
           add(item);
         }

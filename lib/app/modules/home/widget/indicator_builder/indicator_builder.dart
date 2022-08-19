@@ -1,12 +1,14 @@
+import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 Widget indicatorBuilder(
   BuildContext context,
   IndicatorStatus status,
-  bool load,
 ) {
+  final load = Get.find<HomeController>().inrefresh;
   Widget _setbackground(
       bool full, Widget widget, double height, BuildContext context) {
     widget = Container(
@@ -68,7 +70,7 @@ Widget indicatorBuilder(
       // }
       break;
     case IndicatorStatus.fullScreenBusying:
-      widget = load
+      widget = load.value
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
