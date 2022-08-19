@@ -62,60 +62,6 @@ class NotificationsService extends GetxService {
               ],
             ),
           );
-          // showDialog(
-          //   context: scaffoldKey.currentState!.context,
-          //   builder: (context) => AlertDialog(
-          //     // backgroundColor: const Color(0xfffbfbfb),
-          //     backgroundColor: Get.theme.colorScheme.background,
-          //     title: const Text(
-          //       'Get Notified!',
-          //       maxLines: 2,
-          //       textAlign: TextAlign.center,
-          //       style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.w600),
-          //     ),
-          //     content: Column(
-          //       mainAxisSize: MainAxisSize.min,
-          //       children: [
-          //         Image.asset(
-          //           'assets/images/animated-bell.gif',
-          //           height: MediaQuery.of(context).size.height * 0.3,
-          //           fit: BoxFit.fitWidth,
-          //         ),
-          //         const Text(
-          //           'Allow Awesome Notifications to send you beautiful notifications!',
-          //           maxLines: 4,
-          //           textAlign: TextAlign.center,
-          //         ),
-          //       ],
-          //     ),
-          //     actions: [
-          //       TextButton(
-          //           onPressed: () {
-          //             Navigator.pop(context);
-          //           },
-          //           child: const Text(
-          //             'Later',
-          //             style: TextStyle(color: Colors.grey, fontSize: 18),
-          //           )),
-          //       TextButton(
-          //         onPressed: () async {
-          //           isAllowed = await AwesomeNotifications()
-          //               .requestPermissionToSendNotifications();
-          //           Navigator.pop(context);
-          //         },
-          //         child: const Text(
-          //           'Allow',
-          //           style: TextStyle(
-          //               color: Colors.deepPurple,
-          //               fontSize: 18,
-          //               fontWeight: FontWeight.bold),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // );
-
-          // AwesomeNotifications().requestPermissionToSendNotifications();
         }
       },
     );
@@ -151,6 +97,32 @@ class NotificationsService extends GetxService {
   }
 
   bool isSucess = true;
+
+  void createNotification(Book lastAdded, Map<dynamic, dynamic> item) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        // id: int.parse(lastAdded.totalChapters),
+        id: lastAdded.hashCode,
+        notificationLayout: NotificationLayout.BigPicture,
+        channelKey: 'manga_notifications',
+        payload: {
+          "id": toId(lastAdded.name),
+          "url": item['url'],
+          "imageURL": item['imageURL'],
+          "imageURL2": item['imageURL2'],
+          "name": lastAdded.name,
+          "tag": lastAdded.type ?? item['tag'],
+          "lastChapter": lastAdded.totalChapters,
+        },
+
+        wakeUpScreen: true,
+        body: 'Capítulo Novo: ${lastAdded.totalChapters}',
+        bigPicture: item['imageURL2'] ?? item['imageURL'],
+        title: lastAdded.name,
+      ),
+    );
+  }
+
   @override
   void onReady() async {
     _setupNotificaitons2();
@@ -158,7 +130,7 @@ class NotificationsService extends GetxService {
       const Duration(minutes: 5),
       (timer) async {
         if (isSucess) {
-          await neoxCheckChapter();
+          await checkChapter();
         }
       },
     );
@@ -193,36 +165,43 @@ class NotificationsService extends GetxService {
     return favoritesRef;
   }
 
-  Future<void> neoxCheckChapter() async {
+  Future<void> checkChapter() async {
     if (ref == null) return;
-    isSucess = false;
 
     try {
+      isSucess = false;
+      late num? totalChapters;
+      late num? lastChapter;
       final DataSnapshot snapshot = await ref!.get();
       if (!snapshot.exists) return;
 
       for (DataSnapshot element in snapshot.children) {
         final item = element.value as Map<dynamic, dynamic>;
         Book? lastAdded = await bookInfo(item['url'], item['name']);
+        final String name = item['name'];
         if (lastAdded == null) continue;
 
-        if (lastAdded.name == item['name']) {
+        totalChapters = int.tryParse(lastAdded.totalChapters) ??
+            double.tryParse(lastAdded.totalChapters);
+
+        lastChapter = int.tryParse(item['lastChapter']) ??
+            double.tryParse(item['lastChapter']);
+
+        if (totalChapters == null || lastChapter == null) continue;
+
+        if (lastAdded.name.contains(name)) {
           if (item.containsKey('lastChapter')) {
-            if (item['lastChapter'] == lastAdded.totalChapters) {
+            if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
-                    'igual - name: ${lastAdded.name} - ${lastAdded.totalChapters} - ${item['lastChapter']} - ${item['url']}');
+                    'igual - name: ${lastAdded.name} - $totalChapters - $lastChapter - ${item['url']}');
               }
-
-              // isSucess = true;
-            } else if (int.parse(lastAdded.totalChapters) >
-                int.parse(item['lastChapter'])) {
-              // isSucess = true;
+            } else if (totalChapters > lastChapter) {
               final DatabaseReference bookRef =
                   ref!.child(toId(lastAdded.name));
 
               if (kDebugMode) {
-                print('${lastAdded.totalChapters} > ${item['lastChapter']}');
+                print('$totalChapters > $lastChapter');
               }
               bookRef.set(
                 BookItem(
@@ -232,32 +211,10 @@ class NotificationsService extends GetxService {
                   imageURL2: item['imageURL2'],
                   name: lastAdded.name,
                   tag: lastAdded.type ?? item['tag'],
-                  lastChapter: lastAdded.totalChapters,
+                  lastChapter: '$totalChapters',
                 ).toMap,
               );
-
-              AwesomeNotifications().createNotification(
-                content: NotificationContent(
-                  // id: int.parse(lastAdded.totalChapters),
-                  id: lastAdded.hashCode,
-                  notificationLayout: NotificationLayout.BigPicture,
-                  channelKey: 'manga_notifications',
-                  payload: {
-                    "id": toId(lastAdded.name),
-                    "url": item['url'],
-                    "imageURL": item['imageURL'],
-                    "imageURL2": item['imageURL2'],
-                    "name": lastAdded.name,
-                    "tag": lastAdded.type ?? item['tag'],
-                    "lastChapter": lastAdded.totalChapters,
-                  },
-
-                  wakeUpScreen: true,
-                  body: 'Capítulo Novo: ${lastAdded.totalChapters}',
-                  bigPicture: item['imageURL2'] ?? item['imageURL'],
-                  title: lastAdded.name,
-                ),
-              );
+              createNotification(lastAdded, item);
             }
           }
         }
