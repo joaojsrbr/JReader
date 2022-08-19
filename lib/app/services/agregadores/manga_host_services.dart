@@ -28,10 +28,10 @@ class MangaHostServices {
 
   static Map<String, String> headers(String url, {String? referer}) {
     String baseURL = baseUrlByUrl(url);
-
+    String referers = referer ?? baseURL;
     return {
       'Origin': baseURL,
-      'Referer': '${referer ?? baseURL}/',
+      'Referer': '$referers/',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'upgrade-insecure-requests': '1',
@@ -67,7 +67,7 @@ class MangaHostServices {
         for (Element element in elements) {
           final Element? a = element.querySelector('h4 a');
           final Element? img = element.querySelector('img');
-          final Element? lastChapter = element.querySelector('.chapters');
+          final Element? lastChapter = element.querySelector('.chapters a');
           final Element? source = element.querySelector('source');
           if (a == null ||
               (source == null && img == null) ||
@@ -126,7 +126,8 @@ class MangaHostServices {
         final String urlr = '$baseURL/$subKey';
 
         final Dio dio = Dio();
-        final Options options = Options(headers: headers(baseURL));
+        final Options options =
+            Options(headers: headers(baseURL, referer: urlr));
 
         final Response response = await dio.get(urlr, options: options);
         final Document document = parse(response.data);
@@ -146,8 +147,6 @@ class MangaHostServices {
 
           // final Response response = await dio.get(url, options: options);
 
-          final Book number = await bookInfo(url, name);
-
           // final Document document = parse(response.data);
 
           // final Element? lastChapter =
@@ -158,25 +157,25 @@ class MangaHostServices {
 
           if (url.isNotEmpty &&
               name.isNotEmpty &&
-              (imageURL.isNotEmpty || imageURL2.isNotEmpty) &&
-              number.chapters.isNotEmpty) {
-            items.add(BookItem(
-              id: toId(name),
-              url: url,
-              name: name,
-              lastChapter: number.chapters.first.name,
-              headers: headers(url),
-              imageURL: imageURL.isEmpty ? imageURL2 : imageURL,
-              imageURL2: imageURL2,
-            ));
+              (imageURL.isNotEmpty || imageURL2.isNotEmpty)) {
+            items.add(
+              BookItem(
+                id: toId(name),
+                url: url,
+                name: name,
+                headers: headers(url),
+                imageURL: imageURL.isEmpty ? imageURL2 : imageURL,
+                imageURL2: imageURL2,
+              ),
+            );
           }
         }
       } catch (_) {
         if (baseURL == baseURL2) break;
 
         baseURL = baseURL2;
-        return items;
-        // items = [];
+
+        items = [];
       }
     } while (items.isEmpty);
 
@@ -185,7 +184,7 @@ class MangaHostServices {
 
   static Future<Book> bookInfo(String url, String name,
       {String? referer}) async {
-    String bookURL = url;
+    String bookURL = referer ?? url;
     Book? book;
 
     int numberOfAttempts = 0;
