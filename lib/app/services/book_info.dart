@@ -22,7 +22,7 @@ Future<Book?> bookInfo(String url, String name) async {
     return await PrismaServices.bookInfo(url, name);
   } else if (url.contains('reaperscans')) {
     return await ReaperServices.bookInfo(url, name);
-  } else if (url.contains('mangahosted') || url.contains('mangahost4')) {
+  } else if (url.contains('mangahosted') || url.contains('mangahostz')) {
     return await MangaHostServices.bookInfo(url, name);
   } else if (url.contains('argosscan')) {
     return await ArgosService.bookInfo(url, name);

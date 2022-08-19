@@ -15,6 +15,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
+  @override
+  void onInit() async {
+    await checkChapter();
+    super.onInit();
+  }
+
   void _setupNotificaitons2() async {
     await AwesomeNotifications().isNotificationAllowed().then(
       (isAllowed) {
@@ -121,7 +127,6 @@ class NotificationsService extends GetxService {
 
         notificationLayout: NotificationLayout.BigPicture,
         channelKey: 'manga_notifications',
-        roundedBigPicture: true,
         payload: {
           "id": toId(lastAdded.name),
           "url": item['url'],
@@ -204,20 +209,19 @@ class NotificationsService extends GetxService {
         Book? lastAdded = await bookInfo(item['url'], name);
         if (lastAdded == null) continue;
 
-        totalChapters = int.tryParse(lastAdded.totalChapters) ??
-            double.tryParse(lastAdded.totalChapters);
+        totalChapters = lastAdded.chapters.length;
 
         lastChapter = int.tryParse(item['lastChapter']) ??
             double.tryParse(item['lastChapter']);
 
-        if (totalChapters == null || lastChapter == null) continue;
+        if (lastChapter == null) continue;
 
         if (lastAdded.name == name) {
           if (item.containsKey('lastChapter')) {
             if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
-                    'totalChapters: $totalChapters - lastChapter: $lastChapter');
+                    'name: ${lastAdded.name} totalChapters: $totalChapters - lastChapter: $lastChapter');
                 // print(
                 //     'igual - name: ${lastAdded.name} - $totalChapters - $lastChapter - ${item['url']}');
               }
@@ -241,6 +245,19 @@ class NotificationsService extends GetxService {
               );
               createNotification(lastAdded, item);
             }
+          } else {
+            final DatabaseReference bookRef = ref!.child(toId(lastAdded.name));
+            bookRef.set(
+              BookItem(
+                id: toId(lastAdded.name),
+                url: item['url'],
+                imageURL: item['imageURL'],
+                imageURL2: item['imageURL2'],
+                name: lastAdded.name,
+                tag: lastAdded.type ?? item['tag'],
+                lastChapter: '$totalChapters',
+              ).toMap,
+            );
           }
         }
       }
