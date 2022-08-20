@@ -216,10 +216,10 @@ class NotificationsService extends GetxService {
         lastChapter = int.tryParse(item['lastChapter']) ??
             double.tryParse(item['lastChapter']);
 
-        if (lastChapter == null || totalChapters == null) continue;
 
         if (lastAdded.name == name) {
-          if (item.containsKey('lastChapter')) {
+          if (item.containsKey('lastChapter')) {  
+           if (lastChapter == null || totalChapters == null) continue;
             if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
