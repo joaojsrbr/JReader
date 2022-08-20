@@ -218,8 +218,8 @@ class NotificationsService extends GetxService {
 
 
         if (lastAdded.name == name) {
-          if (item.containsKey('lastChapter')) {
-        if (lastChapter == null || totalChapters == null) continue;
+          if (item.containsKey('lastChapter')) {  
+           if (lastChapter == null || totalChapters == null) continue;
             if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
