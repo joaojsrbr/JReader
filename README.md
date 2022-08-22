@@ -50,8 +50,9 @@ Apos configurar o firebase, é so rodar o app com o comando
 flutter run 
 ```
 
-### Folder Structure
-Here is the core folder structure which flutter provides.
+### Estrutura de pastas
+
+Aqui está a estrutura de pastas principal que o flutter fornece.
 
 ```
 flutter-app/
@@ -61,7 +62,7 @@ flutter-app/
 |- lib
 ```
 
-Here is the folder structure we have been using in this project
+Aqui está a estrutura de pastas que estamos usando neste projeto.
 
 ```
 lib/
