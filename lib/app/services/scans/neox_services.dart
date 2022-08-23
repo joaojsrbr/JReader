@@ -20,6 +20,7 @@ class NeoxServices {
     return buildCacheOptions(
       const Duration(days: 15),
       subKey: subKey,
+      // options: Options(headers: headers),
       forceRefresh: forceRefresh ?? true,
     );
     // options: Options(headers: headers));
@@ -27,13 +28,12 @@ class NeoxServices {
 
   static Map<String, String> get headers {
     return {
-      'Origin': 'https://neoxscans.net/',
-      'Referer': 'https://neoxscans.net/',
-      'accept':
-          'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+      'Referer': '$baseURL/',
       'upgrade-insecure-requests': '1',
+      'accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
     };
   }
 
@@ -63,10 +63,10 @@ class NeoxServices {
         final String name = a.text.trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String imageURL = (img.attributes['data-src'] ?? '').trim();
+        final String imageURL = (img.attributes['src'] ?? '').trim();
         final String? tag = element.querySelector('span')?.text.trim();
 
-        final String? srcset = img.attributes['data-srcset'];
+        final String? srcset = img.attributes['srcset'];
         final String? imageURL2 = srcset == null
             ? null
             : '$srcset,'
