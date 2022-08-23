@@ -8,45 +8,52 @@ import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
+import 'package:http/http.dart' as http;
 
 class PrismaServices {
   static String get baseURL => Strings.prismaURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
-    CacheConfig(baseUrl: baseURL),
+    CacheConfig(
+      baseUrl: baseURL,
+    ),
   );
 
   static Options _cacheOptions({String? subKey, bool? forceRefresh}) {
     return buildCacheOptions(
       const Duration(days: 15),
       subKey: subKey,
-      options: Options(
-        headers: headers(),
-      ),
       forceRefresh: forceRefresh ?? true,
     );
   }
 
-  static Map<String, String> headers() {
+  static Map<String, String> get headers {
     return {
-      'Referer': '$baseURL/',
+      'upgrade-insecure-requests': '1',
+      'origin': 'https://prismascans.net',
+      'cookie':
+          'cf_clearance=vwyUVoHs7_L438riDeP_87JeETyjl43af3OG7UMe6F0-1661284746-0-150',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-      'upgrade-insecure-requests': '1',
       'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
     };
   }
 
   static Future<List<BookItem>> get lastAdded async {
     try {
       final List<BookItem> items = [];
+      // final response = await http.get(
+      //   Uri.parse(baseURL),
+      //   headers: headers,
+      // );
 
       final Dio dio = Dio();
       final Options options = _cacheOptions();
       dio.interceptors.add(_cacheManager.interceptor);
 
       final Response response = await dio.get(baseURL, options: options);
+
       final Document document = parse(response.data);
 
       final List<Element> elements =
@@ -61,11 +68,11 @@ class PrismaServices {
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
-        final String imageURL = (img.attributes['data-src'] ?? '').trim();
+        final String imageURL = (img.attributes['src'] ?? '').trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
 
-        final String? srcset = img.attributes['srcset'];
+        final String? srcset = img.attributes['data-srcset'];
         final String? imageURL2 = srcset == null
             ? null
             : '$srcset,'
@@ -82,6 +89,7 @@ class PrismaServices {
             url: url,
             lastChapter: lastc,
             name: name,
+            headers: headers,
             imageURL: imageURL,
             imageURL2: imageURL2,
           ));
@@ -89,7 +97,8 @@ class PrismaServices {
       }
 
       return items;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print(stackTrace);
       return [];
     }
   }
@@ -119,10 +128,10 @@ class PrismaServices {
 
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
-        final String imageURL = (img.attributes['data-src'] ?? '').trim();
+        final String imageURL = (img.attributes['src'] ?? '').trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String? srcset = img.attributes['data-srcset'];
+        final String? srcset = img.attributes['srcset'];
         final String? imageURL2 = srcset == null
             ? null
             : '$srcset,'

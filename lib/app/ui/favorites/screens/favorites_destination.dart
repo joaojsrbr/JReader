@@ -33,11 +33,11 @@ class FavoritesDestination extends GetView<FavoritesController> {
               leadingWidth: 0,
               snap: false,
               floating: false,
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                centerTitle: true,
-                background: TextField(),
-              ),
+              // flexibleSpace: FlexibleSpaceBar(
+              //   collapseMode: CollapseMode.parallax,
+              //   centerTitle: true,
+              //   background: TextField(),
+              // ),
             ),
             Observer(
               builder: (context) {
