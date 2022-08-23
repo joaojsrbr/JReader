@@ -3,18 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:com_joaojsrbr_reader/app/modules/about/screens/about_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/book/bindings/book_screen_binding.dart';
-import 'package:com_joaojsrbr_reader/app/modules/book/screens/book_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/favorites/screens/favorites_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/home/bindings/home_binding.dart';
-import 'package:com_joaojsrbr_reader/app/modules/home/screens/home_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/login/bindings/login_binding.dart';
-import 'package:com_joaojsrbr_reader/app/modules/login/screens/login_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/reader/bindings/reader_binding.dart';
-import 'package:com_joaojsrbr_reader/app/modules/reader/screens/reader_screen.dart';
-import 'package:com_joaojsrbr_reader/app/modules/search/bindings/search_binding.dart';
-import 'package:com_joaojsrbr_reader/app/modules/search/screens/search_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/about/screens/about_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/book/bindings/book_screen_binding.dart';
+import 'package:com_joaojsrbr_reader/app/ui/book/screens/book_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/favorites/screens/favorites_destination.dart';
+import 'package:com_joaojsrbr_reader/app/ui/home/bindings/home_binding.dart';
+import 'package:com_joaojsrbr_reader/app/ui/home/screens/home_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/login/bindings/login_binding.dart';
+import 'package:com_joaojsrbr_reader/app/ui/login/screens/login_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/reader/bindings/reader_binding.dart';
+import 'package:com_joaojsrbr_reader/app/ui/reader/screens/reader_screen.dart';
+import 'package:com_joaojsrbr_reader/app/ui/search/bindings/search_binding.dart';
+import 'package:com_joaojsrbr_reader/app/ui/search/screens/search_screen.dart';
 
 class RoutesName {
   static const LOGIN = '/login';
@@ -62,7 +62,7 @@ abstract class AppPages {
     GetPage(
       name: RoutesName.FAVORITES,
       curve: Curves.linear,
-      page: () => const FavoritesScreen(),
+      page: () => const FavoritesDestination(),
     ),
     GetPage(
       curve: Curves.linear,

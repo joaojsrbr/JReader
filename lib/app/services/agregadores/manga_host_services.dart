@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -10,8 +10,9 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class MangaHostServices {
-  static String get baseURL1 => mangaHostURL1;
-  static String get baseURL2 => mangaHostURL2;
+  static String get baseURL1 => Strings.mangaHostURL1;
+  static String get baseURL2 => Strings.mangaHostURL2;
+  static String get baseURL3 => Strings.mangaHostURL2;
 
   static DioCacheManager _cacheManager(String baseUrl) {
     return DioCacheManager(CacheConfig(baseUrl: baseUrl));
@@ -19,24 +20,30 @@ class MangaHostServices {
 
   static String baseUrlByUrl(String url) {
     if (url.contains(baseURL2)) return baseURL2;
+    if (url.contains(baseURL3)) return baseURL3;
     return baseURL1;
   }
 
   static bool isMH(String url) {
-    return url.contains(baseURL1) || url.contains(baseURL2);
+    return url.contains(baseURL1) ||
+        url.contains(baseURL2) ||
+        url.contains(baseURL3);
   }
 
-  static Map<String, String> headers(String url, {String? referer}) {
+  static Map<String, String> headers(
+    String url, {
+    String? referer,
+  }) {
     String baseURL = baseUrlByUrl(url);
-    String referers = referer ?? baseURL;
+    final String referer1 = referer ?? baseURL;
     return {
       'Origin': baseURL,
-      'Referer': '$referers/',
+      'Referer': '$referer1/',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'upgrade-insecure-requests': '1',
       'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
     };
   }
 
@@ -85,30 +92,35 @@ class MangaHostServices {
           final String imageURL2 = (img?.attributes['src'] ?? '')
               .trim()
               .replaceAll(r'xmedium', 'full');
-          // var temp2 = imageURL.replaceAll(r'xmedium', 'full');
-          // var temp  = imageURL2.replaceAll(r'xmedium', 'full');
 
           final bool is18 = element.querySelector('.age-18') != null;
 
           final bool hasImage = imageURL.isNotEmpty || imageURL2.isNotEmpty;
 
           if (url.isNotEmpty && name.isNotEmpty && hasImage && !is18) {
-            items.add(BookItem(
-              id: toId(name),
-              url: url,
-              name: name,
-              is18: is18,
-              lastChapter: lastc,
-              headers: headers(url),
-              imageURL: imageURL.isEmpty ? imageURL2 : imageURL,
-              imageURL2: imageURL2,
-            ));
+            items.add(
+              BookItem(
+                id: toId(name),
+                url: url,
+                name: name,
+                is18: is18,
+                lastChapter: lastc,
+                headers: headers(url),
+                imageURL: imageURL.isEmpty ? imageURL2 : imageURL,
+                imageURL2: imageURL2,
+              ),
+            );
           }
         }
       } catch (e) {
-        if (baseURL == baseURL2) break;
+        if (baseURL == baseURL1) {
+          baseURL = baseURL2;
+        } else if (baseURL == baseURL2) {
+          baseURL = baseURL3;
+        } else if (baseURL == baseURL3) {
+          break;
+        }
 
-        baseURL = baseURL2;
         items = [];
       }
     } while (items.isEmpty);
@@ -145,16 +157,6 @@ class MangaHostServices {
           final String imageURL = (source?.attributes['srcset'] ?? '').trim();
           final String imageURL2 = (img?.attributes['src'] ?? '').trim();
 
-          // final Response response = await dio.get(url, options: options);
-
-          // final Document document = parse(response.data);
-
-          // final Element? lastChapter =
-          //     document.querySelector('section div.chapters div.cap');
-          // if (lastChapter == null) continue;
-          // final String lastc =
-          //     lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-
           if (url.isNotEmpty &&
               name.isNotEmpty &&
               (imageURL.isNotEmpty || imageURL2.isNotEmpty)) {
@@ -171,9 +173,13 @@ class MangaHostServices {
           }
         }
       } catch (_) {
-        if (baseURL == baseURL2) break;
-
-        baseURL = baseURL2;
+        if (baseURL == baseURL1) {
+          baseURL = baseURL2;
+        } else if (baseURL == baseURL2) {
+          baseURL = baseURL3;
+        } else if (baseURL == baseURL3) {
+          break;
+        }
 
         items = [];
       }
@@ -182,14 +188,13 @@ class MangaHostServices {
     return items;
   }
 
-  static Future<Book> bookInfo(String url, String name,
-      {String? referer}) async {
-    String bookURL = referer ?? url;
+  static Future<Book> bookInfo(String url, String name) async {
+    String bookURL = url;
     Book? book;
 
     int numberOfAttempts = 0;
 
-    while (numberOfAttempts < 3) {
+    while (numberOfAttempts < 2) {
       numberOfAttempts++;
 
       try {
@@ -242,17 +247,8 @@ class MangaHostServices {
             final String capName =
                 episode != null ? 'Cap. ${name.padLeft(2, '0')}' : name;
 
-            final String id = capName
-                .toLowerCase()
-                .replaceAll('cap.', '')
-                .replaceAll(RegExp(r'[^0-9.]'), '')
-                .replaceAll('.', '_');
-
-            chapters.add(Chapter(
-              id: id,
-              url: url,
-              name: capName,
-            ));
+            final String id = Chapter.nameToId(name);
+            chapters.add(Chapter(id: id, url: url, name: capName));
           }
         }
 

@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -9,7 +9,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class MarkServices {
-  static String get baseURL => markURL;
+  static String get baseURL => Strings.markURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -189,13 +189,10 @@ class MarkServices {
         final String name = element.text.trim();
 
         if (url.isNotEmpty && name.isNotEmpty) {
-          final String id = name
-              .toLowerCase()
-              .replaceAll('cap.', '')
-              .replaceAll(RegExp(r'[^0-9.]'), '')
-              .replaceAll('.', '_');
-
-          chapters.add(Chapter(id: id, url: url, name: name));
+          final String id = Chapter.nameToId(name);
+          chapters.add(
+            Chapter(id: id, url: url, name: name),
+          );
         }
       }
     } catch (_) {}

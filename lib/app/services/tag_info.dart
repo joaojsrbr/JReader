@@ -18,6 +18,8 @@ String? taginfo(String url) {
     return 'ARGOS';
   } else if (url.contains('olympusscanlation')) {
     return 'Olympusscanlation'.toUpperCase();
+  } else if (url.contains('muitomanga')) {
+    return 'muitomanga'.toUpperCase();
   }
   return '';
 }

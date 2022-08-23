@@ -15,11 +15,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
-  // @override
-  // void onInit() async {
-  //   await checkChapter();
-  //   super.onInit();
-  // }
+  @override
+  void onReady() async {
+    _setupNotificaitons2();
+    if (isSucess) {
+      Timer.periodic(
+        const Duration(minutes: 5),
+        (timer) async {
+          await AwesomeNotifications().isNotificationAllowed().then(
+            (value) async {
+              if (value) {
+                await checkChapter(false);
+              }
+            },
+          );
+        },
+      );
+    }
+
+    super.onReady();
+  }
 
   void _setupNotificaitons2() async {
     await AwesomeNotifications().isNotificationAllowed().then(
@@ -99,7 +114,6 @@ class NotificationsService extends GetxService {
           id: receivedNotification.payload!['id']!,
           url: receivedNotification.payload!['url']!,
           imageURL: receivedNotification.payload!['imageURL']!,
-          imageURL2: receivedNotification.payload!['imageURL2'],
           name: receivedNotification.payload!['name']!,
           tag: receivedNotification.payload!['tag'],
           lastChapter: receivedNotification.payload!['lastChapter'],
@@ -119,51 +133,56 @@ class NotificationsService extends GetxService {
 
   bool isSucess = true;
 
-  void createNotification(Book lastAdded, Map<dynamic, dynamic> item) async {
+  Future<void> _snackBar(Book lastAdded) async {
+    Get.snackbar(
+      lastAdded.name,
+      'Capítulo Novo: ${lastAdded.totalChapters}',
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Get.theme.colorScheme.background,
+      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
+      snackStyle: SnackStyle.FLOATING,
+    );
+  }
+
+  Future<void> createNotification(
+      Book lastAdded, Map<dynamic, dynamic> item) async {
+    final String imageURL = item['imageURL'];
+    final String? imageURL2 = item['imageURL2'];
+    final String? tag = lastAdded.type ?? item['tag'];
+    late Map<String, String> payload;
+    if (tag != null) {
+      payload = <String, String>{
+        "id": toId(lastAdded.name),
+        "url": item['url'],
+        "imageURL": imageURL2 ?? imageURL,
+        "name": lastAdded.name,
+        "tag": tag,
+        "lastChapter": lastAdded.totalChapters,
+      };
+    } else {
+      payload = <String, String>{
+        "id": toId(lastAdded.name),
+        "url": item['url'],
+        "imageURL": imageURL2 ?? imageURL,
+        "name": lastAdded.name,
+        "lastChapter": lastAdded.totalChapters,
+      };
+    }
+
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         // id: int.parse(lastAdded.totalChapters),
         id: lastAdded.hashCode,
-
         notificationLayout: NotificationLayout.BigPicture,
         channelKey: 'manga_notifications',
-        payload: {
-          "id": toId(lastAdded.name),
-          "url": item['url'],
-          "imageURL": item['imageURL'],
-          "imageURL2": item['imageURL2'],
-          "name": lastAdded.name,
-          "tag": lastAdded.type ?? item['tag'],
-          "lastChapter": lastAdded.totalChapters,
-        },
-
+        payload: payload,
         wakeUpScreen: true,
         body: 'Capítulo Novo: ${lastAdded.totalChapters}',
         bigPicture: item['imageURL2'] ?? item['imageURL'],
         title: lastAdded.name,
       ),
     );
-  }
-
-  @override
-  void onReady() async {
-    _setupNotificaitons2();
-    if (isSucess) {
-      Timer.periodic(
-        const Duration(minutes: 5),
-        (timer) async {
-          await AwesomeNotifications().isNotificationAllowed().then(
-            (value) async {
-              if (value) {
-                await checkChapter();
-              }
-            },
-          );
-        },
-      );
-    }
-
-    super.onReady();
   }
 
   static Map<String, String> headers(String url) {
@@ -193,7 +212,7 @@ class NotificationsService extends GetxService {
     return favoritesRef;
   }
 
-  Future<void> checkChapter() async {
+  Future<void> checkChapter(bool snack) async {
     if (ref == null) return;
 
     try {
@@ -207,19 +226,34 @@ class NotificationsService extends GetxService {
         final item = element.value as Map<dynamic, dynamic>;
         final String name = item['name'];
         Book? lastAdded = await bookInfo(item['url'], name);
+
         if (lastAdded == null) continue;
 
         // totalChapters = lastAdded.chapters.length;
-        totalChapters = int.tryParse(lastAdded.totalChapters) ??
-            double.tryParse(lastAdded.totalChapters);
+        if (item.containsKey('lastChapter')) {
+          totalChapters = int.tryParse(lastAdded.totalChapters) ??
+              double.tryParse(lastAdded.totalChapters);
 
-        lastChapter = int.tryParse(item['lastChapter']) ??
-            double.tryParse(item['lastChapter']);
+          lastChapter = int.tryParse(item['lastChapter'] as String) ??
+              double.tryParse(item['lastChapter'] as String);
+        } else {
+          final DatabaseReference bookRef = ref!.child(toId(lastAdded.name));
+          bookRef.set(
+            BookItem(
+              id: toId(lastAdded.name),
+              url: item['url'],
+              imageURL: item['imageURL'],
+              imageURL2: item['imageURL2'],
+              name: lastAdded.name,
+              tag: lastAdded.type ?? item['tag'],
+              lastChapter: lastAdded.totalChapters,
+            ).toMap,
+          );
+        }
 
-
-        if (lastAdded.name == name) {
-          if (item.containsKey('lastChapter')) {  
-           if (lastChapter == null || totalChapters == null) continue;
+        if (lastAdded.name.contains(name)) {
+          if (item.containsKey('lastChapter')) {
+            if (lastChapter == null || totalChapters == null) continue;
             if (lastChapter == totalChapters) {
               if (kDebugMode) {
                 print(
@@ -245,21 +279,15 @@ class NotificationsService extends GetxService {
                   lastChapter: '$totalChapters',
                 ).toMap,
               );
-              createNotification(lastAdded, item);
+              switch (snack) {
+                case false:
+                  createNotification(lastAdded, item);
+                  break;
+                case true:
+                  await _snackBar(lastAdded);
+                  break;
+              }
             }
-          } else {
-            final DatabaseReference bookRef = ref!.child(toId(lastAdded.name));
-            bookRef.set(
-              BookItem(
-                id: toId(lastAdded.name),
-                url: item['url'],
-                imageURL: item['imageURL'],
-                imageURL2: item['imageURL2'],
-                name: lastAdded.name,
-                tag: lastAdded.type ?? item['tag'],
-                lastChapter: '$totalChapters',
-              ).toMap,
-            );
           }
         }
       }
@@ -272,14 +300,14 @@ class NotificationsService extends GetxService {
   }
 }
 
-extension BoolParsing on String {
-  bool parseBool() {
-    if (toLowerCase() == 'true') {
-      return true;
-    } else if (toLowerCase() == 'false') {
-      return false;
-    }
+// extension BoolParsing on String {
+//   bool parseBool() {
+//     if (toLowerCase() == 'true') {
+//       return true;
+//     } else if (toLowerCase() == 'false') {
+//       return false;
+//     }
 
-    throw '"$this" can not be parsed to boolean.';
-  }
-}
+//     throw '"$this" can not be parsed to boolean.';
+//   }
+// }

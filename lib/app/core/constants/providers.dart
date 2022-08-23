@@ -9,7 +9,8 @@ enum Providers {
   REAPER,
   MANGA_HOST,
   ARGOS,
-  OLYMPUS
+  OLYMPUS,
+  MUITO_MANGA,
 }
 
 extension ProvidersExtension on Providers {
@@ -41,6 +42,9 @@ extension ProvidersExtension on Providers {
 
       case Providers.OLYMPUS:
         return 'Olympus';
+
+      case Providers.MUITO_MANGA:
+        return 'Muito Mangá';
     }
   }
 }

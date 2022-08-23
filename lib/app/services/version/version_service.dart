@@ -7,7 +7,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 // ignore: depend_on_referenced_packages
 import 'package:pub_semver/pub_semver.dart';
 
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 
 class VersionService extends GetxService {
   PackageInfo? packageInfo;
@@ -20,7 +20,7 @@ class VersionService extends GetxService {
 
   Future<Version?> checkUpdate() async {
     http.Response responce =
-        await http.get(Uri.parse(jreaderLatestReleaseApiUrl));
+        await http.get(Uri.parse(Strings.jreaderLatestReleaseApiUrl));
     if (responce.statusCode >= 200 && responce.statusCode <= 299) {
       String? tag = (jsonDecode(responce.body)["tag_name"]);
       Version? latestReleaseBuildNumber =

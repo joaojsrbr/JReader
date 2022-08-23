@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -9,7 +9,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class ReaperServices {
-  static String get baseURL => reaperURL;
+  static String get baseURL => Strings.reaperURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -169,11 +169,7 @@ class ReaperServices {
       final String name = element.text.trim();
 
       if (url.isNotEmpty && name.isNotEmpty) {
-        final String id = name
-            .toLowerCase()
-            .replaceAll('cap.', '')
-            .replaceAll(RegExp(r'[^0-9.]'), '')
-            .replaceAll('.', '_');
+        final String id = Chapter.nameToId(name);
 
         chapters.add(Chapter(id: id, url: url, name: name));
       }

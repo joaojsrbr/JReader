@@ -3,8 +3,6 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:com_joaojsrbr_reader/app/services/notification/notifications_service.dart';
-import 'package:com_joaojsrbr_reader/app/services/version/version_service.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,6 +19,8 @@ import 'package:com_joaojsrbr_reader/app/databases/downloads_db.dart';
 import 'package:com_joaojsrbr_reader/app/models/download.dart';
 import 'package:com_joaojsrbr_reader/app/my_app.dart';
 import 'package:com_joaojsrbr_reader/app/services/book_content.dart';
+import 'package:com_joaojsrbr_reader/app/services/notification/notifications_service.dart';
+import 'package:com_joaojsrbr_reader/app/services/version/version_service.dart';
 import 'package:com_joaojsrbr_reader/firebase_options.dart';
 
 import 'firebase_options.dart';
@@ -139,8 +139,8 @@ void main() async {
   Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseDatabase.instance.setPersistenceEnabled(true);
-  initServices();
   await FirebaseAppCheck.instance.activate();
+  initServices();
 
   runApp(
     const MyApp(),
