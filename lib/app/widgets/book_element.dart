@@ -1,7 +1,7 @@
-import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:com_joaojsrbr_reader/app/modules/home/controlers/home_controller.dart';
-import 'package:com_joaojsrbr_reader/app/modules/reader/widgets/emoticons.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
+import 'package:com_joaojsrbr_reader/app/ui/home/controlers/home_controller.dart';
+import 'package:com_joaojsrbr_reader/app/ui/reader/widgets/emoticons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -42,7 +42,7 @@ class BookElement extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          color: CustomColors.surface,
+          color: AppThemeData.surface,
           width: 112,
           height: 158.49,
           child: Stack(
@@ -118,13 +118,13 @@ class BookElementShimmer extends StatelessWidget {
     return Container(
       margin: margin,
       child: Shimmer.fromColors(
-        baseColor: CustomColors.surface,
-        highlightColor: CustomColors.surfaceTwo,
+        baseColor: AppThemeData.surface,
+        highlightColor: AppThemeData.surfaceTwo,
         child: Container(
           width: 112,
           height: 158.49,
           decoration: BoxDecoration(
-            color: CustomColors.surface,
+            color: AppThemeData.surface,
             borderRadius: BorderRadius.circular(8),
           ),
         ),

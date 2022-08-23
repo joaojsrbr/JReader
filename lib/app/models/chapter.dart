@@ -23,6 +23,22 @@ class Chapter {
     };
   }
 
+  static String nameToId(String name) {
+    final String id = name
+        .toLowerCase()
+        .replaceAll('cap.', '')
+        .replaceAll(RegExp(r'[^0-9.]'), '')
+        .replaceAll('.', '_');
+
+    final List<String> splitId = id.split('_');
+    final int first = int.parse(splitId[0]);
+    final String formattedFirst = first <= 9 ? '0$first' : first.toString();
+
+    splitId.removeAt(0);
+
+    return [formattedFirst, ...splitId].join('_');
+  }
+
   @override
   bool operator ==(covariant Chapter other) {
     if (identical(this, other)) return true;

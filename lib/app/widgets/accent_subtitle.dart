@@ -1,7 +1,6 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-
-import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
 
 class AccentSubtitleWithDots extends StatelessWidget {
   final bool isLoading;
@@ -59,7 +58,7 @@ class AccentSubtitleText extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        color: CustomColors.accent,
+        color: AppThemeData.accent,
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
@@ -92,13 +91,13 @@ class AccentSubtitleShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: CustomColors.surface,
-      highlightColor: CustomColors.surfaceTwo,
+      baseColor: AppThemeData.surface,
+      highlightColor: AppThemeData.surfaceTwo,
       child: Container(
         width: width ?? 280,
         height: 22,
         decoration: BoxDecoration(
-          color: CustomColors.surface,
+          color: AppThemeData.surface,
           borderRadius: BorderRadius.circular(8),
         ),
       ),

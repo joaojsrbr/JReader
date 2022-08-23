@@ -2,7 +2,7 @@
 
 import 'dart:ffi';
 
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_query.dart';
 import 'package:com_joaojsrbr_reader/app/core/values/api_graphql_variables.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
@@ -20,7 +20,7 @@ import 'package:graphql/client.dart';
 import 'package:http/http.dart' as http;
 
 class ArgosService {
-  static HttpLink get baseApi => HttpLink(argosAPI);
+  static HttpLink get baseApi => HttpLink(Strings.argosAPI);
 
   static Future<List<BookItem>> get popular async {
     final List<BookItem> tempList = [];

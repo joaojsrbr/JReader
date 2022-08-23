@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -22,17 +22,17 @@ Future<void> appUpdateDialog(Version newRelease) {
       ),
       onPressed: () async {
         if (!await launchUrl(
-          Uri.parse(jreaderLatestReleaseUrl),
+          Uri.parse(Strings.jreaderLatestReleaseUrl),
           mode: LaunchMode.externalApplication,
         )) {
           Clipboard.setData(
             const ClipboardData(
-              text: jreaderLatestReleaseUrl,
+              text: Strings.jreaderLatestReleaseUrl,
             ),
           );
           Get.rawSnackbar(
               title: 'Copying GitHub to clipboard',
-              message: 'Failed to launch $jreaderLatestReleaseUrl');
+              message: 'Failed to launch ${Strings.jreaderLatestReleaseUrl}');
         }
         Get.back();
       },

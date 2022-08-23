@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
@@ -9,7 +9,7 @@ import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class CronosServices {
-  static String get baseURL => cronosURL;
+  static String get baseURL => Strings.cronosURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -67,14 +67,16 @@ class CronosServices {
                 .trim();
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
-          items.add(BookItem(
-            id: toId(name),
-            lastChapter: lastc,
-            url: url,
-            name: name,
-            imageURL: imageURL,
-            imageURL2: imageURL2,
-          ));
+          items.add(
+            BookItem(
+              id: toId(name),
+              lastChapter: lastc,
+              url: url,
+              name: name,
+              imageURL: imageURL,
+              imageURL2: imageURL2,
+            ),
+          );
         }
       }
 
@@ -202,13 +204,11 @@ class CronosServices {
         final String name = element.text.trim();
 
         if (url.isNotEmpty && name.isNotEmpty) {
-          final String id = name
-              .toLowerCase()
-              .replaceAll('cap.', '')
-              .replaceAll(RegExp(r'[^0-9.]'), '')
-              .replaceAll('.', '_');
+          final String id = Chapter.nameToId(name);
 
-          chapters.add(Chapter(id: id, url: url, name: name));
+          chapters.add(
+            Chapter(id: id, url: url, name: name),
+          );
         }
       }
     } catch (_) {}

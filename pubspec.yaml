@@ -4,10 +4,10 @@ description: Read manga, manhwa and manhua.
 
 publish_to: "none"
 
-version: 1.1.7
+version: 1.1.8
 
 environment:
-  sdk: ">=2.17.1 <3.0.5"
+  sdk: ">=2.17.6 <3.0.0"
 
 dependencies:
   flutter:
@@ -23,7 +23,6 @@ dependencies:
   html: ^0.15.0
   google_sign_in: ^5.3.2
   flutter_signin_button: ^2.0.0
-  boxy: ^2.0.6+2
   awesome_notifications: any
   shimmer: ^2.0.0
   cached_network_image: ^3.2.1
@@ -47,9 +46,10 @@ dependencies:
   graphql_flutter: ^5.1.0
   sliver_tools: ^0.2.7
   loading_more_list: ^4.1.2
-  # carousel_slider: ^4.1.1
   custom_selectable_text: ^0.2.0
   dynamic_color: ^1.4.0
+  # boxy: ^2.0.6+2
+  # carousel_slider: ^4.1.1
   # select_button:
   #   path: lib/app/core/packages/commons/select_button
   # hidable: ^1.0.2

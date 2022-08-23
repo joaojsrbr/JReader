@@ -50,6 +50,38 @@ Apos configurar o firebase, é so rodar o app com o comando
 flutter run 
 ```
 
+### Estrutura de pastas
+
+Aqui está a estrutura de pastas principal que o flutter fornece.
+
+```
+flutter-app/
+|- android
+|- build
+|- ios
+|- lib
+```
+
+Aqui está a estrutura de pastas que estamos usando neste projeto.
+
+```
+lib/
+|- app/
+  |- core/
+  |- databases/
+  |- generated/
+  |- repository/
+  |- models/
+  |- routes/
+  |- services/
+  |- stores/
+  |- ui/
+  |- utils/
+  |- widgets/
+  |- my_app.dart
+|- main.dart
+```
+
 ## Licença
 
 [MIT](./LICENSE)

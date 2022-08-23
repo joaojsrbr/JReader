@@ -1,6 +1,6 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
-import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/stores/favorites_store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class ToInfoButton extends StatelessWidget {
@@ -23,7 +23,7 @@ class ToInfoButton extends StatelessWidget {
         children: [
           Text(
             text,
-            style: const TextStyle(color: CustomColors.primary),
+            style: const TextStyle(color: AppThemeData.primary),
           ),
           const SizedBox(width: 8),
           SizedBox(
@@ -39,7 +39,7 @@ class ToInfoButton extends StatelessWidget {
                     child: Icon(
                       Icons.arrow_back,
                       size: 20,
-                      color: CustomColors.primary,
+                      color: AppThemeData.primary,
                     ),
                   ),
           ),

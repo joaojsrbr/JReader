@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
+import 'package:com_joaojsrbr_reader/app/stores/historic_store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';

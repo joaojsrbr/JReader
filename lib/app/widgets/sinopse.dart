@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/themes/colors.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -63,13 +63,13 @@ class ShortSinopseShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: CustomColors.surface,
-      highlightColor: CustomColors.surfaceTwo,
+      baseColor: AppThemeData.surface,
+      highlightColor: AppThemeData.surfaceTwo,
       child: Container(
         width: double.infinity,
         height: 72,
         decoration: BoxDecoration(
-          color: CustomColors.surface,
+          color: AppThemeData.surface,
           borderRadius: BorderRadius.circular(8),
         ),
       ),

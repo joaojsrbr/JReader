@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/services/agregadores/muito_manga_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
@@ -27,6 +28,8 @@ Future<List<String>> bookContent(String url) async {
     return ArgosService.getContent(url);
   } else if (url.contains('olympusscanlation')) {
     return await OlympusServices.getContent(url);
+  } else if (url.contains('muitomanga')) {
+    return await MuitoMangaServices.getContent(url);
   }
 
   return [];

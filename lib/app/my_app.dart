@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -5,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import 'package:com_joaojsrbr_reader/app/core/themes/theme.dart';
 import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
-import 'package:com_joaojsrbr_reader/app/store/favorites_store.dart';
-import 'package:com_joaojsrbr_reader/app/store/historic_store.dart';
+import 'package:com_joaojsrbr_reader/app/stores/favorites_store.dart';
+import 'package:com_joaojsrbr_reader/app/stores/historic_store.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             // darkColorScheme = CustomTheme.colorScheme;
           } else {
             // lightColorScheme = RootCor().lightColorScheme;
-            darkColorScheme = CustomTheme.colorScheme;
+            darkColorScheme = AppThemeData.darkcolorScheme;
           }
           return GetMaterialApp(
             defaultTransition: Transition.fadeIn,

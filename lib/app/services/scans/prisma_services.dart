@@ -1,15 +1,16 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/string.dart';
+import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
 
 class PrismaServices {
-  static String get baseURL => prismaURL;
+  static String get baseURL => Strings.prismaURL;
 
   static final DioCacheManager _cacheManager = DioCacheManager(
     CacheConfig(baseUrl: baseURL),
@@ -19,8 +20,22 @@ class PrismaServices {
     return buildCacheOptions(
       const Duration(days: 15),
       subKey: subKey,
+      options: Options(
+        headers: headers(),
+      ),
       forceRefresh: forceRefresh ?? true,
     );
+  }
+
+  static Map<String, String> headers() {
+    return {
+      'Referer': '$baseURL/',
+      'accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+      'upgrade-insecure-requests': '1',
+      'user-agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
+    };
   }
 
   static Future<List<BookItem>> get lastAdded async {
@@ -84,51 +99,56 @@ class PrismaServices {
 
     final String subKey = '?s=$value&post_type=wp-manga';
     final String url = '$baseURL/$subKey';
+    try {
+      final Dio dio = Dio();
+      final Options options = _cacheOptions(subKey: subKey, forceRefresh: true);
+      dio.interceptors.add(_cacheManager.interceptor);
 
-    final Dio dio = Dio();
-    final Options options = _cacheOptions(subKey: subKey);
-    dio.interceptors.add(_cacheManager.interceptor);
+      final Response response = await dio.get(url, options: options);
+      final Document document = parse(response.data);
 
-    final Response response = await dio.get(url, options: options);
-    final Document document = parse(response.data);
+      final List<Element> elements =
+          document.querySelectorAll('.c-tabs-item div.row');
 
-    final List<Element> elements =
-        document.querySelectorAll('.c-tabs-item div.row');
+      for (Element element in elements) {
+        final Element? a = element.querySelector('h3 a');
+        final Element? img = element.querySelector('img');
+        final Element? lastChapter =
+            element.querySelector('span.chapter.font-meta');
+        if (a == null || img == null || lastChapter == null) continue;
 
-    for (Element element in elements) {
-      final Element? a = element.querySelector('h3 a');
-      final Element? img = element.querySelector('img');
-      final Element? lastChapter =
-          element.querySelector('span.chapter.font-meta');
-      if (a == null || img == null || lastChapter == null) continue;
+        final String url = (a.attributes['href'] ?? '').trim();
+        final String name = a.text.trim();
+        final String imageURL = (img.attributes['data-src'] ?? '').trim();
+        final String lastc =
+            lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
+        final String? srcset = img.attributes['data-srcset'];
+        final String? imageURL2 = srcset == null
+            ? null
+            : '$srcset,'
+                .replaceAll(RegExp(r'([1-9])\w+,'), '')
+                .trim()
+                .split(' ')
+                .where((value) => value.length > 3)
+                .last
+                .trim();
 
-      final String url = (a.attributes['href'] ?? '').trim();
-      final String name = a.text.trim();
-      final String imageURL = (img.attributes['data-src'] ?? '').trim();
-      final String lastc =
-          lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-      final String? srcset = img.attributes['data-srcset'];
-      final String? imageURL2 = srcset == null
-          ? null
-          : '$srcset,'
-              .replaceAll(RegExp(r'([1-9])\w+,'), '')
-              .trim()
-              .split(' ')
-              .where((value) => value.length > 3)
-              .last
-              .trim();
-
-      if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
-        items.add(
-          BookItem(
-            id: toId(name),
-            lastChapter: lastc,
-            url: url,
-            name: name,
-            imageURL: imageURL,
-            imageURL2: imageURL2,
-          ),
-        );
+        if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
+          items.add(
+            BookItem(
+              id: toId(name),
+              lastChapter: lastc,
+              url: url,
+              name: name,
+              imageURL: imageURL,
+              imageURL2: imageURL2,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
       }
     }
 
@@ -182,11 +202,7 @@ class PrismaServices {
         final String name = element.text.trim();
 
         if (url.isNotEmpty && name.isNotEmpty) {
-          final String id = name
-              .toLowerCase()
-              .replaceAll('cap.', '')
-              .replaceAll(RegExp(r'[^0-9.]'), '')
-              .replaceAll('.', '_');
+          final String id = Chapter.nameToId(name);
 
           chapters.add(Chapter(id: id, url: url, name: name));
         }
