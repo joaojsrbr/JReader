@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isAuthenticated = FirebaseAuth.instance.currentUser != null;
     if (kDebugMode) {
-      debugInvertOversizedImages = true;
+      // debugInvertOversizedImages = true;
+      // debugDumpApp();
     }
 
     return MultiProvider(

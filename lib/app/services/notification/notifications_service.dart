@@ -8,6 +8,7 @@ import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
 import 'package:com_joaojsrbr_reader/app/services/book_info.dart';
+import 'package:com_joaojsrbr_reader/app/services/notification/widgets/dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -15,14 +16,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotificationsService extends GetxService {
+  late AwesomeNotifications awesomeNotifications;
+
+  @override
+  void onInit() {
+    awesomeNotifications = AwesomeNotifications();
+
+    super.onInit();
+  }
+
   @override
   void onReady() async {
     _setupNotificaitons2();
     if (isSucess) {
       Timer.periodic(
-        const Duration(minutes: 5),
+        const Duration(minutes: 10),
         (timer) async {
-          await AwesomeNotifications().isNotificationAllowed().then(
+          await awesomeNotifications.isNotificationAllowed().then(
             (value) async {
               if (value) {
                 await checkChapter(false);
@@ -32,103 +42,52 @@ class NotificationsService extends GetxService {
         },
       );
     }
-
+    // await checkChapter(false);
     super.onReady();
   }
 
   void _setupNotificaitons2() async {
-    await AwesomeNotifications().isNotificationAllowed().then(
+    await awesomeNotifications.isNotificationAllowed().then(
       (isAllowed) {
-        // if (kDebugMode) {
-        //   print(isAllowed);
-        // }
+        if (kDebugMode) {
+          print(isAllowed);
+        }
         if (!isAllowed) {
           Get.dialog(
-            AlertDialog(
-              backgroundColor: Get.theme.colorScheme.background,
-              title: const Text(
-                'Nosso aplicativo gostaria de enviar notificações',
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    'assets/images/animated-bell.gif',
-                    colorBlendMode: BlendMode.color,
-                    color: Colors.transparent,
-                    fit: BoxFit.fitWidth,
-                    height: Get.height * 0.3,
-                  )
-                ],
-              ),
-              // actionsPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-              actionsAlignment: MainAxisAlignment.spaceEvenly,
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Get.back();
-                  },
-                  child: const Text(
-                    'Negar',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => AwesomeNotifications()
-                      .requestPermissionToSendNotifications()
-                      .then(
-                        (_) => Get.back(),
-                      ),
-                  child: const Text(
-                    'Permitir',
-                    style: TextStyle(
-                      // color: Colors.teal,
-                      color: Colors.deepPurple,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            Dilog(
+              awesomeNotifications: awesomeNotifications,
             ),
           );
         }
       },
     );
-    AwesomeNotifications()
-        .actionStream
-        .listen((ReceivedNotification receivedNotification) {
-      if (kDebugMode) {
-        print(receivedNotification.payload);
-      }
-      Get.toNamed(
-        RoutesName.BOOK,
-        // id: receivedNotification.id,
-        arguments: BookItem(
-          id: receivedNotification.payload!['id']!,
-          url: receivedNotification.payload!['url']!,
-          imageURL: receivedNotification.payload!['imageURL']!,
-          name: receivedNotification.payload!['name']!,
-          tag: receivedNotification.payload!['tag'],
-          lastChapter: receivedNotification.payload!['lastChapter'],
-          headers: headers(receivedNotification.payload!['url']!),
-        ),
-      );
-      // Navigator.of(context).pushNamed(
-      //     '/NotificationPage',
-      //     arguments: {
-      //         // your page params. I recommend you to pass the
-      //         // entire *receivedNotification* object
-      //         id: receivedNotification.id
-      //     }
-      // );
-    });
+    awesomeNotifications.actionStream.listen(
+      (ReceivedNotification receivedNotification) {
+        final String? channelKey = receivedNotification.channelKey;
+        if (channelKey == null) return;
+
+        if (kDebugMode) {
+          print(receivedNotification.payload);
+          print(channelKey);
+        }
+
+        if (channelKey.contains('manga_notifications')) {
+          Get.toNamed(
+            RoutesName.BOOK,
+            // id: receivedNotification.id,
+            arguments: BookItem(
+              id: receivedNotification.payload!['id']!,
+              url: receivedNotification.payload!['url']!,
+              imageURL: receivedNotification.payload!['imageURL']!,
+              name: receivedNotification.payload!['name']!,
+              tag: receivedNotification.payload!['tag'],
+              lastChapter: receivedNotification.payload!['lastChapter'],
+              headers: headers(receivedNotification.payload!['url']!),
+            ),
+          );
+        }
+      },
+    );
   }
 
   bool isSucess = true;
@@ -170,14 +129,15 @@ class NotificationsService extends GetxService {
       };
     }
 
-    await AwesomeNotifications().createNotification(
+    await awesomeNotifications.createNotification(
       content: NotificationContent(
         // id: int.parse(lastAdded.totalChapters),
+        // id: lastAdded.hashCode,
         id: lastAdded.hashCode,
-        notificationLayout: NotificationLayout.BigPicture,
         channelKey: 'manga_notifications',
         payload: payload,
         wakeUpScreen: true,
+        notificationLayout: NotificationLayout.BigPicture,
         body: 'Capítulo Novo: ${lastAdded.totalChapters}',
         bigPicture: item['imageURL2'] ?? item['imageURL'],
         title: lastAdded.name,
@@ -214,6 +174,7 @@ class NotificationsService extends GetxService {
 
   Future<void> checkChapter(bool snack) async {
     if (ref == null) return;
+    // int progress = 0;
 
     try {
       isSucess = false;
@@ -228,6 +189,7 @@ class NotificationsService extends GetxService {
         Book? lastAdded = await bookInfo(item['url'], name);
 
         if (lastAdded == null) continue;
+        if (!lastAdded.name.contains(name)) continue;
 
         // totalChapters = lastAdded.chapters.length;
         if (item.containsKey('lastChapter')) {
@@ -258,8 +220,6 @@ class NotificationsService extends GetxService {
               if (kDebugMode) {
                 print(
                     'name: ${lastAdded.name} totalChapters: $totalChapters - lastChapter: $lastChapter');
-                // print(
-                //     'igual - name: ${lastAdded.name} - $totalChapters - $lastChapter - ${item['url']}');
               }
             } else if (totalChapters > lastChapter) {
               final DatabaseReference bookRef =
@@ -281,7 +241,7 @@ class NotificationsService extends GetxService {
               );
               switch (snack) {
                 case false:
-                  createNotification(lastAdded, item);
+                  await createNotification(lastAdded, item);
                   break;
                 case true:
                   await _snackBar(lastAdded);

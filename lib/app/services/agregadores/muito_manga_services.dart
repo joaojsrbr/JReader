@@ -1,4 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/get_image.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/to_id.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
@@ -44,17 +45,19 @@ class MuitoMangaServices {
             element.querySelector('.lancamento-list li');
         if (a == null || img == null || lastChapter == null) continue;
 
-        final String url = (a.attributes['href'] ?? '').trim();
-        final String name = (img.attributes['title'] ?? '').trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String imageURL = (img.attributes['data-src'] ?? '').trim();
+        final String url = (a.attributes['href'] ?? '').trim();
+        final String name = (img.attributes['title'] ?? '').trim();
+        final String imageURL = GetImage.bySrc(img);
+        final String? imageURL2 = GetImage.bySrcSet(img);
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
           items.add(BookItem(
             id: toId(name),
             url: baseURL + url,
             name: name,
+            imageURL2: imageURL2,
             lastChapter: lastc,
             imageURL: imageURL,
           ));

@@ -15,8 +15,7 @@ import 'package:com_joaojsrbr_reader/app/repository/repository.dart';
 import 'package:com_joaojsrbr_reader/app/services/version/version_service.dart';
 import 'package:com_joaojsrbr_reader/app/widgets/app_update_dialog.dart';
 
-class HomeController extends GetxController
-    with GetTickerProviderStateMixin, StateMixin<LoadingMoreBase<BookItem>> {
+class HomeController extends GetxController with GetTickerProviderStateMixin {
   final CacheManager customCacheManager = CacheManager(
     Config(
       'Manga-Image-c',
@@ -28,21 +27,20 @@ class HomeController extends GetxController
   final VersionService _localStorageService = Get.find<VersionService>();
   final repository = Repository();
 
-  RxString title = 'Neox - Últimos adicionados'.obs;
-  Rx<Providers> scans = Providers.NEOX.obs;
-  RxBool inrefresh = true.obs;
-  RxInt destinationSelected = 0.obs;
+  ValueNotifier<String> title = ValueNotifier('Neox - Últimos adicionados');
+  ValueNotifier<Providers> scans = ValueNotifier(Providers.NEOX);
+  ValueNotifier<bool> inrefresh = ValueNotifier(true);
+  ValueNotifier<int> destinationSelected = ValueNotifier(0);
 
   late ScrollController scrollController;
-  late LoadingMoreBase<BookItem> itemBookSource;
+  late ValueNotifier<LoadingMoreBase<BookItem>> itemBookSource;
   late List<LoadingMoreBase<BookItem>> sources;
   late TabController tabController;
 
   Future<void> repositoriesInit() async {
     sources = repository.lista;
 
-    itemBookSource = sources[0];
-    change(itemBookSource, status: RxStatus.success());
+    itemBookSource = ValueNotifier(sources[0]);
   }
 
   Future<void> _handleStartDownload() async {
@@ -54,7 +52,7 @@ class HomeController extends GetxController
     destinationSelected.value = value;
     tabController.animateTo(
       value,
-      curve: Curves.fastOutSlowIn,
+      curve: Curves.ease,
       // curve: Curves.ease,
     );
   }
@@ -64,53 +62,53 @@ class HomeController extends GetxController
     switch (scans.value) {
       case Providers.NEOX:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[0];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[0];
+
         break;
       case Providers.MARK:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[1];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[1];
+
         break;
       case Providers.RANDOM:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[2];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[2];
+
         break;
       case Providers.CRONOS:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[3];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[3];
+
         break;
       case Providers.PRISMA:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[4];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[4];
+
         break;
       case Providers.REAPER:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[5];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[5];
+
         break;
       case Providers.MANGA_HOST:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[6];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[6];
+
         break;
       case Providers.ARGOS:
         title.value = '${scans.value.string} - Popular';
-        itemBookSource = sources[7];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[7];
+
         break;
       case Providers.OLYMPUS:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[8];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[8];
+
         break;
       case Providers.MUITO_MANGA:
         title.value = '${scans.value.string} - Últimos adicionados';
-        itemBookSource = sources[9];
-        change(itemBookSource, status: RxStatus.success());
+        itemBookSource.value = sources[9];
+
         break;
     }
   }
@@ -123,7 +121,7 @@ class HomeController extends GetxController
     scrollController = ScrollController();
     tabController = TabController(
       length: 2,
-      animationDuration: const Duration(milliseconds: 400),
+      animationDuration: const Duration(milliseconds: 300),
       vsync: this,
     );
     await repositoriesInit();
@@ -151,10 +149,9 @@ class HomeController extends GetxController
 
   Future<void> onRefresh() async {
     inrefresh.value = false;
-    RxStatus.loading();
-    // notifications.checkChapter(true);
-    await itemBookSource.refresh(true);
-    RxStatus.success();
+
+    await itemBookSource.value.refresh(true);
+
     inrefresh.value = true;
   }
 

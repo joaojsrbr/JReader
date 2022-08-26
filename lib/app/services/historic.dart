@@ -32,7 +32,8 @@ class Historic {
   static Future<void> getAll(BuildContext context) async {
     if (ref == null) return _snackError(context);
 
-    final HistoricStore store = Provider.of<HistoricStore>(context);
+    final HistoricStore store =
+        Provider.of<HistoricStore>(context, listen: false);
 
     try {
       final DataSnapshot snapshot = await ref!.get();
