@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/resize_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,7 @@ class Screen extends GetView<BookScreenController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         slivers: [
           SliverPersistentHeader(
             // floating: true,
@@ -44,20 +45,30 @@ class Screen extends GetView<BookScreenController> {
                   fit: StackFit.expand,
                   children: [
                     Positioned.fill(
-                      child: SizedBox(
-                        height: 2000,
-                        child: CachedNetworkImage(
-                          cacheManager: controller.customCacheManager,
-                          filterQuality: FilterQuality.high,
-                          // height: 2000,
-                          // maxHeightDiskCache: 200,
-                          httpHeaders: controller.bookItem.headers,
-                          memCacheHeight: 1762,
-                          memCacheWidth: 1080,
-                          fit: BoxFit.cover,
-                          imageUrl: controller.bookItem.imageURL2 ??
-                              controller.bookItem.imageURL,
-                        ),
+                      child: ResizeI(
+                        url: controller.bookItem.imageURL2 ??
+                            controller.bookItem.imageURL,
+                        headers: controller.bookItem.headers,
+                        initialData: const Size(1080, 1762),
+                        builder: (context, size) {
+                          final Size sizes = size.data!;
+                          return CachedNetworkImage(
+                            cacheManager: controller.customCacheManager,
+                            filterQuality: FilterQuality.high,
+                            // height: 2000,
+                            // maxHeightDiskCache: 200,
+                            httpHeaders: controller.bookItem.headers,
+                            memCacheHeight: 1762,
+                            memCacheWidth: 1080,
+                            // memCacheHeight: 1762,
+                            // memCacheWidth: 1080,
+                            height: sizes.height,
+                            width: sizes.width,
+                            fit: BoxFit.cover,
+                            imageUrl: controller.bookItem.imageURL2 ??
+                                controller.bookItem.imageURL,
+                          );
+                        },
                       ),
                     ),
                     Positioned.fill(

@@ -122,7 +122,8 @@ void main() async {
         channelKey: 'manga_notifications',
         channelName: 'MangaNew',
         enableVibration: true,
-        importance: NotificationImportance.Default,
+        importance: NotificationImportance.High,
+        // importance: NotificationImportance.Default,
         playSound: true,
         channelDescription: 'notificação de manga novo',
       )
@@ -147,7 +148,7 @@ void main() async {
   );
 }
 
-void initServices() async {
-  Get.put(NotificationsService(), permanent: true);
-  Get.put(VersionService(), permanent: true);
+void initServices() {
+  Get.put<NotificationsService>(NotificationsService(), permanent: true);
+  Get.put<VersionService>(VersionService(), permanent: true);
 }

@@ -1,4 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/get_image.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -12,7 +13,7 @@ import 'package:html/parser.dart';
 class MangaHostServices {
   static String get baseURL1 => Strings.mangaHostURL1;
   static String get baseURL2 => Strings.mangaHostURL2;
-  static String get baseURL3 => Strings.mangaHostURL2;
+  static String get baseURL3 => Strings.mangaHostURL3;
 
   static DioCacheManager _cacheManager(String baseUrl) {
     return DioCacheManager(CacheConfig(baseUrl: baseUrl));
@@ -35,15 +36,15 @@ class MangaHostServices {
     String? referer,
   }) {
     String baseURL = baseUrlByUrl(url);
-    final String referer1 = referer ?? baseURL;
+    // final String referer1 = 'baseURL/find/$referer' ?? baseURL;
     return {
       'Origin': baseURL,
-      'Referer': '$referer1/',
+      'Referer': referer ?? baseURL,
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'upgrade-insecure-requests': '1',
       'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36',
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.102 Safari/537.36',
     };
   }
 
@@ -199,7 +200,8 @@ class MangaHostServices {
 
       try {
         final Dio dio = Dio();
-        final Options options = Options(headers: headers(bookURL));
+        final Options options =
+            Options(headers: headers(bookURL, referer: '$bookURL/find/$name'));
 
         final Response response = await dio.get(url, options: options);
         final Document document = parse(response.data);
@@ -261,10 +263,17 @@ class MangaHostServices {
         );
         break;
       } catch (_) {
-        if (url.contains(baseURL1)) {
-          bookURL = bookURL.replaceAll(baseURL1, baseURL2);
-        } else {
-          bookURL = bookURL.replaceAll(baseURL2, baseURL1);
+        // if (url.contains('mangahosted')) {
+        //   bookURL = bookURL.replaceAll('mangahosted', baseURL2);
+        // } else if (url.contains('mangahostz')) {
+        //   bookURL = bookURL.replaceAll('mangahostz', baseURL1);
+        // }
+        if (url.contains('mangahostz')) {
+          bookURL = bookURL.replaceAll('mangahostz', 'mangahost4');
+        } else if (url.contains('mangahost4')) {
+          bookURL = bookURL.replaceAll('mangahost4', 'mangahosted');
+        } else if (url.contains('mangahosted')) {
+          bookURL = bookURL.replaceAll('mangahosted', 'mangahostz');
         }
       }
     }
@@ -287,7 +296,7 @@ class MangaHostServices {
     final List<Element> elements = document.querySelectorAll('#slider a img');
 
     for (Element element in elements) {
-      final String url = (element.attributes['src'] ?? '').trim();
+      final String url = GetImage.bySrc(element);
       if (url.isNotEmpty) content.add(url);
     }
 

@@ -70,8 +70,9 @@ Widget indicatorBuilder(
       // }
       break;
     case IndicatorStatus.fullScreenBusying:
-      widget = Obx(
-        () => load.value
+      widget = ValueListenableBuilder<bool>(
+        valueListenable: load,
+        builder: (context, value, widget) => value
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

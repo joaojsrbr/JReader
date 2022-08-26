@@ -1,4 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/core/constants/strings.dart';
+import 'package:com_joaojsrbr_reader/app/core/utils/get_image.dart';
 import 'package:com_joaojsrbr_reader/app/models/book.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
@@ -49,31 +50,24 @@ class MarkServices {
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
         final String url = (a.attributes['href'] ?? '').trim();
         final String name = a.text.trim();
-        final String imageURL = (img.attributes['src'] ?? '').trim();
-
         final String? tag =
             element.querySelector('span.manga-type')?.text.trim();
 
-        final String? srcset = img.attributes['srcset'];
-        final String? imageURL2 = srcset == null
-            ? null
-            : '$srcset,'
-                .replaceAll(RegExp(r'([1-9])\w+,'), '')
-                .trim()
-                .split(' ')
-                .where((value) => value.length > 3)
-                .last;
+        final String imageURL = GetImage.bySrc(img);
+        final String? imageURL2 = GetImage.bySrcSet(img);
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
-          items.add(BookItem(
-            id: toId(name),
-            url: url,
-            tag: tag,
-            lastChapter: lastc,
-            name: name,
-            imageURL: imageURL,
-            imageURL2: imageURL2,
-          ));
+          items.add(
+            BookItem(
+              id: toId(name),
+              url: url,
+              tag: tag,
+              lastChapter: lastc,
+              name: name,
+              imageURL: imageURL,
+              imageURL2: imageURL2,
+            ),
+          );
         }
       }
 
@@ -110,18 +104,9 @@ class MarkServices {
       final String name = a.text.trim();
       final String lastc =
           lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-      final String imageURL = (img.attributes['src'] ?? '').trim();
 
-      final String? srcset = img.attributes['srcset'];
-      final String? imageURL2 = srcset == null
-          ? null
-          : '$srcset,'
-              .replaceAll(RegExp(r'([1-9])\w+,'), '')
-              .trim()
-              .split(' ')
-              .where((value) => value.length > 3)
-              .last
-              .trim();
+      final String imageURL = GetImage.bySrc(img);
+      final String? imageURL2 = GetImage.bySrcSet(img);
 
       if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
         items.add(BookItem(
@@ -220,7 +205,7 @@ class MarkServices {
         document.querySelectorAll('.reading-content img');
 
     for (Element element in elements) {
-      final String url = (element.attributes['src'] ?? '').trim();
+      final String url = GetImage.bySrc(element);
       if (url.isNotEmpty) content.add(url);
     }
 

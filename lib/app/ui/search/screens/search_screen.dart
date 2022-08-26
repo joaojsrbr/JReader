@@ -1,9 +1,8 @@
-import 'package:com_joaojsrbr_reader/app/core/utils/grid.dart';
-import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/ui/search/controlers/search_controller.dart';
-import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
-import 'package:com_joaojsrbr_reader/app/services/tag_info.dart';
-import 'package:com_joaojsrbr_reader/app/widgets/book_element.dart';
+import 'package:com_joaojsrbr_reader/app/ui/search/widgets/result_sliver/result_sliver.dart';
+import 'package:com_joaojsrbr_reader/app/ui/search/widgets/three_button/three_button.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/inherited_twowidget.dart';
+import 'package:com_joaojsrbr_reader/app/widgets/inherited_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,95 +13,98 @@ class SearchScreen extends GetView<SearchController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         slivers: [
-          Obx(
-            () => SliverAppBar(
-              snap: false,
-              pinned: true,
-              floating: true,
-              centerTitle: false,
-              bottom: AppBar(
-                automaticallyImplyLeading: false,
-                title: SizedBox(
-                  width: double.infinity,
-                  height: 40,
-                  child: Center(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Digite o nome do livro',
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: controller.isLoading.value
-                            ? Container(
-                                width: 20,
-                                alignment: Alignment.centerRight,
-                                child: const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                              )
-                            : null,
+          SliverAppBar(
+            snap: false,
+            pinned: false,
+            floating: false,
+            centerTitle: false,
+            expandedHeight: 122,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Column(
+                children: <Widget>[
+                  const SizedBox(height: 90.0),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 6.0, 16.0, 16.0),
+                    child: SizedBox(
+                      height: 38.0,
+                      width: double.infinity,
+                      child: TextField(
+                        controller: controller.textEditingController,
+                        onSubmitted: (value) => controller.onSubmitted(
+                          value.trimLeft().trimRight(),
+                          context,
+                        ),
+                        keyboardType: TextInputType.text,
+                        cursorHeight: 22,
+                        textAlign: TextAlign.start,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          label: const Text('Search'),
+                          suffixIcon: InheritedTwoWidgetValueNotifier(
+                            first: controller.isSearching,
+                            second: controller.isLoading,
+                            child: const ThreeButton(),
+                          ),
+                          contentPadding: const EdgeInsets.only(
+                            left: 15.0,
+                            right: 15.0,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                            borderSide: BorderSide(
+                              color: Get.theme.colorScheme.primary,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                            borderSide: BorderSide(
+                              color: Get.theme.colorScheme.error,
+                            ),
+                          ),
+                          // filled: true,
+
+                          focusColor:
+                              Get.theme.colorScheme.background.withOpacity(0.5),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(20),
+                            ),
+                            borderSide: BorderSide(
+                              color: Get.theme.colorScheme.secondary,
+                            ),
+                          ),
+                          // borderRadius: BorderRadius.circular(8.0),
+                          // color: Color(0xffF0F1F5),
+                        ),
+                        toolbarOptions: const ToolbarOptions(
+                          copy: true,
+                          paste: true,
+                          cut: true,
+                          selectAll: true,
+                        ),
+                        // onSubmitted: (value) {
+                        //   FocusScope.of(context).requestFocus(
+                        //     FocusNode(),
+                        //   );
+                        // },
                       ),
-                      enabled: !controller.isLoading.value,
-                      autofocus: true,
-                      textInputAction: TextInputAction.search,
-                      keyboardAppearance: Brightness.dark,
-                      onSubmitted: (value) => controller.onSubmitted(
-                          value.trimLeft().trimRight(), context),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
-          Obx(
-            () => controller.results.isEmpty
-                ? SliverToBoxAdapter(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 24,
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Não foi encontrado nenhum resultado para a sua pesquisa.',
-                        style: Theme.of(context).textTheme.titleSmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    sliver: SliverGrid(
-                      gridDelegate: Grid.slivergrid,
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final BookItem book = controller.results[index];
-                          return BookElement(
-                            tag: taginfo(book.imageURL),
-                            memCacheWidth: 330,
-                            memCacheHeight: 459,
-                            is18: book.is18,
-                            headers: book.headers,
-                            imageURL: book.imageURL,
-                            imageURL2: book.imageURL2,
-                            onTap: () {
-                              Get.toNamed(
-                                RoutesName.BOOK,
-                                arguments: book,
-                              );
-                            },
-                          );
-                        },
-                        childCount: controller.results.length,
-                      ),
-                    ),
-                  ),
+          InheritedWidgetValueNotifier(
+            notifier: controller.results,
+            child: ResultSliver(
+              key: ObjectKey(controller.results),
+            ),
           ),
         ],
       ),
