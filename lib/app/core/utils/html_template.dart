@@ -1,5 +1,4 @@
-const String htmlTemplate =
-    '''
+const String htmlTemplate = '''
 <!DOCTYPE html>
 <html>
   <head>
@@ -12,8 +11,10 @@ const String htmlTemplate =
       * {
         margin: 0;
         padding: 0;
+      
         box-sizing: border-box;
       }
+      
 
       body {
         width: 100%;
@@ -33,6 +34,7 @@ const String htmlTemplate =
         width: 100%;
         padding: 18px 24px;
         background-color: #000;
+        
 
         color: #fff;
         font-size: 20px;
@@ -103,6 +105,7 @@ const String htmlTemplate =
 
         const title = document.createElement('p');
         title.innerText = name;
+        title.setAttribute("id", "title")
 
         container.append(title);
 
@@ -112,17 +115,29 @@ const String htmlTemplate =
         const sources = data.split(',,separator,,');
 
         for (const src of sources) {
-          const img = document.createElement('img');
-          img.setAttribute('src', src);
+          
+          if(!src.includes("https")){
 
-          img.addEventListener('load', () => {
-            if (!img.complete) return;
+          const content = document.createElement('p');
+          content.innerText = src;
+          content.setAttribute('style', 'padding: 8px 10px;display: block;text-align: justify;font-size: 14px;font-family: poppins,sans-serif;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;background-color: rgb(16, 16, 20);');
+          
+           container.append(content);
+           onLoad.postMessage('');
+          } else {
+          const content = document.createElement('img');
+          content.setAttribute('src', src);
+          content.addEventListener('load', () => {
+            if (!content.complete) return;
 
             loaded++;
             if (loaded === sources.length) onLoad.postMessage('');
           });
+           container.append(content);
+          }
 
-          container.append(img);
+
+        
         }
 
         function scroll() {
@@ -140,7 +155,7 @@ const String htmlTemplate =
           }
 
           if (position >= minNext && !callNext) {
-            callNext = true;
+            callNext = true;        
             onNext.postMessage('');
           }
 

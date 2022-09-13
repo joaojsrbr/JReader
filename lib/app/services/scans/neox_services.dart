@@ -191,6 +191,10 @@ class NeoxServices {
     );
   }
 
+  // const content = document.createElement('p');
+  // content.innerText = src;
+  // content.setAttribute('style', 'display: block;text-align: justify;font-size: 14px;font-family: poppins,sans-serif;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;background-color: rgb(16, 16, 20);');
+
   static Future<List<String>> getContent(String url) async {
     final List<String> content = [];
 
@@ -204,16 +208,24 @@ class NeoxServices {
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
 
-    final List<Element> elementstext =
-        document.querySelectorAll('.reading-content p');
+    final Element? elementstext =
+        document.querySelector('.reading-content div');
 
-    if (elementstext.isNotEmpty) {
-      // elements.forEach((element) {print(element.text); });
+    if (elements.length < 3) {
+      if (elementstext != null) {
+        // elements.forEach((element) {print(element.text); });
+        for (var element in elementstext.children) {
+          final Element? img = element.querySelector('img');
+
+          if (img != null) {
+            content.add(GetImage.bySrc(img));
+          }
+          content.add(element.text.trim());
+        }
+        // var _image = m.MemoryImage(image);
+      }
     } else {
       for (Element element in elements) {
-        // final String url =
-        //     (element.attributes['src'] ?? element.attributes['data-src'] ?? '')
-        //         .trim();
         final String url = GetImage.bySrc(element);
         if (url.isNotEmpty) content.add(url);
       }

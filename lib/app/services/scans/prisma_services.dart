@@ -33,7 +33,7 @@ class PrismaServices {
       'upgrade-insecure-requests': '1',
       'origin': 'https://prismascans.net',
       'cookie':
-          'cf_clearance=vwyUVoHs7_L438riDeP_87JeETyjl43af3OG7UMe6F0-1661284746-0-150',
+          'cf_clearance=vwyUVoHs7_L438riDeP_87JeETyjl43af3OG7UMe6F0-1661284746-0-150; wpmanga-reading-history=W3siaWQiOjIwNjcsImMiOiI0NjQ0IiwicCI6MSwiaSI6IiIsInQiOjE2NjE3Mjk2MjR9XQ%3D%3D',
       'accept':
           'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
       'user-agent':
@@ -67,7 +67,11 @@ class PrismaServices {
         final String name = a.text.trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String imageURL = GetImage.bySrc(img);
+        final String imageURL = (img.attributes['data-src-img'] ??
+                img.attributes['data-srcset-img'] ??
+                GetImage.bySrc(img))
+            .trim();
+
         final String? imageURL2 = GetImage.bySrcSet(img);
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
@@ -77,9 +81,9 @@ class PrismaServices {
               url: url,
               lastChapter: lastc,
               name: name,
+              imageURL2: imageURL2,
               headers: headers,
               imageURL: imageURL,
-              imageURL2: imageURL2,
             ),
           );
         }
@@ -119,8 +123,9 @@ class PrismaServices {
         final String name = a.text.trim();
         final String lastc =
             lastChapter.text.replaceAll(RegExp(r'[^0-9]'), '').trim();
-        final String imageURL = GetImage.bySrc(img);
-        final String? imageURL2 = GetImage.bySrcSet(img);
+        final String imageURL = (img.attributes['data-src-img'] ??
+            img.attributes['data-srcset-img'] ??
+            '');
 
         if (url.isNotEmpty && name.isNotEmpty && imageURL.isNotEmpty) {
           items.add(
@@ -130,7 +135,6 @@ class PrismaServices {
               url: url,
               name: name,
               imageURL: imageURL,
-              imageURL2: imageURL2,
             ),
           );
         }
@@ -174,8 +178,11 @@ class PrismaServices {
     }
 
     // Sinopse
-    final String sinopse =
-        document.querySelector('.summary__content p')?.text.trim() ?? '';
+    final String sinopse = document
+            .querySelector('.summary_content .post-content .manga-excerpt')
+            ?.text
+            .trim() ??
+        '';
 
     // Chapters
     try {
@@ -220,9 +227,19 @@ class PrismaServices {
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
 
-    for (Element element in elements) {
-      final String url = GetImage.bySrc(element);
-      if (url.isNotEmpty) content.add(url);
+    final Element? elementstext =
+        document.querySelector('.reading-content div');
+    if (elements.isEmpty) {
+      if (elementstext != null) {
+        for (Element element in elementstext.children) {
+          content.add(element.text);
+        }
+      }
+    } else {
+      for (Element element in elements) {
+        final String url = GetImage.bySrc(element);
+        if (url.isNotEmpty) content.add(url);
+      }
     }
 
     return content;

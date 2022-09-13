@@ -1,12 +1,16 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/ui/home/controlers/home_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FavoritesController extends GetxController {
-  late ScrollController scrollController;
   final TextEditingController searchQuery = TextEditingController();
+  final homeController = Get.find<HomeController>();
   final key = GlobalKey<ScaffoldState>();
+  late ScrollController scrollController = ScrollController();
+
+  final baseCacheManager = Get.find<HomeController>().customCacheManager;
 
   String searchText = "";
 
@@ -17,7 +21,6 @@ class FavoritesController extends GetxController {
   @override
   void onInit() {
     scrollController = ScrollController();
-
     listener();
 
     super.onInit();
@@ -51,11 +54,5 @@ class FavoritesController extends GetxController {
         print('${searchList.value.length}');
       }
     }
-  }
-
-  @override
-  void onClose() {
-    scrollController.dispose();
-    super.onClose();
   }
 }

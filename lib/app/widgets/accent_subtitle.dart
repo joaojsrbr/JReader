@@ -1,4 +1,4 @@
-import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -7,11 +7,15 @@ class AccentSubtitleWithDots extends StatelessWidget {
   final List<String> data;
   final EdgeInsetsGeometry? margin;
   final EdgeInsetsGeometry? padding;
+  final Color baseColor;
+  final Color highlightColor;
 
   const AccentSubtitleWithDots(
     this.data, {
     this.margin,
     this.padding,
+    required this.baseColor,
+    required this.highlightColor,
     this.isLoading = false,
     Key? key,
   }) : super(key: key);
@@ -38,11 +42,15 @@ class AccentSubtitleWithDots extends StatelessWidget {
       padding: padding,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: isLoading
-            ? [
-                const AccentSubtitleShimmer(),
-              ]
-            : _handleData(),
+        children: _handleData(),
+        // children: isLoading
+        //     ? [
+        //         AccentSubtitleShimmer(
+        //           baseColor: baseColor,
+        //           highlightColor: highlightColor,
+        //         ),
+        //       ]
+        //     : _handleData(),
       ),
     );
   }
@@ -50,15 +58,20 @@ class AccentSubtitleWithDots extends StatelessWidget {
 
 class AccentSubtitleText extends StatelessWidget {
   final String text;
+  final Color? textColor;
 
-  const AccentSubtitleText(this.text, {Key? key}) : super(key: key);
+  const AccentSubtitleText(
+    this.text, {
+    Key? key,
+    this.textColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        color: AppThemeData.accent,
+      style: TextStyle(
+        color: textColor,
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
@@ -85,19 +98,26 @@ class AccentSubtitleDot extends StatelessWidget {
 
 class AccentSubtitleShimmer extends StatelessWidget {
   final double? width;
+  final Color baseColor;
+  final Color highlightColor;
 
-  const AccentSubtitleShimmer({this.width, Key? key}) : super(key: key);
+  const AccentSubtitleShimmer({
+    Key? key,
+    this.width,
+    required this.baseColor,
+    required this.highlightColor,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppThemeData.surface,
-      highlightColor: AppThemeData.surfaceTwo,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: Container(
-        width: width ?? 280,
+        width: width ?? 200,
         height: 22,
         decoration: BoxDecoration(
-          color: AppThemeData.surface,
+          color: baseColor,
           borderRadius: BorderRadius.circular(8),
         ),
       ),

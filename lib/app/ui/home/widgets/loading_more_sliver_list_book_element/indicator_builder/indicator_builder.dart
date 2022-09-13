@@ -1,3 +1,4 @@
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:com_joaojsrbr_reader/app/ui/home/controlers/home_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,12 @@ Widget indicatorBuilder(
   IndicatorStatus status,
 ) {
   final load = Get.find<HomeController>().inrefresh;
-  Widget _setbackground(
+  Widget setbackground(
       bool full, Widget widget, double height, BuildContext context) {
     widget = Container(
       width: double.infinity,
       height: 200,
-      color: Theme.of(context).colorScheme.background,
+      color: AppThemeData.color(context).background,
       alignment: Alignment.center,
       child: widget,
     );
@@ -62,7 +63,7 @@ Widget indicatorBuilder(
         ],
       );
       widget = Container();
-      widget = _setbackground(false, widget, 50.0, context);
+      widget = setbackground(false, widget, 50.0, context);
       // if (isSliver) {
       //   widget = SliverToBoxAdapter(
       //     child: widget,
@@ -82,7 +83,7 @@ Widget indicatorBuilder(
               )
             : Container(),
       );
-      widget = _setbackground(false, widget, 35.0, context);
+      widget = setbackground(false, widget, 35.0, context);
       if (isSliver) {
         widget = SliverFillRemaining(
           child: widget,
@@ -95,7 +96,7 @@ Widget indicatorBuilder(
           Icons.error,
         ),
       );
-      widget = _setbackground(false, widget, 35.0, context);
+      widget = setbackground(false, widget, 35.0, context);
       widget = GestureDetector(
         onTap: () {
           // repository.errorRefresh();
@@ -114,7 +115,7 @@ Widget indicatorBuilder(
           Icons.error,
         ),
       );
-      widget = _setbackground(true, widget, double.infinity, context);
+      widget = setbackground(true, widget, double.infinity, context);
       widget = GestureDetector(
         onTap: () {
           // repository.errorRefresh();

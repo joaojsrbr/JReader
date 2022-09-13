@@ -3,9 +3,10 @@
 ## Screenshots
 
 <p>
-  <img width="24.5%" src="./.github/Screenshot_01.png" />
-  <img width="24.5%" src="./.github/Screenshot_02.png" />
-  <img width="24.5%" src="./.github/Screenshot_03.png" />
+  <img width="24.5%" style="border-radius: 20px 20px 20px 20px" src="./.github/Screenshot_01.png" />
+  <img width="24.5%" style="border-radius: 20px 20px 20px 20px" src="./.github/Screenshot_02.png" />
+  <img width="24.5%" style="border-radius: 20px 20px 20px 20px" src="./.github/Screenshot_03.png" />
+  <img width="24.5%" style="border-radius: 20px 20px 20px 20px" src="./.github/Screenshot_04.png" />
 </p>
 
 ## Funcionalidades
@@ -16,10 +17,6 @@
 - Favoritos
 - Capítulos lidos
 - Leitura offline - Download de capítulos
-
-## Bug
-
-- [x] Novel
 
 ## Instalação
 

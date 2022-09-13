@@ -60,7 +60,7 @@ class AboutTileGenders extends StatelessWidget {
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
               child: Chip(
-                backgroundColor: Theme.of(context).colorScheme.tertiary,
+                backgroundColor: Colors.blue[600],
                 label: Text(genders[index]),
               ),
             );

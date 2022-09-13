@@ -9,3 +9,4 @@ export 'olympus_services.dart';
 export 'prisma_services.dart';
 export 'random_services.dart';
 export 'reaper_services.dart';
+export '../agregadores/muito_manga_services.dart';

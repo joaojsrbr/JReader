@@ -203,12 +203,20 @@ class MarkServices {
 
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
-
-    for (Element element in elements) {
-      final String url = GetImage.bySrc(element);
-      if (url.isNotEmpty) content.add(url);
+    final Element? elementstext =
+        document.querySelector('.reading-content div');
+    if (elements.isEmpty) {
+      if (elementstext != null) {
+        for (Element element in elementstext.children) {
+          content.add(element.text);
+        }
+      }
+    } else {
+      for (Element element in elements) {
+        final String url = GetImage.bySrc(element);
+        if (url.isNotEmpty) content.add(url);
+      }
     }
-
     return content;
   }
 }

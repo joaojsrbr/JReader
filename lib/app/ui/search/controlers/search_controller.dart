@@ -1,21 +1,21 @@
-// ignore_for_file: prefer_final_fields, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
-
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
-import 'package:com_joaojsrbr_reader/app/services/agregadores/muito_manga_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/export_scans.dart';
+import 'package:com_joaojsrbr_reader/app/ui/search/controlers/results_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchController extends GetxController {
   ValueNotifier<bool> isLoading = ValueNotifier(false);
   ValueNotifier<bool> isSearching = ValueNotifier(false);
-  ValueNotifier<List<BookItem>> results = ValueNotifier([]);
+  ResultsController results = ResultsController();
   final TextEditingController textEditingController = TextEditingController();
 
   Future<List<BookItem>> _search(Future<List<BookItem>> value) async {
     List<BookItem> templist = [];
-    await value.then((value) => templist = value);
-    // var templist = await value;
+    await value.then(
+      (value) => templist = value,
+      onError: (value) => templist = [],
+    );
     if (templist.isEmpty) {
       return [];
     } else {
@@ -28,32 +28,21 @@ class SearchController extends GetxController {
     isSearching.value = isLoading.value ? false : true;
 
     try {
-      results.value = [];
-      // _getSearch(value);
-
-      results.value.addAll(await _search(ArgosService.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(NeoxServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(RandomServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(MarkServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(CronosServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(PrismaServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(ReaperServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(OlympusServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(MuitoMangaServices.search(value)));
-      results.notifyListeners();
-      results.value.addAll(await _search(MangaHostServices.search(value)));
-      results.notifyListeners();
-
-      // results.value = await search(value);
-
+      var temp = await Future.wait(
+        [
+          _search(ArgosService.search(value)),
+          _search(NeoxServices.search(value)),
+          _search(RandomServices.search(value)),
+          _search(MarkServices.search(value)),
+          _search(CronosServices.search(value)),
+          _search(PrismaServices.search(value)),
+          _search(ReaperServices.search(value)),
+          _search(OlympusServices.search(value)),
+          _search(MuitoMangaServices.search(value)),
+          _search(MangaHostServices.search(value))
+        ],
+      );
+      results.addAll(temp);
     } catch (e) {
       final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
 
@@ -64,7 +53,6 @@ class SearchController extends GetxController {
         ),
       );
     } finally {
-      results.value = results.value;
       isLoading.value = false;
       isSearching.value = isLoading.value
           ? false

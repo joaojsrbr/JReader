@@ -10,6 +10,10 @@ class AppThemeData {
   static const Color greyDark = Color.fromRGBO(58, 61, 65, 1);
   static const Color blueDark = Color.fromRGBO(42, 43, 58, 1);
 
+  static ColorScheme color(BuildContext context) {
+    return Theme.of(context).colorScheme;
+  }
+
   static const Color surface = Color.fromRGBO(22, 22, 30, 1);
   static const Color surfaceTwo = Color.fromRGBO(26, 27, 38, 1);
   static const Color background = Color.fromRGBO(16, 16, 20, 1);
