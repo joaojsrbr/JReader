@@ -195,15 +195,13 @@ class MangaHostServices {
 
     int numberOfAttempts = 0;
 
-    while (numberOfAttempts < 2) {
+    while (numberOfAttempts < 3) {
       numberOfAttempts++;
 
       try {
         final Dio dio = Dio();
-        final Options options =
-            Options(headers: headers(bookURL, referer: '$bookURL/find/$name'));
-
-        final Response response = await dio.get(url, options: options);
+        final Options options = Options(headers: headers(bookURL));
+        final Response response = await dio.get(bookURL, options: options);
         final Document document = parse(response.data);
 
         final List<Chapter> chapters = [];
@@ -263,18 +261,23 @@ class MangaHostServices {
         );
         break;
       } catch (_) {
-        // if (url.contains('mangahosted')) {
-        //   bookURL = bookURL.replaceAll('mangahosted', baseURL2);
-        // } else if (url.contains('mangahostz')) {
-        //   bookURL = bookURL.replaceAll('mangahostz', baseURL1);
-        // }
-        if (url.contains('mangahostz')) {
-          bookURL = bookURL.replaceAll('mangahostz', 'mangahost4');
-        } else if (url.contains('mangahost4')) {
-          bookURL = bookURL.replaceAll('mangahost4', 'mangahosted');
-        } else if (url.contains('mangahosted')) {
-          bookURL = bookURL.replaceAll('mangahosted', 'mangahostz');
+        if (url.contains('mangahosted')) {
+          bookURL = bookURL.replaceAll('mangahosted', baseURL2);
+        } else if (url.contains('mangahostz')) {
+          bookURL = bookURL.replaceAll('mangahost4', baseURL1);
+        } else if (url.contains('mangahostz')) {
+          bookURL = bookURL.replaceAll('mangahostz', baseURL3);
         }
+
+        // if (url.contains('mangahostz')) {
+        //   bookURL = bookURL.replaceAll('mangahostz', 'mangahost4');
+        // }
+        // if (url.contains('mangahost4')) {
+        //   bookURL = bookURL.replaceAll('mangahost4', 'mangahosted');
+        // }
+        // if (url.contains('mangahosted')) {
+        //   bookURL = bookURL.replaceAll('mangahosted', 'mangahostz');
+        // }
       }
     }
 

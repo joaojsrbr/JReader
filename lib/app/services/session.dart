@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_final_fields
 
+import 'package:com_joaojsrbr_reader/app/core/constants/app_theme.dart';
 import 'package:com_joaojsrbr_reader/app/routes/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,8 @@ class Session {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            backgroundColor: Theme.of(context).colorScheme.background,
+            backgroundColor: AppThemeData.color(context).background,
+            duration: const Duration(milliseconds: 3500),
             content: const Text(
               'Login Success',
               style: TextStyle(

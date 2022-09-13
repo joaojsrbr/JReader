@@ -1,13 +1,12 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 class ReaperSource extends LoadingMoreBase<BookItem> {
-  RxList<BookItem> lista = <BookItem>[].obs;
+  List<BookItem> lista = <BookItem>[];
 
-  RxBool isSuccess = false.obs;
+  bool isSuccess = false;
 
   bool forceRefresh = false;
 
@@ -25,7 +24,7 @@ class ReaperSource extends LoadingMoreBase<BookItem> {
   @override
   Future<bool> loadData([bool isloadMoreAction = false]) async {
     try {
-      lista.value = await ReaperServices.lastAdded;
+      lista = await ReaperServices.lastAdded;
 
       for (var item in lista) {
         if (!contains(item)) {
@@ -33,14 +32,14 @@ class ReaperSource extends LoadingMoreBase<BookItem> {
         }
       }
 
-      isSuccess.value = true;
-      return isSuccess.value;
+      isSuccess = true;
+      return isSuccess;
     } catch (e) {
-      isSuccess.value = false;
+      isSuccess = false;
       if (kDebugMode) {
         print(e);
       }
-      return isSuccess.value;
+      return isSuccess;
     }
   }
 }

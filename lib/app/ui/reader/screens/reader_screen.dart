@@ -9,7 +9,6 @@ import 'package:com_joaojsrbr_reader/app/core/utils/html_template.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/reader_js.dart';
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/models/chapter.dart';
-import 'package:com_joaojsrbr_reader/app/ui/book/controlers/book_screen_controller.dart';
 import 'package:com_joaojsrbr_reader/app/ui/reader/controlers/reader_controller.dart';
 import 'package:com_joaojsrbr_reader/app/services/book_content.dart';
 import 'package:com_joaojsrbr_reader/app/services/historic.dart';
@@ -17,12 +16,16 @@ import 'package:com_joaojsrbr_reader/app/stores/historic_store.dart';
 import 'package:com_joaojsrbr_reader/app/core/utils/books_path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:state_change/state_change.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ReaderScreen extends StatefulWidget {
-  const ReaderScreen({super.key});
+  const ReaderScreen({
+    super.key,
+  });
 
   @override
   State<ReaderScreen> createState() => _ReaderScreenState();
@@ -44,17 +47,25 @@ class _ReaderScreenState extends State<ReaderScreen>
   @override
   void initState() {
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
+    startOverlays();
 
     super.initState();
   }
 
+  void startOverlays() async {
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.immersiveSticky,
+    );
+  }
+
   ReaderJS? _js;
 
-  RxList<Chapter> _chapters = RxList();
-  RxBool showappbar = RxBool(false);
+  List<Chapter> _chapters = RxList();
+  // ValueNotifier<bool> showappbar = RxBool(false);
   bool _finished = false;
   bool _isLoading = true;
   bool _getNextCap = true;
+  late Sort _sort;
 
   String? _position;
   double? _initPosition;
@@ -77,6 +88,7 @@ class _ReaderScreenState extends State<ReaderScreen>
 
     await _js!.insertContent(content, _index, chapter.name);
 
+    _finished = _index == _totalChapters - 1;
     if (kDebugMode) {
       print(_index);
     }
@@ -89,7 +101,6 @@ class _ReaderScreenState extends State<ReaderScreen>
         break;
     }
 
-    // _finished = _index == _totalChapters;
     if (_finished) await _js!.finishedChapters();
 
     _getNextCap = false;
@@ -107,8 +118,6 @@ class _ReaderScreenState extends State<ReaderScreen>
     await _js!.removeLoading();
   }
 
-  late Sort _sort;
-
   void _onNext(JavascriptMessage message) {
     if (_finished || _getNextCap) return;
     _toggleHistoric(_position);
@@ -121,7 +130,6 @@ class _ReaderScreenState extends State<ReaderScreen>
         _index = _index + 1;
         break;
     }
-    // _index = _index - 1;
     _getContent();
   }
 
@@ -137,12 +145,12 @@ class _ReaderScreenState extends State<ReaderScreen>
     final args = ModalRoute.of(context)!.settings.arguments as ReaderArguments;
 
     _book = args.book;
-    _chapters.value = args.chapters;
+    _chapters = args.chapters;
     _historic = Historic(bookID: _book.id, context: context, store: store);
     _initPosition = args.position;
-    _sort = Get.find<BookScreenController>().sort.value;
     _index = args.index;
     _totalChapters = args.totalChapters;
+    _sort = args.sort;
 
     super.didChangeDependencies();
   }
@@ -154,110 +162,102 @@ class _ReaderScreenState extends State<ReaderScreen>
         break;
       case AppLifecycleState.inactive:
         _toggleHistoric(_position);
+
         break;
       case AppLifecycleState.paused:
         break;
       case AppLifecycleState.detached:
         _toggleHistoric(_position);
+
         break;
     }
 
     super.didChangeAppLifecycleState(state);
   }
 
+  void endOverlays() async {
+    await SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [
+        SystemUiOverlay.bottom,
+      ],
+    );
+  }
+
   @override
   void dispose() {
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     _toggleHistoric(_position);
-    showappbar.close();
-    _chapters.close();
+    endOverlays();
     super.dispose();
   }
+
+  ValueNotifier<bool> showButtons = ValueNotifier(true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: SafeArea(
         child: Stack(
           children: [
-            Obx(
-              () => WebView(
-                key: ObjectKey(_chapters[_index].url),
-                initialUrl: _html,
-                javascriptMode: JavascriptMode.unrestricted,
-                backgroundColor: AppThemeData.background,
-                gestureNavigationEnabled: true,
-                onWebViewCreated: (controller) {
-                  _js = ReaderJS(controller);
-                },
-                onPageFinished: (_) => _getContent(),
-                javascriptChannels: {
-                  JavascriptChannel(
-                    name: 'onLoad',
-                    onMessageReceived: _onLoad,
-                  ),
-                  JavascriptChannel(
-                    name: 'onNext',
-                    onMessageReceived: _onNext,
-                  ),
-                  JavascriptChannel(
-                    name: 'onFinished',
-                    onMessageReceived: _onFinished,
-                  ),
-                  JavascriptChannel(
-                    name: 'onPosition',
-                    onMessageReceived: _onPosition,
-                  ),
-                },
-              ),
+            WebView(
+              key: ObjectKey(_book),
+              initialUrl: _html,
+              javascriptMode: JavascriptMode.unrestricted,
+              backgroundColor: AppThemeData.background,
+              gestureNavigationEnabled: true,
+              onWebViewCreated: (controller) {
+                _js = ReaderJS(controller);
+              },
+              onPageFinished: (_) => _getContent(),
+              javascriptChannels: {
+                JavascriptChannel(
+                  name: 'onLoad',
+                  onMessageReceived: _onLoad,
+                ),
+                JavascriptChannel(
+                  name: 'onNext',
+                  onMessageReceived: _onNext,
+                ),
+                JavascriptChannel(
+                  name: 'onFinished',
+                  onMessageReceived: _onFinished,
+                ),
+                JavascriptChannel(
+                  name: 'onPosition',
+                  onMessageReceived: _onPosition,
+                ),
+              },
             ),
-
-            // ClipRRect(
-            //   borderRadius: const BorderRadius.only(
-            //     bottomLeft: Radius.circular(25),
-            //     bottomRight: Radius.circular(25),
-            //   ),
-            //   child: Obx(
-            //     () => AnimatedContainer(
-            //       height: showappbar.value ? kToolbarHeight * 1.05 : 0,
-            //       width: double.infinity,
-            //       duration: const Duration(milliseconds: 450),
-            //       decoration: BoxDecoration(
-            //         color: Theme.of(context)
-            //             .colorScheme
-            //             .background
-            //             .withOpacity(0.55),
-            //       ),
-            //       curve: Curves.linear,
-            //       padding: const EdgeInsets.only(left: 5),
-            //       child: Row(
-            //         mainAxisSize: MainAxisSize.max,
-            //         children: [
-            //           Flexible(
-            //             flex: 1,
-            //             child: Container(
-            //               alignment: Alignment.centerLeft,
-            //               child: const BackButton(),
-            //             ),
-            //           ),
-            //           Flexible(
-            //             flex: 6,
-            //             child: Container(
-            //               alignment: Alignment.centerLeft,
-            //               height: 65,
-            //               child: Obx(
-            //                 () => Text(_chapters[_index].name),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            const SizedBox(
-              height: 50,
-              width: 50,
-              child: BackButton(),
+            GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                showButtons.value = !showButtons.value;
+              },
+              child: Container(),
+            ),
+            StateChange<bool>(
+              notifier: showButtons,
+              builder: (context, value) => AnimatedCrossFade(
+                crossFadeState: value
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                duration: const Duration(milliseconds: 650),
+                reverseDuration: const Duration(milliseconds: 650),
+                firstChild: const SizedBox.shrink(),
+                secondChild: BackButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    await SystemChrome.setEnabledSystemUIMode(
+                      SystemUiMode.manual,
+                      overlays: [
+                        SystemUiOverlay.bottom,
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -270,7 +270,7 @@ class _ReaderScreenState extends State<ReaderScreen>
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: AppThemeData.color(context).background,
           title: const Text('Continuar de onde parou'),
           content: Text(
             'Você já começou a ler esse livro, desejá continuar a leitura de onde parou?',

@@ -4,7 +4,7 @@ description: Read manga, manhwa and manhua.
 
 publish_to: "none"
 
-version: 1.1.10
+version: 2.0.0
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -14,45 +14,52 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   dio: ^4.0.6
-  firebase_core_platform_interface: ^4.5.0
-  firebase_app_check: ^0.0.6+20
-  firebase_core: ^1.21.0
-  firebase_database: ^9.1.2
-  firebase_auth: ^3.6.4
+  # firebase_core_platform_interface: ^4.5.0
+  firebase_app_check: ^0.0.7
+  firebase_core: ^1.21.1
+  firebase_database: ^9.1.3
+  firebase_auth: ^3.7.0
   dio_http_cache: ^0.3.0
   html: ^0.15.0
   google_sign_in: ^5.3.2
   flutter_signin_button: ^2.0.0
   awesome_notifications: any
   shimmer: ^2.0.0
-  cached_network_image: ^3.2.1
+  cached_network_image: ^3.2.2
   provider: ^6.0.3
   mobx: ^2.0.7+2
-  package_info_plus: ^1.4.0
+  uuid: 3.0.6
+  animated_widgets_ns: ^2.0.0
+  package_info_plus: ^1.4.3+1
   flutter_mobx: ^2.0.6+1
   path: ^1.8.1
   url_launcher: ^6.1.5
   webview_flutter: ^3.0.4
-  flutter_native_splash: ^2.2.7
   flutter_svg: ^1.1.0
   slugify: ^2.0.0
   path_provider: ^2.0.11
   permission_handler: ^10.0.0
   collection: ^1.16.0
-  sqflite: ^2.0.2+1
+  sqflite: ^2.0.3+1
   workmanager: ^0.5.0
   get: ^4.6.5
   flutter_cache_manager: ^3.3.0
   graphql_flutter: ^5.1.0
-  sliver_tools: ^0.2.7
+  sliver_tools: ^0.2.8
+  custom_selectable_text: ^0.2.1
+  dynamic_color: ^1.5.4
   loading_more_list: ^4.1.2
-  custom_selectable_text: ^0.2.0
-  dynamic_color: ^1.4.0
-  # boxy: ^2.0.6+2
-  # carousel_slider: ^4.1.1
-  # select_button:
-  #   path: lib/app/core/packages/commons/select_button
-  # hidable: ^1.0.2
+  filter_chips:
+    git:
+      url: https://github.com/joaojsrbr/filter_chips
+  state_change:
+    git:
+      url: https://github.com/joaojsrbr/state_change
+  hidable:
+    git:
+      url: https://github.com/joaojsrbr/hidable
+  flutter_slidable: ^2.0.0
+  flutter_speed_dial: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,23 +74,22 @@ flutter_icons:
   android: "ic_launcher"
   ios: true
   image_path: "assets/images/logo.png"
-  adaptive_icon_foreground: "assets/images/logo3.png"
-  adaptive_icon_background: "#101014"
+  adaptive_icon_foreground: "assets/images/logonobg.png"
 
 flutter_native_splash:
-  image: "assets/images/logo.png"
+  image: "assets/images/logonobg.png"
   android: true
-  color_dark: "#000000"
-  color: "#000000"
+  color_dark: "#161728"
+  color: "#161728"
   ios: true
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/images/logo.svg
-    - assets/images/logo3.png
     - assets/images/animated-bell.gif
+    - assets/images/logo.png
+    - assets/images/logonobg.png
   fonts:
     - family: iconsax
       fonts:

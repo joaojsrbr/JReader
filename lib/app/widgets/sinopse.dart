@@ -49,8 +49,11 @@ class ShortSinopse extends StatelessWidget {
           ? const ShortSinopseShimmer()
           : Text(
               text,
-              style: const TextStyle(fontSize: 14),
-              maxLines: 3,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[350],
+              ),
+              maxLines: 4,
               overflow: TextOverflow.ellipsis,
             ),
     );

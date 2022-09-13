@@ -1,4 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
+import 'package:com_joaojsrbr_reader/app/services/agregadores/muito_manga_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/cronos_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/agregadores/manga_host_services.dart';
@@ -8,6 +9,33 @@ import 'package:com_joaojsrbr_reader/app/services/scans/olympus_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/prisma_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/random_services.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/reaper_services.dart';
+
+Future<List<BookItem>> searchByUrl(String url, String name) async {
+  if (url.contains('neoxscans')) {
+    return NeoxServices.search(name);
+  } else if (url.contains('randomscan')) {
+    return RandomServices.search(name);
+  } else if (url.contains('markscans')) {
+    return MarkServices.search(name);
+  } else if (url.contains('cronosscan')) {
+    return await CronosServices.search(name);
+  } else if (url.contains('prismascans')) {
+    return await PrismaServices.search(name);
+  } else if (url.contains('reaperscans')) {
+    return await ReaperServices.search(name);
+  } else if (url.contains('mangahosted') ||
+      url.contains('mangahostz') ||
+      url.contains('mangahost4')) {
+    return MangaHostServices.search(name);
+  } else if (url.contains('argosscan')) {
+    return ArgosService.search(name);
+  } else if (url.contains('olympusscanlation')) {
+    return await OlympusServices.search(name);
+  } else if (url.contains('muitomanga')) {
+    return await MuitoMangaServices.search(name);
+  }
+  return [];
+}
 
 Future<List<BookItem>> search(String value) async {
   final String result = value.trimRight();
@@ -28,6 +56,8 @@ Future<List<BookItem>> search(String value) async {
   results.addAll(await _search(OlympusServices.search(result)));
 
   results.addAll(await _search(ArgosService.search(result)));
+
+  results.addAll(await _search(MuitoMangaServices.search(result)));
 
   results.addAll(await _search(MangaHostServices.search(result)));
 

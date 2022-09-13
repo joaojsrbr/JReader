@@ -1,13 +1,12 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/argos_services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 class ArgosSource extends LoadingMoreBase<BookItem> {
-  RxList<BookItem> lista = <BookItem>[].obs;
+  List<BookItem> lista = <BookItem>[];
 
-  RxBool isSuccess = false.obs;
+  bool isSuccess = false;
 
   bool forceRefresh = false;
 
@@ -25,24 +24,23 @@ class ArgosSource extends LoadingMoreBase<BookItem> {
   @override
   Future<bool> loadData([bool isloadMoreAction = false]) async {
     try {
-      lista.value = await ArgosService.popular;
+      lista = await ArgosService.popular;
 
-      await Future.delayed(const Duration(milliseconds: 350));
       for (var item in lista) {
         if (!contains(item)) {
           add(item);
         }
       }
 
-      isSuccess.value = true;
-      return isSuccess.value;
+      isSuccess = true;
+      return isSuccess;
     } catch (exception, stack) {
-      isSuccess.value = false;
+      isSuccess = false;
       if (kDebugMode) {
         print(exception);
         print(stack);
       }
-      return isSuccess.value;
+      return isSuccess;
     }
   }
 }

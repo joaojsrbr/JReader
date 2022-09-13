@@ -16,8 +16,10 @@ migrate_working_dir/
 *.iws
 .idea/
 lib/app/core/packages
-flutter_01.sksl.json
-flutter_01.png
+lib/app/widgets/filter_chips
+lib/app/widgets/state_change
+lib/app/widgets/hidable
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.

@@ -1,13 +1,12 @@
 import 'package:com_joaojsrbr_reader/app/models/book_item.dart';
 import 'package:com_joaojsrbr_reader/app/services/scans/neox_services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 
 class NeoxSource extends LoadingMoreBase<BookItem> {
-  RxList<BookItem> lista = <BookItem>[].obs;
+  List<BookItem> lista = <BookItem>[];
 
-  RxBool isSuccess = false.obs;
+  bool isSuccess = false;
   bool forceRefresh = false;
 
   @override
@@ -24,22 +23,22 @@ class NeoxSource extends LoadingMoreBase<BookItem> {
   @override
   Future<bool> loadData([bool isloadMoreAction = true]) async {
     try {
-      lista.value = await NeoxServices.lastAdded;
-      await Future.delayed(const Duration(milliseconds: 350));
+      lista = await NeoxServices.lastAdded;
+
       for (var item in lista) {
         if (!contains(item)) {
           add(item);
         }
       }
 
-      isSuccess.value = true;
-      return isSuccess.value;
+      isSuccess = true;
+      return isSuccess;
     } catch (e) {
-      isSuccess.value = false;
+      isSuccess = false;
       if (kDebugMode) {
         print(e);
       }
-      return isSuccess.value;
+      return isSuccess;
     }
   }
 }

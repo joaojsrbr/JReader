@@ -1,8 +1,6 @@
 import 'package:com_joaojsrbr_reader/app/ui/search/controlers/search_controller.dart';
 import 'package:com_joaojsrbr_reader/app/ui/search/widgets/result_sliver/result_sliver.dart';
 import 'package:com_joaojsrbr_reader/app/ui/search/widgets/three_button/three_button.dart';
-import 'package:com_joaojsrbr_reader/app/widgets/inherited_twowidget.dart';
-import 'package:com_joaojsrbr_reader/app/widgets/inherited_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,10 +40,11 @@ class SearchScreen extends GetView<SearchController> {
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                           label: const Text('Search'),
-                          suffixIcon: InheritedTwoWidgetValueNotifier(
-                            first: controller.isSearching,
-                            second: controller.isLoading,
-                            child: const ThreeButton(),
+                          suffixIcon: ThreeButton(
+                            listabool: [
+                              controller.isSearching,
+                              controller.isLoading,
+                            ],
                           ),
                           contentPadding: const EdgeInsets.only(
                             left: 15.0,
@@ -100,11 +99,8 @@ class SearchScreen extends GetView<SearchController> {
               ),
             ),
           ),
-          InheritedWidgetValueNotifier(
-            notifier: controller.results,
-            child: ResultSliver(
-              key: ObjectKey(controller.results),
-            ),
+          ResultSliver(
+            valueNotifier: controller.results,
           ),
         ],
       ),

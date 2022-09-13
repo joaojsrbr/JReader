@@ -196,10 +196,22 @@ class ReaperServices {
 
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
+    final List<Element> elementstext =
+        document.querySelectorAll('.reading-content div');
 
-    for (Element element in elements) {
-      final String url = (element.attributes['data-src'] ?? '').trim();
-      if (url.isNotEmpty) content.add(url);
+    if (elements.isEmpty) {
+      if (elementstext.isNotEmpty) {
+        for (Element element in elementstext) {
+          content.add(element.text);
+        }
+      }
+    } else {
+      for (Element element in elements) {
+        final String url =
+            (element.attributes['data-src'] ?? element.attributes['src'] ?? '')
+                .trim();
+        if (url.isNotEmpty) content.add(url);
+      }
     }
 
     return content;

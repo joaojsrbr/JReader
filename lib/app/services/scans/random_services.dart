@@ -159,6 +159,11 @@ class RandomServices {
 
       elements = document.querySelectorAll('ul.main > li.wp-manga-chapter > a');
 
+      if (elements.isEmpty) {
+        elements = document.querySelectorAll(
+            'div.page-content-listing.single-page > div > ul > li > ul > li > ul > li > a');
+      }
+
       for (Element element in elements) {
         final String url = (element.attributes['href'] ?? '').trim();
         final String name = element.text.trim();
@@ -192,10 +197,19 @@ class RandomServices {
 
     final List<Element> elements =
         document.querySelectorAll('.reading-content img');
-
-    for (Element element in elements) {
-      final String url = GetImage.bySrc(element);
-      if (url.isNotEmpty) content.add(url);
+    final Element? elementstext =
+        document.querySelector('.reading-content div');
+    if (elements.isEmpty) {
+      if (elementstext != null) {
+        for (Element element in elementstext.children) {
+          content.add(element.text);
+        }
+      }
+    } else {
+      for (Element element in elements) {
+        final String url = GetImage.bySrc(element);
+        if (url.isNotEmpty) content.add(url);
+      }
     }
 
     return content;

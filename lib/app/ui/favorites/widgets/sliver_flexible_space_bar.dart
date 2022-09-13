@@ -1,6 +1,5 @@
 import 'package:com_joaojsrbr_reader/app/ui/favorites/controlers/favorites_controller.dart';
 import 'package:com_joaojsrbr_reader/app/ui/favorites/widgets/two_button/two_button.dart';
-import 'package:com_joaojsrbr_reader/app/widgets/inherited_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,9 +25,8 @@ class SliverFlexibleSpaceBar extends GetView<FavoritesController> {
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   label: const Text('Search'),
-                  suffixIcon: InheritedWidgetValueNotifier(
-                    notifier: controller.isSearching,
-                    child: const TwoButton(),
+                  suffixIcon: TwoButton(
+                    valueNotifier: controller.isSearching,
                   ),
                   contentPadding: const EdgeInsets.only(
                     left: 15.0,
@@ -50,7 +48,6 @@ class SliverFlexibleSpaceBar extends GetView<FavoritesController> {
                       color: Get.theme.colorScheme.error,
                     ),
                   ),
-                  // filled: true,
 
                   focusColor: Get.theme.colorScheme.background.withOpacity(0.5),
                   focusedBorder: OutlineInputBorder(
